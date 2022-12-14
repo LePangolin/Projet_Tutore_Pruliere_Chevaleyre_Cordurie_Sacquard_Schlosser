@@ -1,0 +1,24 @@
+services:
+  server:
+    image: node:latest
+    command:
+      -bash
+      -c
+      -"npm install && npm start"
+    volumes:
+      - ./App/:/App/
+    ports:
+      - "3010:3010"
+    depends_on:
+      - db
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: chronochroma
+      MYSQL_USER: chronochroma
+      MYSQL_PASSWORD: chronochroma
+    volumes:
+      - ./db/:/var/lib/mysql
+    ports:
+      - "3306:3306"
