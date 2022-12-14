@@ -13,7 +13,7 @@ services:
       - -c
       - "npm install && npm start"
   db:
-    image: mysql:latest
+    image: mysql:5.7.40
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: chronochroma
