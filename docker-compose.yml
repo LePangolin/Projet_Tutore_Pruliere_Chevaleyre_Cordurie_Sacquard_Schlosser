@@ -1,16 +1,17 @@
 services:
   server:
     image: node:latest
-    command:
-      -bash
-      -c
-      -"npm install && npm start"
     volumes:
-      - ./App/:/App/
+      - ./app/:/app/
     ports:
       - "3010:3010"
     depends_on:
       - db
+    working_dir: /app/
+    command:
+      - bash
+      - -c
+      - "npm install && npm start"
   db:
     image: mysql:latest
     environment:
