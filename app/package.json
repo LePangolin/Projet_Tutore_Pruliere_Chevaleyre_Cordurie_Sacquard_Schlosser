@@ -1,10 +1,13 @@
 {
     "dependencies": {
         "express": "^4.17.1",
+        "express-session": "^1.17.1",
         "body-parser": "^1.19.0",
         "node-fetch": "^2.6.0",
         "knex": "^0.21.1",
         "mysql": "^2.18.1",
-        "joi" : "^17.2.1"
+        "joi" : "^17.2.1",
+        "fs": "0.0.1-security",
+        "crypto" : "^1.0.1"
     }
 } 

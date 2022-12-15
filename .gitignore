@@ -10,3 +10,4 @@ chronochroma/ios/
 chronochroma/android/
 chronochroma/test/
 chronochroma/pubspec.lock
+*.log
