@@ -4,9 +4,9 @@ import 'package:flame/sprite.dart';
 
 class Player extends SpriteAnimationComponent with HasGameRef {
   // Attributs de direction et d'animation
-  Direction direction = Direction.none;
   double gravity = 1.2;
   Vector2 velocity = Vector2(0, 0);
+  Direction direction = Direction.none;
   late final SpriteAnimation _idleAnimation;
   late final SpriteAnimation _walkLeftAnimation;
   late final SpriteAnimation _walkRightAnimation;
@@ -57,9 +57,11 @@ class Player extends SpriteAnimationComponent with HasGameRef {
   @override
   void update(double dt) {
     super.update(dt);
-    if (position.y < 1480 - height) {
-      velocity.y += gravity;
-      position.y += velocity.y;
+    if (position.y < 32 * 23 - height) {
+      if (velocity.y < 20) {
+        velocity.y += gravity / 5;
+      }
+      position += velocity;
     } else {
       velocity.y = 0;
     }
@@ -71,11 +73,13 @@ class Player extends SpriteAnimationComponent with HasGameRef {
     switch (direction) {
       case Direction.up:
         animation = _walkRightAnimation;
-        position.y -= 5;
+        position.y -= 15;
         break;
       case Direction.down:
         animation = _walkLeftAnimation;
-        position.y += 5;
+        if (position.y < 32 * 23 - height) {
+          position.y += 25;
+        }
         break;
       case Direction.left:
         animation = _walkLeftAnimation;
