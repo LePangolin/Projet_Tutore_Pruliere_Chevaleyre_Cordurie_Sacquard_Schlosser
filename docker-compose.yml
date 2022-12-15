@@ -11,7 +11,7 @@ services:
     command:
       - bash
       - -c
-      - "npm install && npm start"
+      - "npm install && cd database && node database.js && cd .. && npm start"
   db:
     image: mysql:5.7.40
     environment:
