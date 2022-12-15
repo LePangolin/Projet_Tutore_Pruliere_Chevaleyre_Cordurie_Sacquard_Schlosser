@@ -24,7 +24,7 @@ function createLog(logName, logContent, logType){
             content = "[INFO] " + logContent;
             break;
     }
-    fs.appendFile("./log/logs/"+ logName +".log", content + " " + new Date() + " \r \n", function (err) {
+    fs.appendFile("./log/"+ logName +".log", content + " " + new Date() + " \r \n", function (err) {
         if (err) throw err;
     });
 }
