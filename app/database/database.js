@@ -29,7 +29,7 @@ function createTable(tableName, tableSchema, fn = function(){}) {
         knex.destroy();
         fn();
     }).catch(function (err) {
-        log.createLog("database", err + "in file " + __filename + " line " + __line, "error");
+        log.createLog("database", err, "error");
     });
 }
 
@@ -47,7 +47,7 @@ function dropTable(tableName, fn = function(){}) {
         knex.destroy();
         fn();
     }).catch(function (err) {
-        log.createLog("database", err + "in file " + __filename + " line " + __line, "error");
+        log.createLog("database", err, "error");
     });
 }
 
@@ -66,7 +66,7 @@ function insert(tableName, data, fn = function(){}) {
         knex.destroy();
         fn()
     }).catch(function (err) {
-        log.createLog("database", err + "in file " + __filename + " line " + __line, "error");
+        log.createLog("database", err, "error");
     });
 }
 
@@ -84,7 +84,7 @@ function select(tableName, data, where = {}, fn) {
         fn(result);
         knex.destroy();
     }).catch(function (err) {
-        log.createLog("database", err + "in file " + __filename + " line " + __line, "error");
+        log.createLog("database", err, "error");
     });
 }
 
@@ -104,7 +104,7 @@ function update(tableName, data, where = {}, fn = function(){}) {
         knex.destroy();
         fn();
     }).catch(function (err) {
-        log.createLog("database", err + "in file " + __filename + " line " + __line, "error");
+        log.createLog("database", err, "error");
     });
 }
 
@@ -122,7 +122,7 @@ function all(tableName, data, fn) {
         knex.destroy();
         fn(result);
     }).catch(function (err) {
-        log.createLog("database", err + "in file " + __filename + " line " + __line, "error");
+        log.createLog("database", err, "error");
     });
 }
 
@@ -140,7 +140,7 @@ function last(tableName, data, fn) {
         knex.destroy();
         fn(result);
     }).catch(function (err) {
-        log.createLog("database", err + "in file " + __filename + " line " + __line, "error");
+        log.createLog("database", err, "error");
     });
 }
 
