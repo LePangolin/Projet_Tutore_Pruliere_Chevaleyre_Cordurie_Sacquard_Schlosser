@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'helpers/navigation_keys.dart';
 
