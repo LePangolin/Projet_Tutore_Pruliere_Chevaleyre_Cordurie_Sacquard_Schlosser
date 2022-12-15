@@ -6,13 +6,6 @@ function seed(){
         table.string('name');
         table.string('password');
         table.timestamps();
-    }, function(){
-        database.insert('users', {
-            name: 'admin',
-            password: 'admin',
-            created_at: new Date(),
-            updated_at: new Date()
-        });
     });
 }
 

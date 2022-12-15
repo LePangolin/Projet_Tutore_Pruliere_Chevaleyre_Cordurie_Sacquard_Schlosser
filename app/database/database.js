@@ -1,5 +1,6 @@
 const conf = require('../config/databaseConf.json');
 const fs = require('fs');
+const log = require('../log/logger.js');
 
 /**
  * Fonction qui permet de créer une instance de knex
@@ -24,11 +25,11 @@ function createKnex(){
 function createTable(tableName, tableSchema, fn = function(){}) {
     let knex = createKnex();
     knex.schema.createTable(tableName, tableSchema).then(function () {
-        console.log('Table ' + tableName + ' created');
+        log.createLog("database", "Table " + tableName + " created", "info");
         knex.destroy();
         fn();
     }).catch(function (err) {
-        console.log(err);
+        log.createLog("database", err, "error");
     });
 }
 
@@ -42,11 +43,11 @@ function createTable(tableName, tableSchema, fn = function(){}) {
 function dropTable(tableName, fn = function(){}) {
     let knex = createKnex();
     knex.schema.dropTable(tableName).then(function () {
-        console.log('Table ' + tableName + ' dropped');
+        log.createLog("database", "Table " + tableName + " dropped", "info");
         knex.destroy();
         fn();
     }).catch(function (err) {
-        console.log(err);
+        log.createLog("database", err, "error");
     });
 }
 
@@ -61,11 +62,11 @@ function dropTable(tableName, fn = function(){}) {
 function insert(tableName, data, fn = function(){}) {
     let knex = createKnex();
     knex(tableName).insert(data).then(function () {
-        console.log('Data inserted');
+        log.createLog("database", "Data inserted in " + tableName, "info");
         knex.destroy();
         fn()
     }).catch(function (err) {
-        console.log(err);
+        log.createLog("database", err, "error");
     });
 }
 
@@ -80,10 +81,10 @@ function insert(tableName, data, fn = function(){}) {
 function select(tableName, data, where = {}, fn) {
     let knex = createKnex();
     knex(tableName).where(where).select(data).then(function (result) {
-        knex.destroy();
         fn(result);
+        knex.destroy();
     }).catch(function (err) {
-        console.log(err);
+        log.createLog("database", err, "error");
     });
 }
 
@@ -99,11 +100,11 @@ function select(tableName, data, where = {}, fn) {
 function update(tableName, data, where = {}, fn = function(){}) {
     let knex = createKnex();
     knex(tableName).where(where).update(data).then(function (result) {
-        console.log("Data updated");
+        log.createLog("database", "Data updated in " + tableName, "info");
         knex.destroy();
         fn();
     }).catch(function (err) {
-        console.log(err);
+        log.createLog("database", err, "error");
     });
 }
 
@@ -121,7 +122,7 @@ function all(tableName, data, fn) {
         knex.destroy();
         fn(result);
     }).catch(function (err) {
-        console.log(err);
+        log.createLog("database", err, "error");
     });
 }
 
@@ -139,7 +140,7 @@ function last(tableName, data, fn) {
         knex.destroy();
         fn(result);
     }).catch(function (err) {
-        console.log(err);
+        log.createLog("database", err, "error");
     });
 }
 
@@ -148,12 +149,12 @@ function last(tableName, data, fn) {
  * @returns {void}
  * @example seed()
  */
-function seed(){
+function seeding(){
     let knex = createKnex();
     knex.schema.hasTable('seeders').then(function(exists) {
         if(exists){
             last('seeders', ['version'], function(result){
-                let seeders = fs.readdirSync('./seeders');
+                let seeders = fs.readdirSync('./database/seeders');
                 let lastSeeder = result[0].version;
                 let index = seeders.indexOf(lastSeeder);
                 if(index < seeders.length - 1){
@@ -166,6 +167,8 @@ function seed(){
                             updated_at: new Date()
                         });
                     }
+                }else{
+                    log.createLog("database", "Database is up to date", "info");
                 }
             });
         }else{
@@ -174,7 +177,7 @@ function seed(){
                 table.string('version');
                 table.timestamps();
             }, function(){
-                let seeders = fs.readdirSync('./seeders');
+                let seeders = fs.readdirSync('./database/seeders');
                 seeders.forEach(function(seeder){
                     let version = require('./seeders/' + seeder);
                     version.seed();
@@ -190,7 +193,7 @@ function seed(){
     });
 }
 
-seed();
+seeding();
 
 module.exports = {
     createTable,
@@ -200,5 +203,5 @@ module.exports = {
     update,
     all,
     last,
-    seed
+    seeding
 }
