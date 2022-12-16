@@ -18,13 +18,14 @@ class Chronochroma extends FlameGame {
     homeMap = await TiledComponent.load('map.tmx', Vector2.all(32));
     add(homeMap);
     add(player);
+    camera.followComponent(player,
+        worldBounds: Rect.fromLTRB(0, 0, homeMap.size.x, homeMap.size.y));
   }
 
   // caca
   onArrowKeyChanged(Direction direction) {
     player.direction = direction;
   }
-
 
   /// Methode statique pour créer le jeu
   /// @return MaterialApp
@@ -35,9 +36,7 @@ class Chronochroma extends FlameGame {
       home: Scaffold(
         body: Stack(
           children: [
-            GameWidget(
-              game: game
-            ),
+            GameWidget(game: game),
             Align(
               alignment: Alignment.bottomLeft,
               child: NavigationKeys(
