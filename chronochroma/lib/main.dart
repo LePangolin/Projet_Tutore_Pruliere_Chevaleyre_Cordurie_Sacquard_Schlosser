@@ -1,8 +1,10 @@
+import 'package:flame/game.dart';
 import './chronochroma.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'helpers/navigation_keys.dart';
-import 'package:flame/game.dart';
+import './helpers/controller.dart';
+
+
 
 
 void main() {
@@ -28,15 +30,15 @@ void main() {
             GameWidget(game: game),
             Align(
               alignment: Alignment.bottomLeft,
-              child: NavigationKeys(
+              child: Controller(
                 onDirectionChanged: game.onArrowKeyChanged,
               ),
             ),
           ],
         ),
-      ),
-    ))
-  });
+      )
+    )
+  ));
 }
 
 
