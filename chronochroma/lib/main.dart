@@ -6,8 +6,9 @@ import './helpers/controller.dart';
 
 
 
+
 void main() {
-  // On crée le jeu
+  // On crée une instance du jeu
   final game = Chronochroma();
   // On s'assure que le binding est initialisé
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,10 +18,9 @@ void main() {
   )
   .then((_) => 
     // On désactive la barre de statut
-    SystemChrome.setEnabledSystemUIOverlays([])
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [])
   )
-  .then((_) => 
-
+  .then((_) => {
     // On lance le jeu
     runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
