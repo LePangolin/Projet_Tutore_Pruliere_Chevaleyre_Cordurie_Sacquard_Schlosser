@@ -1,11 +1,13 @@
 import './chronochroma.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-
+import 'helpers/navigation_keys.dart';
+import 'package:flame/game.dart';
 
 
 void main() {
+  // On crée une instance du jeu
+  final game = Chronochroma();
   // On s'assure que le binding est initialisé
   WidgetsFlutterBinding.ensureInitialized();
   // On désactive la rotation de l'écran
@@ -14,12 +16,27 @@ void main() {
   )
   .then((_) => 
     // On désactive la barre de statut
-    SystemChrome.setEnabledSystemUIOverlays([])
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [])
   )
-  .then((_) => 
+  .then((_) => {
     // On lance le jeu
-    runApp(Chronochroma.createGame())
-  );
+    runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: Stack(
+          children: [
+            GameWidget(game: game),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: NavigationKeys(
+                onDirectionChanged: game.onArrowKeyChanged,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ))
+  });
 }
 
 
