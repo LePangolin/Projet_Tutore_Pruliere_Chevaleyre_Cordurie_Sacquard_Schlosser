@@ -76,7 +76,6 @@ class _JoystickState extends State<Joystick> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onPanStart: (details) {
-        print('onPanStart');
       },
       onPanUpdate: (details) {
         // make a 8 direction joystick with 45 degree angle
@@ -138,7 +137,7 @@ class _JoystickState extends State<Joystick> {
         }
 
         setState(() {
-          print(alignment);
+          
         });
 
 
@@ -147,7 +146,7 @@ class _JoystickState extends State<Joystick> {
           none();
           alignment = const Alignment(0, 0);
           setState(() {
-            print(alignment);
+          
           });
       },
       child: Container(
