@@ -20,12 +20,14 @@ class Chronochroma extends FlameGame {
     add(player);
   }
 
+  // caca
   onArrowKeyChanged(Direction direction) {
     player.direction = direction;
   }
 
 
-
+  /// Methode statique pour créer le jeu
+  /// @return MaterialApp
   static MaterialApp createGame() {
     final game = Chronochroma();
     return MaterialApp(
