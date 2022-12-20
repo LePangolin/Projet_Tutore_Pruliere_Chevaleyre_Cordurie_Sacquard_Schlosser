@@ -48,6 +48,7 @@ function dropTable(tableName, fn = function(){}) {
         fn();
     }).catch(function (err) {
         log.createLog("database", err, "error");
+        knex.destroy();
     });
 }
 
@@ -67,6 +68,7 @@ function insert(tableName, data, fn = function(){}) {
         fn()
     }).catch(function (err) {
         log.createLog("database", err, "error");
+        knex.destroy();
     });
 }
 
@@ -85,6 +87,7 @@ function select(tableName, data, where = {}, fn) {
         knex.destroy();
     }).catch(function (err) {
         log.createLog("database", err, "error");
+        knex.destroy();
     });
 }
 
@@ -105,6 +108,7 @@ function update(tableName, data, where = {}, fn = function(){}) {
         fn();
     }).catch(function (err) {
         log.createLog("database", err, "error");
+        knex.destroy();
     });
 }
 
@@ -123,6 +127,7 @@ function all(tableName, data, fn) {
         fn(result);
     }).catch(function (err) {
         log.createLog("database", err, "error");
+        knex.destroy();
     });
 }
 
@@ -141,6 +146,7 @@ function last(tableName, data, fn) {
         fn(result);
     }).catch(function (err) {
         log.createLog("database", err, "error");
+        knex.destroy();
     });
 }
 
