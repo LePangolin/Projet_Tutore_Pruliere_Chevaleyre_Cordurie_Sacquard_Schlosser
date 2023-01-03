@@ -29,45 +29,10 @@ class Joystick extends StatefulWidget{
 
   @override
   // ignore: no_logic_in_create_state
-  _JoystickState createState() => _JoystickState(
-    up: up,
-    down: down,
-    left: left,
-    right: right,
-    none: none,
-    upLeft: upLeft,
-    upRight: upRight,
-    downLeft: downLeft,
-    downRight: downRight,
-  );
+  _JoystickState createState() => _JoystickState();
 }
 
 class _JoystickState extends State<Joystick> {
-
-  final Function up;
-  final Function down;
-  final Function left;
-  final Function right;
-  final Function none;
-  final Function upLeft;
-  final Function upRight;
-  final Function downLeft;
-  final Function downRight;
-
-  _JoystickState(
-      {
-      required this.up,
-      required this.down,
-      required this.left,
-      required this.right,
-      required this.none,
-      required this.upLeft,
-      required this.upRight,
-      required this.downLeft,
-      required this.downRight,
-      }
-  );
-
 
   Alignment alignment = Alignment.center;
 
@@ -90,49 +55,49 @@ class _JoystickState extends State<Joystick> {
 
         // 0 - 45
         if (angle >= 0 && angle <= 45) {
-          left();
+          widget.left();
           alignment = const Alignment(-1, 0);
         }
 
         // 45 - 90
         if (angle >= 45 && angle <= 90) {
-          upLeft();
+          widget.upLeft();
           alignment = Alignment.topLeft;
         }
 
         // 90 - 135
         if (angle >= 90 && angle <= 135) {
-          up();
+          widget.up();
           alignment = const Alignment(0, -1);
         }
 
         // 135 - 180
         if (angle >= 135 && angle <= 180) {
-          upRight();
+          widget.upRight();
           alignment = const Alignment(1, -1);
         }
 
         // 180 - 225
         if (angle >= 180 && angle <= 225) {
-          right();
+          widget.right();
           alignment = const Alignment(1, 0);
         }
 
         // 225 - 270
         if (angle >= 225 && angle <= 270) {
-          downRight();
+          widget.downRight();
           alignment = const Alignment(1, 1);
         }
 
         // 270 - 315
         if (angle >= 270 && angle <= 315) {
-          down();
+          widget.down();
           alignment = const Alignment(0, 1);
         }
 
         // 315 - 360
         if (angle >= 315 && angle <= 360) {
-          downLeft();
+          widget.downLeft();
           alignment = const Alignment(-1, 1);
         }
 
@@ -143,7 +108,7 @@ class _JoystickState extends State<Joystick> {
 
       },
       onPanEnd: (details) {
-          none();
+          widget.none();
           alignment = const Alignment(0, 0);
           setState(() {
           
