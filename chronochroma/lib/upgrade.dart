@@ -35,30 +35,67 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  int lvl = 0;
+  int points = 100;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/bg.jpg'),
-            fit: BoxFit.fill,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/bg.jpg'),
+              fit: BoxFit.fill,
+            ),
           ),
-        ),
-        // add a image on top of joystick which will move according to joystick movement
-        child: Align(
-            alignment: Alignment.center,
-            child: Container(
-              height: 50,
-              width: 50,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/images/background.png'),
-                  fit: BoxFit.cover,
+          // add a image on top of joystick which will move according to joystick movement
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                "Niveau: $lvl",
+                style: TextStyle(
+                  color: Color.fromARGB(221, 255, 255, 255),
+                  fontFamily: 'Calibri',
+                  letterSpacing: 0.5,
+                  fontSize: 15,
                 ),
               ),
-            )),
-      ),
+              Text(
+                "Points: $points",
+                style: TextStyle(
+                  color: Color.fromARGB(221, 255, 255, 255),
+                  fontFamily: 'Cailibri',
+                  letterSpacing: 0.5,
+                  fontSize: 15,
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 70),
+                child: ElevatedButton(
+                    onPressed: () {
+                      if (points >= 1) {
+                        lvl += 1;
+                        points -= 1;
+                      }
+                      setState(() {});
+                    },
+                    child: const Text("Niveau supérieur")),
+              ),
+              Align(
+                  alignment: const Alignment(0.0, 0.0),
+                  child: Container(
+                    height: 70,
+                    width: 70,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/idle.gif'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )),
+            ],
+          )),
     );
   }
 }

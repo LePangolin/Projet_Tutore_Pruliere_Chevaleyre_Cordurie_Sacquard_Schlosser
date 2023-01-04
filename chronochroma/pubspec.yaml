@@ -30,3 +30,4 @@ flutter:
     - assets/images/knight_walk_left_spritesheet.png
     - assets/images/knight_walk_right_spritesheet.png
     - assets/audio/
+    - assets/images/idle.gif
