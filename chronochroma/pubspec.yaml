@@ -32,3 +32,4 @@ flutter:
     - assets/images/joystick_knob.png
     - assets/images/joystick_background.png
     - assets/audio/
+    - assets/images/idle.gif
