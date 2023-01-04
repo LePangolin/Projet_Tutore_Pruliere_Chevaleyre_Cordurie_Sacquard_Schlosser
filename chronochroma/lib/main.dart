@@ -34,4 +34,29 @@ void main() {
                   ),
                 )))
           });
+    [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]
+  )
+  .then((_) => 
+    // On désactive la barre de statut
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [])
+  )
+  .then((_) => {
+    // On lance le jeu
+    runApp(MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: Stack(
+          children: [
+            GameWidget(game: game),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Controller(
+                onDirectionChanged: game.onArrowKeyChanged,
+              ),
+            ),
+          ],
+        ),
+      )
+    )
+  )});
 }

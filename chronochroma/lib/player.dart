@@ -92,6 +92,30 @@ class Player extends SpriteAnimationComponent with HasGameRef {
       case Direction.none:
         animation = _idleAnimation;
         break;
+      case Direction.upLeft:
+        animation = _walkLeftAnimation;
+        position.y -= 15;
+        position.x -= 5;
+        break;
+      case Direction.upRight:
+        animation = _walkRightAnimation;
+        position.y -= 15;
+        position.x += 5;
+        break;
+      case Direction.downLeft:
+        animation = _walkLeftAnimation;
+        if (position.y < 32 * 23 - height) {
+          position.y += 25;
+        }
+        position.x -= 5;
+        break;
+      case Direction.downRight:
+        animation = _walkRightAnimation;
+        if (position.y < 32 * 23 - height) {
+          position.y += 25;
+        }
+        position.x += 5;
+        break;
     }
   }
 }
