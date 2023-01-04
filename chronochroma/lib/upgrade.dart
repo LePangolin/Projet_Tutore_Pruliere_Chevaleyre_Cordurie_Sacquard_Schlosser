@@ -67,11 +67,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   color: Color.fromARGB(221, 255, 255, 255),
                   fontFamily: 'Cailibri',
                   letterSpacing: 0.5,
-                  fontSize: 15,
+                  fontSize: 14,
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(bottom: 70),
+                margin: EdgeInsets.only(bottom: 40, top: 10),
                 child: ElevatedButton(
                     onPressed: () {
                       if (points >= 1) {
@@ -82,18 +82,21 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     child: const Text("Niveau supérieur")),
               ),
-              Align(
-                  alignment: const Alignment(0.0, 0.0),
-                  child: Container(
-                    height: 70,
-                    width: 70,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/images/idle.gif'),
-                        fit: BoxFit.cover,
+              Container(
+                margin: EdgeInsets.only(bottom: 20),
+                child: Align(
+                    alignment: const Alignment(0.0, 0.0),
+                    child: Container(
+                      height: 100,
+                      width: 100,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/idle.gif'),
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                  )),
+                    )),
+              )
             ],
           )),
     );
