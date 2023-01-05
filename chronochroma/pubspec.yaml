@@ -25,13 +25,12 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/images/
     - assets/images/background.png
     - assets/images/joystick_background.png
     - assets/images/joystick_knob.png
-    - assets/images/knight_idle_spritesheet.png
-    - assets/images/knight_walk_left_spritesheet.png
-    - assets/images/knight_walk_right_spritesheet.png
     - assets/images/grass/
+    - assets/images/character/
     - assets/audio/
     - assets/tiles/
     - assets/images/idle.gif
