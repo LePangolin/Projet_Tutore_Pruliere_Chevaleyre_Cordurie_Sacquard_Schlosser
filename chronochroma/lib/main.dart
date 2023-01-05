@@ -1,7 +1,10 @@
 import './chronochroma.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'gamePage.dart';
 import 'homepage.dart';
+import 'upgrade.dart';
+import 'salonPage.dart';
 
 void main() {
   // On s'assure que le binding est initialisé
@@ -14,5 +17,16 @@ void main() {
           SystemChrome.setEnabledSystemUIOverlays([]))
       .then((_) =>
           // On lance le jeu
-          runApp(const MyApp()));
+          runApp(MaterialApp(title: "Start screen", initialRoute: '/', routes: {
+            '/': (context) => const MyHomePage(
+                  title: 'homePage',
+                ),
+            '/upgrade': (context) => const UpgradePage(
+                  title: 'upgradePage',
+                ),
+            '/game': (context) => GamePage(),
+            '/salon': (context) => const SalonPage(
+                  title: 'salonPage',
+                ),
+          })));
 }

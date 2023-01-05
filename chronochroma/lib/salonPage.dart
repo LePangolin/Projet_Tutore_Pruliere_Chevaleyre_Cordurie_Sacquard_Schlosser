@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class SalonPage extends StatefulWidget {
+  const SalonPage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<SalonPage> createState() => _SalonPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _SalonPageState extends State<SalonPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,27 +26,23 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               Container(
                 margin: EdgeInsets.only(bottom: 20),
-                child: Align(
-                    alignment: const Alignment(0.0, 0.0),
-                    child: Container(
-                      height: 200,
-                      width: 430,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image:
-                              AssetImage('assets/images/IllustrationWHT.png'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    )),
+                width: 1000,
               ),
               Container(
                 margin: EdgeInsets.only(bottom: 40, top: 10),
                 child: ElevatedButton(
                     onPressed: () {
-                      Navigator.popAndPushNamed(context, '/salon');
+                      Navigator.popAndPushNamed(context, '/upgrade');
                     },
-                    child: const Text("Commencer")),
+                    child: const Text("Améliorations")),
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 40, top: 10),
+                child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.popAndPushNamed(context, '/game');
+                    },
+                    child: const Text("Jouer")),
               ),
             ],
           )),
