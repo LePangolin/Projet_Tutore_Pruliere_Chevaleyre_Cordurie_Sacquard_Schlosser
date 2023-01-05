@@ -34,3 +34,5 @@ flutter:
     - assets/images/grass/
     - assets/audio/
     - assets/tiles/
+    - assets/images/idle.gif
+
