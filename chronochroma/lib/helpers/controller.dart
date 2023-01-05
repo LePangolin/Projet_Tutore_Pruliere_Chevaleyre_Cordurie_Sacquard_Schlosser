@@ -18,7 +18,9 @@ class _ControllerState extends State<Controller>{
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20, left: 20),
+      child: SizedBox(
       height: 100,
       width: 100,
       child: Column(children:  [
@@ -61,7 +63,8 @@ class _ControllerState extends State<Controller>{
             },
          ),
       ],)
-    );
+    )
+    );    
   }
 
 }
