@@ -1,29 +1,42 @@
+import 'dart:developer';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:chronochroma/player.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'components/worldCollides.dart';
 
-
-class Chronochroma extends FlameGame {
+class Chronochroma extends FlameGame with HasCollisionDetection{
   final Player player = Player();
-  double gravity = 1.5;
-  Vector2 velocity = Vector2(0, 0);
   late TiledComponent homeMap;
 
-  
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    homeMap = await TiledComponent.load('map.tmx', Vector2.all(32));
+    homeMap = await TiledComponent.load('test.tmx', Vector2.all(32));
+
+    final worldLayer = homeMap.tileMap.getLayer<ObjectGroup>('collides');
+
+    for (final object in worldLayer!.objects) {
+      add(WorldCollides(
+        size: Vector2(object.width, object.height),
+        position: Vector2(object.x, object.y),
+      ));
+    }
+  
+
+    
+
+
     add(homeMap);
     add(player);
-    camera.followComponent(player,
-        worldBounds: Rect.fromLTRB(0, 0, homeMap.size.x, homeMap.size.y));
+    camera.followComponent(player);
   }
 
-  // caca
+  // Influence la direction du joueur
   onArrowKeyChanged(Direction direction) {
     player.direction = direction;
   }
+
+  
 }
