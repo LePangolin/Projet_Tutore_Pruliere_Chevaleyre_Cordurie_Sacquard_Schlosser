@@ -1,8 +1,14 @@
+import 'dart:developer';
+
+import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/helpers/directions.dart';
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
+import 'package:flutter/cupertino.dart';
+import 'components/worldCollides.dart';
 
-class Player extends SpriteAnimationComponent with HasGameRef {
+class Player extends SpriteAnimationComponent with HasGameRef<Chronochroma>, CollisionCallbacks {
   // Attributs de direction et d'animation
   double gravity = 1;
   Vector2 velocity = Vector2(0, 0);
@@ -12,6 +18,8 @@ class Player extends SpriteAnimationComponent with HasGameRef {
   late final SpriteAnimation _jumpAnimation;
   late final SpriteAnimation _runAnimation;
   late final SpriteAnimation _slideAnimation;
+  bool isCollided = false;
+  List lastDirection = [];
 
   // Vitesse d'animation : plus c'est haut, plus c'est lent
   final double _idleAnimationSpeed = 0.25;
@@ -28,13 +36,15 @@ class Player extends SpriteAnimationComponent with HasGameRef {
 
   Player() : super(size: Vector2(300, 150)) {
     anchor = Anchor.topCenter;
-    position = Vector2(800, 100);
+    debugMode = true;
   }
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
     await _loadAnimations().then((_) => {animation = _idleAnimation});
+    position = Vector2(100, 100);
+    add(RectangleHitbox());
   }
 
 // Animations correspondantes à des états pour le personnage
@@ -82,6 +92,7 @@ class Player extends SpriteAnimationComponent with HasGameRef {
   @override
   void update(double dt) {
     super.update(dt);
+    
     if (scale != Vector2(-1, 1) &&
         (direction == Direction.left ||
             direction == Direction.upLeft ||
@@ -110,7 +121,9 @@ class Player extends SpriteAnimationComponent with HasGameRef {
       velocity.x = 0;
     }
 
-    if (position.y < 32 * 23 - height) {
+    print(lastDirection);
+    if (!lastDirection.contains("down")) {
+      print("here");
       if (velocity.y < 20) {
         velocity.y += gravity / 5;
       }
@@ -126,38 +139,54 @@ class Player extends SpriteAnimationComponent with HasGameRef {
   updatePosition() {
     switch (direction) {
       case Direction.up:
-        animation = _jumpAnimation;
-        position.y -= 10;
+         if(isCollided && lastDirection.contains('up')){
+          position.y -=0;
+        } else {
+          animation = _jumpAnimation;
+          position.y -= 10;
+        }
         break;
       case Direction.down:
-        animation = _crouchAnimation;
-        // if (position.y < 32 * 23 - height) {
-        //   position.y += 12;
-        // }
+         if(isCollided && lastDirection.contains('down')){
+          position.y +=0;
+        } else {
+          animation = _walkLeftAnimation;
+          position.y += 12;
+        }
         break;
-      case Direction.left:
-        animation = _runAnimation;
-        position.x -= _xMoveSpeed;
-
-        if (velocity.x >= -xVelocityMax) {
-          if (velocity.x > 0) {
-            velocity.x -= xVelocityRetake;
-          } else {
-            velocity.x -= xVelocityIncrease;
+      case Direction.left:        
+         if(isCollided && lastDirection.contains('left')){
+          position.x -=0;
+        } else {
+          animation = _runAnimation;
+          position.x -= _xMoveSpeed;
+          if (velocity.x >= -xVelocityMax) {
+            if (velocity.x > 0) {
+              velocity.x -= xVelocityRetake;
+            } else {
+              velocity.x -= xVelocityIncrease;
+            }
           }
         }
         break;
+       
       case Direction.right:
-        animation = _runAnimation;
-        position.x += _xMoveSpeed;
-        if (velocity.x <= xVelocityMax) {
-          if (velocity.x < 0) {
-            velocity.x += xVelocityRetake;
-          } else {
-            velocity.x += xVelocityIncrease;
+        if(isCollided && lastDirection.contains('right')){
+          position.x +=0;
+        } else {
+          animation = _runAnimation;
+          position.x += _xMoveSpeed;
+          if (velocity.x <= xVelocityMax) {
+            if (velocity.x < 0) {
+              velocity.x += xVelocityRetake;
+            } else {
+              velocity.x += xVelocityIncrease;
+            }
           }
         }
         break;
+        
+        
       case Direction.upLeft:
         animation = _jumpAnimation;
         position.y -= 5;
@@ -191,4 +220,80 @@ class Player extends SpriteAnimationComponent with HasGameRef {
         break;
     }
   }
+  
+  @override
+  void onCollision(intersectionPoints, other){
+    super.onCollision(intersectionPoints, other);
+    if( other is WorldCollides){
+      isCollided = true;
+      // get the hitbox of the player
+      var playerHitbox = this.toRect();
+
+      // get the hitbox of the other object
+      var otherHitbox = other.toRect();
+
+      collisionDetector(playerHitbox, otherHitbox);
+
+    }
+  }
+
+
+  // @override
+  // void onCollisionStart(intersectionPoints, other) {
+  //   super.onCollisionStart(intersectionPoints, other);
+  //   if( other is WorldCollides){
+  //     isCollided = true;
+  //     // get the hitbox of the player
+  //     var playerHitbox = this.toRect();
+
+  //     // get the hitbox of the other object
+  //     var otherHitbox = other.toRect();
+
+  //     collisionDetector(playerHitbox, otherHitbox);
+
+  //   }
+  // }
+
+  @override
+  void onCollisionEnd(other) {
+    super.onCollisionEnd(other);
+    if( other is WorldCollides){
+      print("collision end");
+      isCollided = false;
+      lastDirection = [];
+    }
+  }
+
+  void collisionDetector(Rect playerHitbox, Rect otherHitbox) {
+
+    // get the intersection of the two hitboxes
+      var intersection = playerHitbox.intersect(otherHitbox);
+
+      var interactionCenter = intersection.center;
+     
+      if (interactionCenter.dy < playerHitbox.center.dy) {
+        if(!lastDirection.contains("up")){
+          lastDirection.add("up");
+        }
+      }
+      if (interactionCenter.dy > playerHitbox.center.dy) {
+        if(!lastDirection.contains("down")){
+          lastDirection.add("down");
+        }
+      }
+      if (interactionCenter.dx < playerHitbox.center.dx) {
+        if(!lastDirection.contains("left")){
+          lastDirection.add("left");
+        }
+      }
+      if (interactionCenter.dx > playerHitbox.center.dx) {
+        if(!lastDirection.contains("right")){
+          lastDirection.add("right");
+        }
+      }
+  
 }
+
+
+
+
