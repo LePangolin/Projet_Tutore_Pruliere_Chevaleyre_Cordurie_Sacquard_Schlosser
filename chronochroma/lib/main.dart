@@ -19,7 +19,7 @@ void main() {
       .then((_) => {
             // On lance le jeu
             runApp(MaterialApp(
-                debugShowCheckedModeBanner: true,
+                debugShowCheckedModeBanner: false,
                 home: Scaffold(
                   body: Stack(
                     children: [
