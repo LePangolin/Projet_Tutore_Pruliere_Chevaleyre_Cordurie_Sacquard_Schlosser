@@ -12,6 +12,7 @@ import 'components/worldCollides.dart';
 
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
+
   // Attributs de direction et d'animation
   double gravity = 1;
   Vector2 velocity = Vector2(0, 0);
@@ -21,6 +22,8 @@ class Player extends SpriteAnimationComponent
   late final SpriteAnimation _jumpAnimation;
   late final SpriteAnimation _runAnimation;
   late final SpriteAnimation _slideAnimation;
+  bool isCollided = false;
+  List lastDirection = [];
 
   // Vitesse d'animation : plus c'est haut, plus c'est lent
   final double _idleAnimationSpeed = 0.25;
@@ -117,7 +120,6 @@ class Player extends SpriteAnimationComponent
   @override
   void update(double dt) async {
     super.update(dt);
-
     // Gestion de la direction du sprite personnage
     if (facingRight &&
         (direction == Direction.left ||
@@ -190,6 +192,7 @@ class Player extends SpriteAnimationComponent
           velocity.x = 0;
         }
         break;
+       
       case Direction.right:
         animation = _runAnimation;
         if (!frontHitBox.isColliding && facingRight) {
@@ -198,6 +201,8 @@ class Player extends SpriteAnimationComponent
           velocity.x = 0;
         }
         break;
+        
+        
       case Direction.upLeft:
         animation = _jumpAnimation;
         if (!topHitBox.isColliding) {
@@ -300,3 +305,7 @@ class Player extends SpriteAnimationComponent
     }
   }
 }
+
+
+
+

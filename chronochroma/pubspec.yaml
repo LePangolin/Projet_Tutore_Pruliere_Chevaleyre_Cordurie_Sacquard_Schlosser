@@ -15,6 +15,7 @@ dependencies:
   very_good_analysis: ^3.1.0
   cupertino_icons: ^1.0.5
   flame_tiled: ^1.9.0
+  flame_forge2d: ^0.12.4
 
 dev_dependencies:
   flutter_test:
@@ -25,10 +26,12 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
-    - assets/images/grass/
-    - assets/tiles/
-    - assets/images/character/
-    - assets/images/joystick_knob.png
+    - assets/images/background.png
     - assets/images/joystick_background.png
+    - assets/images/joystick_knob.png
+    - assets/images/grass/
+    - assets/images/character/
     - assets/audio/
+    - assets/tiles/
     - assets/images/idle.gif
+

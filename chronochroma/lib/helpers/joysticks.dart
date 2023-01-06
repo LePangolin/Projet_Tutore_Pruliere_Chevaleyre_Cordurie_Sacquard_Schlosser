@@ -121,6 +121,7 @@ class _JoystickState extends State<Joystick> {
           image: DecorationImage(
             image: AssetImage('assets/images/joystick_background.png'),
             fit: BoxFit.cover,
+            opacity: 0.5,
           ),
         ),
         // add a image on top of joystick which will move according to joystick movement
@@ -133,6 +134,7 @@ class _JoystickState extends State<Joystick> {
               image: DecorationImage(
                 image: AssetImage('assets/images/joystick_knob.png'),
                 fit: BoxFit.cover,
+                opacity: 0.5,
               ),
             ),
           )

@@ -1,9 +1,11 @@
 import 'package:chronochroma/components/worldCollides.dart';
+import 'dart:developer';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:chronochroma/player.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'components/worldCollides.dart';
 
 class Chronochroma extends FlameGame with HasCollisionDetection {
   final Player player = Player();
@@ -32,4 +34,5 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   onArrowKeyChanged(Direction direction) {
     player.direction = direction;
   }
+  
 }
