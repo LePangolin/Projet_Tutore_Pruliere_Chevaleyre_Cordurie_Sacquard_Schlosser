@@ -37,6 +37,14 @@ class Player extends SpriteAnimationComponent
   final double yVelocityMax = 15;
   double fallingVelocity = 0;
 
+  bool facingRight = true;
+  bool canJump = true;
+  bool isCrouching = false;
+
+  late RectangleHitbox topHitBox;
+  late RectangleHitbox frontHitBox;
+  late RectangleHitbox bottomHitBox;
+
   final RectangleHitbox topHitBoxStandModel = (RectangleHitbox(
     size: Vector2(28, 30),
     position: Vector2(256 / 2 - 12, 16),
@@ -63,14 +71,7 @@ class Player extends SpriteAnimationComponent
     position: Vector2(256 / 2 - 12, 98),
   ));
 
-  bool facingRight = true;
-  bool canJump = true;
-
   Player() : super(size: Vector2(256, 128), anchor: Anchor.center) {}
-
-  late RectangleHitbox topHitBox;
-  late RectangleHitbox frontHitBox;
-  late RectangleHitbox bottomHitBox;
 
   @override
   Future<void> onLoad() async {
@@ -148,20 +149,6 @@ class Player extends SpriteAnimationComponent
   @override
   void update(double dt) async {
     super.update(dt);
-    // Gestion de la direction du sprite personnage
-    if (facingRight &&
-        (direction == Direction.left ||
-            direction == Direction.upLeft ||
-            direction == Direction.downLeft)) {
-      flipHorizontallyAroundCenter();
-      facingRight = false;
-    } else if (!facingRight &&
-        (direction == Direction.right ||
-            direction == Direction.upRight ||
-            direction == Direction.downRight)) {
-      flipHorizontallyAroundCenter();
-      facingRight = true;
-    }
 
     // Augmente la vitesse de chute si le personnage n'est pas sur le sol, sinon annule la vitesse de chute
     if (!bottomHitBox.isColliding) {
@@ -211,14 +198,12 @@ class Player extends SpriteAnimationComponent
   updatePosition() {
     switch (direction) {
       case Direction.up:
-        animation = _jumpAnimation;
         reduceHitBox(false);
         if (!topHitBox.isColliding && canJump) {
           velocity.y = -_moveSpeed * jumpMultiplier;
         }
         break;
       case Direction.down:
-        animation = _crouchAnimation;
         reduceHitBox(true);
         velocity.x = 0;
         if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
@@ -226,7 +211,6 @@ class Player extends SpriteAnimationComponent
         }
         break;
       case Direction.left:
-        animation = _runAnimation;
         reduceHitBox(false);
         if (!frontHitBox.isColliding && !facingRight) {
           velocity.x = -_moveSpeed;
@@ -235,7 +219,6 @@ class Player extends SpriteAnimationComponent
         }
         break;
       case Direction.right:
-        animation = _runAnimation;
         reduceHitBox(false);
         if (!frontHitBox.isColliding && facingRight) {
           velocity.x = _moveSpeed;
@@ -244,7 +227,6 @@ class Player extends SpriteAnimationComponent
         }
         break;
       case Direction.upLeft:
-        animation = _jumpAnimation;
         reduceHitBox(false);
         if (!topHitBox.isColliding && canJump) {
           velocity.y = -_moveSpeed * jumpMultiplier;
@@ -256,7 +238,6 @@ class Player extends SpriteAnimationComponent
         }
         break;
       case Direction.upRight:
-        animation = _jumpAnimation;
         reduceHitBox(false);
         if (!topHitBox.isColliding && canJump) {
           velocity.y = -_moveSpeed * jumpMultiplier;
@@ -266,7 +247,6 @@ class Player extends SpriteAnimationComponent
         }
         break;
       case Direction.downLeft:
-        animation = _slideAnimation;
         reduceHitBox(true);
         if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
           velocity.y = _moveSpeed * (downMultiplier / 2);
@@ -278,7 +258,6 @@ class Player extends SpriteAnimationComponent
         }
         break;
       case Direction.downRight:
-        animation = _slideAnimation;
         reduceHitBox(true);
         if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
           velocity.y += _moveSpeed * (downMultiplier / 2);
@@ -291,13 +270,9 @@ class Player extends SpriteAnimationComponent
         break;
       case Direction.none:
         reduceHitBox(false);
-        if (!bottomHitBox.isColliding) {
-          animation = _jumpAnimation;
-        } else {
-          animation = _idleAnimation;
-        }
         break;
     }
+    updateAnimation();
   }
 
   bool showme = true;
@@ -326,6 +301,7 @@ class Player extends SpriteAnimationComponent
   // Redimensionnement des hitbox du personnage, true pour la version basse, false pour la version haute
   void reduceHitBox(bool bool) {
     if (bool) {
+      isCrouching = true;
       topHitBox.size = topHitBoxSlideModel.size;
       topHitBox.position = topHitBoxSlideModel.position;
       frontHitBox.size = frontHitBoxSlideModel.size;
@@ -334,12 +310,59 @@ class Player extends SpriteAnimationComponent
       bottomHitBox.position = bottomHitBoxSlideModel.position;
     } else {
       if (!topHitBox.isColliding) {
+        isCrouching = false;
         topHitBox.size = topHitBoxStandModel.size;
         topHitBox.position = topHitBoxStandModel.position;
         frontHitBox.size = frontHitBoxStandModel.size;
         frontHitBox.position = frontHitBoxStandModel.position;
         bottomHitBox.size = bottomHitBoxStandModel.size;
         bottomHitBox.position = bottomHitBoxStandModel.position;
+      }
+    }
+  }
+
+  // Met à jour l'animation du personnage et sa direction
+  void updateAnimation() {
+    //////// Gère l'orientation du personnage
+    if (facingRight &&
+        (direction == Direction.left ||
+            direction == Direction.upLeft ||
+            direction == Direction.downLeft)) {
+      flipHorizontallyAroundCenter();
+      facingRight = false;
+    } else if (!facingRight &&
+        (direction == Direction.right ||
+            direction == Direction.upRight ||
+            direction == Direction.downRight)) {
+      flipHorizontallyAroundCenter();
+      facingRight = true;
+    }
+    //////// Gère l'animation du personnage
+    if (isCrouching) {
+      if (velocity.x == 0) {
+        // Accroupi, pas de mouvement
+        animation = _crouchAnimation;
+      } else {
+        // Accroupi, en mouvement
+        animation = _slideAnimation;
+      }
+    } else {
+      if (bottomHitBox.isColliding) {
+        if (velocity.x == 0) {
+          // Debout, bloqué par sol, pas de mouvement
+          animation = _idleAnimation;
+        } else {
+          // Debout, bloqué par sol, en mouvement
+          animation = _runAnimation;
+        }
+      } else {
+        if (topHitBox.isColliding) {
+          // Debout, bloqué par plafond
+          animation = _jumpAnimation;
+        } else {
+          // Debout, pas de blocage
+          animation = _jumpAnimation;
+        }
       }
     }
   }
