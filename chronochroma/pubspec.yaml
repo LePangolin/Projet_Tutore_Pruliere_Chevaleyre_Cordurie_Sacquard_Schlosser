@@ -25,6 +25,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/images/grass/
     - assets/tiles/
     - assets/images/character/
     - assets/images/joystick_knob.png
