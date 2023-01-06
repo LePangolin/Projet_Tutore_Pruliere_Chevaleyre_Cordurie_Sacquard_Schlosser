@@ -5,6 +5,7 @@ import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,9 +13,8 @@ import 'components/worldCollides.dart';
 
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
-
   // Attributs de direction et d'animation
-  double gravity = 1;
+  double gravity = 1.015;
   Vector2 velocity = Vector2(0, 0);
   Direction direction = Direction.none;
   late final SpriteAnimation _idleAnimation;
@@ -22,8 +22,6 @@ class Player extends SpriteAnimationComponent
   late final SpriteAnimation _jumpAnimation;
   late final SpriteAnimation _runAnimation;
   late final SpriteAnimation _slideAnimation;
-  bool isCollided = false;
-  List lastDirection = [];
 
   // Vitesse d'animation : plus c'est haut, plus c'est lent
   final double _idleAnimationSpeed = 0.25;
@@ -32,36 +30,66 @@ class Player extends SpriteAnimationComponent
   final double _runAnimationSpeed = 0.08;
   final double _slideAnimationSpeed = 0.12;
 
-  final double _xMoveSpeed = 5;
-  final double xVelocityMax = 15;
-  final double yVelocityMax = 10;
+  final double _moveSpeed = 4;
+  final double jumpMultiplier = 1.7;
+  final double downMultiplier = 0.5;
+  final double xVelocityMax = 10;
+  final double yVelocityMax = 15;
+  double fallingVelocity = 0;
+
+  final RectangleHitbox topHitBoxStandModel = (RectangleHitbox(
+    size: Vector2(28, 30),
+    position: Vector2(256 / 2 - 12, 16),
+  ));
+  final RectangleHitbox frontHitBoxStandModel = (RectangleHitbox(
+    size: Vector2(24, 76),
+    position: Vector2(256 / 2 + 16, 36),
+  ));
+  final RectangleHitbox bottomHitBoxStandModel = (RectangleHitbox(
+    size: Vector2(28, 30),
+    position: Vector2(256 / 2 - 12, 98),
+  ));
+
+  final RectangleHitbox topHitBoxSlideModel = (RectangleHitbox(
+    size: Vector2(28, 30),
+    position: Vector2(256 / 2 - 12, 48),
+  ));
+  final RectangleHitbox frontHitBoxSlideModel = (RectangleHitbox(
+    size: Vector2(24, 40),
+    position: Vector2(256 / 2 + 16, 68),
+  ));
+  final RectangleHitbox bottomHitBoxSlideModel = (RectangleHitbox(
+    size: Vector2(28, 30),
+    position: Vector2(256 / 2 - 12, 98),
+  ));
 
   bool facingRight = true;
+  bool canJump = true;
 
   Player() : super(size: Vector2(256, 128), anchor: Anchor.center) {}
 
   late RectangleHitbox topHitBox;
-  late RectangleHitbox bottomHitBox;
   late RectangleHitbox frontHitBox;
+  late RectangleHitbox bottomHitBox;
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
     await _loadAnimations().then((_) => {animation = _idleAnimation});
-    position = Vector2(690, 500);
+    position = Vector2(15, -100);
 
-    topHitBox = (RectangleHitbox(
-      size: Vector2(32, 30),
-      position: Vector2(256 / 2 - 16, 16),
-    ));
-    bottomHitBox = (RectangleHitbox(
-      size: Vector2(32, 30),
-      position: Vector2(256 / 2 - 16, 98),
-    ));
-    frontHitBox = (RectangleHitbox(
-      size: Vector2(32, 80),
-      position: Vector2(256 / 2 + 16, 32),
-    ));
+    topHitBox = RectangleHitbox(
+      size: topHitBoxStandModel.size,
+      position: topHitBoxStandModel.position,
+    );
+    frontHitBox = RectangleHitbox(
+      size: frontHitBoxStandModel.size,
+      position: frontHitBoxStandModel.position,
+    );
+    bottomHitBox = RectangleHitbox(
+      size: bottomHitBoxStandModel.size,
+      position: bottomHitBoxStandModel.position,
+    );
 
     topHitBox.debugMode = true;
     topHitBox.debugColor = Colors.red;
@@ -136,10 +164,22 @@ class Player extends SpriteAnimationComponent
     }
 
     // Augmente la vitesse de chute si le personnage n'est pas sur le sol, sinon annule la vitesse de chute
-    if (velocity.y.abs() < yVelocityMax && !bottomHitBox.isColliding) {
-      velocity.y += gravity;
+    if (!bottomHitBox.isColliding) {
+      if (fallingVelocity > gravity * 1.5) {
+        fallingVelocity *= gravity;
+      } else {
+        fallingVelocity += gravity * 1.5;
+      }
+      if (velocity.y + fallingVelocity < yVelocityMax) {
+        velocity.y += fallingVelocity;
+      } else {
+        velocity.y = yVelocityMax;
+      }
+    } else {
+      fallingVelocity = 0;
     }
 
+    //print("Velocity : ${velocity.x} ${velocity.y}");
     int i = 0;
     while (!frontHitBox.isColliding && i < velocity.x.abs()) {
       if (facingRight) {
@@ -148,7 +188,6 @@ class Player extends SpriteAnimationComponent
         position.x -= 1;
       }
       i++;
-      frontHitBox.update(1);
     }
 
     int j = 0;
@@ -159,11 +198,11 @@ class Player extends SpriteAnimationComponent
         position.y -= 1;
       }
       j++;
-      bottomHitBox.update(1);
-      topHitBox.update(1);
     }
 
     velocity.x = 0;
+    velocity.y = 0;
+    print("canJump : $canJump");
 
     updatePosition();
   }
@@ -173,79 +212,85 @@ class Player extends SpriteAnimationComponent
     switch (direction) {
       case Direction.up:
         animation = _jumpAnimation;
-        if (!topHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
-          velocity.y = -_xMoveSpeed;
+        reduceHitBox(false);
+        if (!topHitBox.isColliding && canJump) {
+          velocity.y = -_moveSpeed * jumpMultiplier;
         }
         break;
       case Direction.down:
         animation = _crouchAnimation;
+        reduceHitBox(true);
         velocity.x = 0;
-        if (!bottomHitBox.isColliding) {
-          velocity.y = _xMoveSpeed / 2;
+        if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
+          velocity.y += _moveSpeed * downMultiplier;
         }
         break;
       case Direction.left:
         animation = _runAnimation;
+        reduceHitBox(false);
         if (!frontHitBox.isColliding && !facingRight) {
-          velocity.x = -_xMoveSpeed;
+          velocity.x = -_moveSpeed;
         } else {
           velocity.x = 0;
         }
         break;
-       
       case Direction.right:
         animation = _runAnimation;
+        reduceHitBox(false);
         if (!frontHitBox.isColliding && facingRight) {
-          velocity.x = _xMoveSpeed;
+          velocity.x = _moveSpeed;
         } else {
           velocity.x = 0;
         }
         break;
-        
-        
       case Direction.upLeft:
         animation = _jumpAnimation;
-        if (!topHitBox.isColliding) {
-          velocity.y = -_xMoveSpeed;
+        reduceHitBox(false);
+        if (!topHitBox.isColliding && canJump) {
+          velocity.y = -_moveSpeed * jumpMultiplier;
         }
         if (!frontHitBox.isColliding && !facingRight) {
-          velocity.x = -_xMoveSpeed;
+          velocity.x = -_moveSpeed;
         } else {
           velocity.x = 0;
         }
         break;
       case Direction.upRight:
         animation = _jumpAnimation;
-        if (!topHitBox.isColliding) {
-          velocity.y = -_xMoveSpeed;
+        reduceHitBox(false);
+        if (!topHitBox.isColliding && canJump) {
+          velocity.y = -_moveSpeed * jumpMultiplier;
         }
         if (!frontHitBox.isColliding && facingRight) {
-          velocity.x = _xMoveSpeed;
+          velocity.x = _moveSpeed;
         }
         break;
       case Direction.downLeft:
         animation = _slideAnimation;
-        if (!bottomHitBox.isColliding) {
-          velocity.y = _xMoveSpeed / 8;
+        reduceHitBox(true);
+        if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
+          velocity.y = _moveSpeed * (downMultiplier / 2);
         }
         if (!frontHitBox.isColliding && !facingRight) {
-          velocity.x = -_xMoveSpeed;
+          velocity.x = -_moveSpeed;
         } else {
           velocity.x = 0;
         }
         break;
       case Direction.downRight:
         animation = _slideAnimation;
-        if (!bottomHitBox.isColliding) {
-          velocity.y = _xMoveSpeed / 8;
+        reduceHitBox(true);
+        if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
+          velocity.y += _moveSpeed * (downMultiplier / 2);
         }
         if (!frontHitBox.isColliding && facingRight) {
-          velocity.x = _xMoveSpeed;
+          velocity.x = _moveSpeed;
         } else {
           velocity.x = 0;
         }
         break;
       case Direction.none:
+        reduceHitBox(false);
         if (!bottomHitBox.isColliding) {
           animation = _jumpAnimation;
         } else {
@@ -261,51 +306,41 @@ class Player extends SpriteAnimationComponent
     super.onCollision(intersectionPoints, other);
     if (other is WorldCollides) {
       if (showme) {
-        //TODO print("player center : ${position.x} ${position.y}");
-
         if (topHitBox.isColliding) {
           //print("top hit");
-          // get highest intersection point
-          var highestPoint = intersectionPoints
-              .reduce((curr, next) => curr.y < next.y ? curr : next);
-          // get the y value of the lowest point of other
-          var lowestPoint = other.position.y + other.size.y;
-          // get the difference between the two
-          var diff = lowestPoint - highestPoint.y;
-          //TODO print("topPlayer - bottomPoint : ${highestPoint.y} - $lowestPoint");
-          //TODO print("diff : $diff");
-          // move the player up by the difference
-          // position.y += diff;
         }
         if (bottomHitBox.isColliding) {
           //print("bottom hit");
-          // get lowest intersection point
-          var lowestPoint = intersectionPoints
-              .reduce((curr, next) => curr.y > next.y ? curr : next);
-          // get the y value of the highest point of other
-          var highestPoint = other.position.y;
-          // get the difference between the two
-          var diff = highestPoint - lowestPoint.y;
-          //TODO print("bottomPlayer - topPoint : ${lowestPoint.y} - $highestPoint");
-          //TODO print("diff : $diff");
-          // move the player down by the difference
-          // position.y += diff;
         }
         if (frontHitBox.isColliding) {
           //print("front hit");
-          // TODO comme les autres ? Pas évident il faut vérifier la direction
-
         }
-
         showme = false;
-        Future.delayed(Duration(milliseconds: 1), () {
+        Future.delayed(Duration(milliseconds: 500), () {
           showme = true;
         });
       }
     }
   }
+
+  // Redimensionnement des hitbox du personnage, true pour la version basse, false pour la version haute
+  void reduceHitBox(bool bool) {
+    if (bool) {
+      topHitBox.size = topHitBoxSlideModel.size;
+      topHitBox.position = topHitBoxSlideModel.position;
+      frontHitBox.size = frontHitBoxSlideModel.size;
+      frontHitBox.position = frontHitBoxSlideModel.position;
+      bottomHitBox.size = bottomHitBoxSlideModel.size;
+      bottomHitBox.position = bottomHitBoxSlideModel.position;
+    } else {
+      if (!topHitBox.isColliding) {
+        topHitBox.size = topHitBoxStandModel.size;
+        topHitBox.position = topHitBoxStandModel.position;
+        frontHitBox.size = frontHitBoxStandModel.size;
+        frontHitBox.position = frontHitBoxStandModel.position;
+        bottomHitBox.size = bottomHitBoxStandModel.size;
+        bottomHitBox.position = bottomHitBoxStandModel.position;
+      }
+    }
+  }
 }
-
-
-
-
