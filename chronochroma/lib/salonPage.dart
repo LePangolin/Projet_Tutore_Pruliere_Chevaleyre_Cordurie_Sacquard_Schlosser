@@ -26,7 +26,7 @@ class _SalonPageState extends State<SalonPage> {
             children: [
               Container(
                 margin: EdgeInsets.only(bottom: 20),
-                width: 1000,
+                width: MediaQuery.of(context).size.width,
               ),
               Container(
                 margin: EdgeInsets.only(bottom: 40, top: 10),

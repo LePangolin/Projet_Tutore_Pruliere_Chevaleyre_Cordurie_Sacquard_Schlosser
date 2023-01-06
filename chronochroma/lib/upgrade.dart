@@ -33,8 +33,15 @@ class _UpgradePageState extends State<UpgradePage> {
           ),
           // add a image on top of joystick which will move according to joystick movement
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.popAndPushNamed(context, '/salon');
+                    },
+                    child: const Text("retour")),
+              ),
               Text(
                 "Niveau: $lvl",
                 style: TextStyle(
