@@ -1,17 +1,28 @@
+import 'package:chronochroma/components/worldCollides.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:chronochroma/player.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
-class Chronochroma extends FlameGame {
+class Chronochroma extends FlameGame with HasCollisionDetection {
   final Player player = Player();
   late TiledComponent homeMap;
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    homeMap = await TiledComponent.load('map.tmx', Vector2.all(32));
+    homeMap = await TiledComponent.load('playground.tmx', Vector2.all(32));
+
+    final worldLayer = homeMap.tileMap.getLayer<ObjectGroup>('ground');
+
+    for (final object in worldLayer!.objects) {
+      add(WorldCollides(
+        size: Vector2(object.width, object.height),
+        position: Vector2(object.x, object.y),
+      ));
+    }
+
     add(homeMap);
     add(player);
     camera.followComponent(player);
