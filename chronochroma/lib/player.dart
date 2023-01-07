@@ -142,7 +142,7 @@ class Player extends SpriteAnimationComponent
         row: 0, stepTime: _runAnimationSpeed, from: 0, to: 7);
 
     _slideAnimation = slideSpriteSheet.createAnimation(
-        row: 0, stepTime: _slideAnimationSpeed, from: 0, to: 9);
+        row: 0, stepTime: _slideAnimationSpeed, from: 3, to: 8);
   }
 
 // dt pour delta time, c'est le temps de raffraichissement
@@ -166,35 +166,17 @@ class Player extends SpriteAnimationComponent
       fallingVelocity = 0;
     }
 
-    //print("Velocity : ${velocity.x} ${velocity.y}");
-    int i = 0;
-    while (!frontHitBox.isColliding && i < velocity.x.abs()) {
-      if (facingRight) {
-        position.x += 1;
-      } else {
-        position.x -= 1;
-      }
-      i++;
-    }
-
-    int j = 0;
-    while (j < velocity.y.abs()) {
-      if (velocity.y > 0 && !bottomHitBox.isColliding) {
-        position.y += 1;
-      } else if (velocity.y < 0 && !topHitBox.isColliding) {
-        position.y -= 1;
-      }
-      j++;
-    }
+    // run applyMovements() but don't wait for it to finish
+    applyMovements();
 
     velocity.x = 0;
     velocity.y = 0;
-    print("canJump : $canJump");
+    //print("canJump : $canJump");
 
     updatePosition();
   }
 
-// Déplacement du personnage et animation correspondante
+// Déplacement du personnage
   updatePosition() {
     switch (direction) {
       case Direction.up:
@@ -275,26 +257,33 @@ class Player extends SpriteAnimationComponent
     updateAnimation();
   }
 
-  bool showme = true;
+  // Détecteur de collision
+  // bool showme = true;
   @override
   void onCollision(intersectionPoints, other) {
     super.onCollision(intersectionPoints, other);
     if (other is WorldCollides) {
-      if (showme) {
-        if (topHitBox.isColliding) {
-          //print("top hit");
+      // if (showme) {
+      if (topHitBox.isColliding) {
+        print("top hit ////////////////////////////////////////////////////");
+        if (canJump == true && !bottomHitBox.isColliding) {
+          canJump = false;
         }
-        if (bottomHitBox.isColliding) {
-          //print("bottom hit");
-        }
-        if (frontHitBox.isColliding) {
-          //print("front hit");
-        }
-        showme = false;
-        Future.delayed(Duration(milliseconds: 500), () {
-          showme = true;
-        });
       }
+      if (bottomHitBox.isColliding) {
+        //print("bottom hit");
+        if (canJump == false) {
+          canJump = true;
+        }
+      }
+      if (frontHitBox.isColliding) {
+        //print("front hit");
+      }
+      // showme = false;
+      // Future.delayed(Duration(milliseconds: 1), () {
+      //   showme = true;
+      // });
+      // }
     }
   }
 
@@ -318,6 +307,34 @@ class Player extends SpriteAnimationComponent
         bottomHitBox.size = bottomHitBoxStandModel.size;
         bottomHitBox.position = bottomHitBoxStandModel.position;
       }
+    }
+  }
+
+//this function must not stop the code execution
+  void applyMovements() async {
+    velocity.x = velocity.x.ceilToDouble();
+    int i = 1;
+    while (!frontHitBox.isColliding && i <= velocity.x.abs()) {
+      if (facingRight) {
+        position.x += 1;
+      } else {
+        position.x -= 1;
+      }
+      i++;
+    }
+    velocity.y = velocity.y.ceilToDouble();
+    int j = 1;
+    while (j <= velocity.y.abs()) {
+      if (velocity.y > 0 && !bottomHitBox.isColliding) {
+        position.y += 1;
+      } else if (velocity.y < 0 && !topHitBox.isColliding) {
+        position.y -= 1;
+        print("movement $j on ${velocity.y.abs()}");
+      } else {
+        break;
+      }
+
+      j++;
     }
   }
 
