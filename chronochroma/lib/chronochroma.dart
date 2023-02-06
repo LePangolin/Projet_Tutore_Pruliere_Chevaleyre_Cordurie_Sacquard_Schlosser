@@ -14,7 +14,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    homeMap = await TiledComponent.load('playground.tmx', Vector2.all(32));
+    homeMap = await TiledComponent.load('newMethods.tmx', Vector2.all(32));
 
     final worldLayer = homeMap.tileMap.getLayer<ObjectGroup>('ground');
 
