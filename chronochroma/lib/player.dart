@@ -14,7 +14,7 @@ import 'components/worldCollides.dart';
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
   // Attributs de direction et d'animation
-  double gravity = 1.015;
+  double gravity = 1.03;
   Vector2 velocity = Vector2(0, 0);
   Direction direction = Direction.none;
   late final SpriteAnimation _idleAnimation;
@@ -30,11 +30,11 @@ class Player extends SpriteAnimationComponent
   final double _runAnimationSpeed = 0.08;
   final double _slideAnimationSpeed = 0.12;
 
-  final double _moveSpeed = 4;
-  final double jumpMultiplier = 1.7;
+  final double _moveSpeed = 5;
+  final double jumpMultiplier = 2.1;
   final double downMultiplier = 0.5;
   final double xVelocityMax = 10;
-  final double yVelocityMax = 15;
+  final double yVelocityMax = 8;
   double fallingVelocity = 0;
 
   bool facingRight = true;
@@ -77,7 +77,7 @@ class Player extends SpriteAnimationComponent
   Future<void> onLoad() async {
     super.onLoad();
     await _loadAnimations().then((_) => {animation = _idleAnimation});
-    position = Vector2(15, -100);
+    position = Vector2(256, 560);
 
     topHitBox = RectangleHitbox(
       size: topHitBoxStandModel.size,
@@ -155,7 +155,7 @@ class Player extends SpriteAnimationComponent
       if (fallingVelocity > gravity * 1.5) {
         fallingVelocity *= gravity;
       } else {
-        fallingVelocity += gravity * 1.5;
+        fallingVelocity += gravity * 5;
       }
       if (velocity.y + fallingVelocity < yVelocityMax) {
         velocity.y += fallingVelocity;
