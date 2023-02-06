@@ -36,11 +36,19 @@ class _UpgradePageState extends State<UpgradePage> {
             children: [
               Align(
                 alignment: Alignment.topLeft,
-                child: ElevatedButton(
+                child: ElevatedButton.icon(
                     onPressed: () {
                       Navigator.popAndPushNamed(context, '/salon');
                     },
-                    child: const Text("retour")),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                    ),
+                    icon: Icon(
+                      Icons.arrow_back,
+                      size: 25,
+                    ),
+                    label: Text("Retour")),
               ),
               Text(
                 "Niveau: $lvl",

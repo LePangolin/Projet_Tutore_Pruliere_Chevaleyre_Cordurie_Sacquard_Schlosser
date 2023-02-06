@@ -26,23 +26,37 @@ class _SalonPageState extends State<SalonPage> {
             children: [
               Container(
                 margin: EdgeInsets.only(bottom: 20),
+                padding: EdgeInsets.only(left: 20, right: 20),
                 width: MediaQuery.of(context).size.width,
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 40, top: 10),
-                child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.popAndPushNamed(context, '/upgrade');
-                    },
-                    child: const Text("Améliorations")),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 40, top: 10),
-                child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.popAndPushNamed(context, '/game');
-                    },
-                    child: const Text("Jouer")),
+                child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(children: [
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.popAndPushNamed(context, '');
+                            },
+                            child: const Text("Tableau des scores")),
+                      ]),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ElevatedButton(
+                                onPressed: () {
+                                  Navigator.popAndPushNamed(
+                                      context, '/upgrade');
+                                },
+                                child: const Text("Améliorations")),
+                            SizedBox(width: 10),
+                            ElevatedButton(
+                                onPressed: () {
+                                  Navigator.popAndPushNamed(context, '/game');
+                                },
+                                child: const Text("Jouer")),
+                          ]),
+                    ]),
               ),
             ],
           )),
