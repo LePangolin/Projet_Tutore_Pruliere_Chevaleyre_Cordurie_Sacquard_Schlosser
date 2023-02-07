@@ -1,59 +1,67 @@
-import 'dart:math';
-
-import 'package:chronochroma/components/unstableFloor.dart';
-import 'package:chronochroma/components/worldCollides.dart';
+import 'package:chronochroma/components/level.dart';
 import 'package:flame/components.dart';
-import 'dart:developer';
-import 'package:flame_tiled/flame_tiled.dart';
+import 'package:flame/effects.dart';
+import 'package:flame/flame.dart';
 import 'package:chronochroma/helpers/directions.dart';
-import 'package:chronochroma/components/player.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'components/barrel.dart';
-import 'components/worldCollides.dart';
+
+import 'components/player.dart';
 
 class Chronochroma extends FlameGame with HasCollisionDetection {
   final Player player = Player();
-  late TiledComponent homeMap;
+  Level? _currentLevel;
+  List<String> levelsNames = ['newMethods.tmx', 'playground.tmx'];
+  SpriteComponent? overlayComponent;
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    homeMap = await TiledComponent.load('newMethods.tmx', Vector2.all(32));
+    // Par précaution, on met le jeu en plein écran et en paysage
+    await Flame.device.fullScreen();
+    await Flame.device.setLandscape();
 
-    final worldLayer = homeMap.tileMap.getLayer<ObjectGroup>('ground');
+    // On charge la map
+    loadLevel('newMethods.tmx');
 
-    for (final object in worldLayer!.objects) {
-      add(WorldCollides(
-        size: Vector2(object.width, object.height),
-        position: Vector2(object.x, object.y),
-      ));
-    }
+    // fixe une résolution qui s'adapte à l'écran
+    camera.viewport = FixedResolutionViewport(Vector2(1600, 900));
 
-    add(homeMap);
+    // On fixe le zoom initial
+    camera.zoom = 1.75;
 
-    final barrelLayer =
-        homeMap.tileMap.getLayer<ObjectGroup>('barrels')!.objects;
+    overlayComponent = SpriteComponent(
+        sprite: await loadSprite('fadeBackground.jpg'),
+        paint: Paint()..color = const Color.fromARGB(255, 0, 0, 0),
+        priority: 1000,
+        size: Vector2(940, 520),
+        position: Vector2(564, 480),
+        anchor: Anchor.center);
 
-    for (final object in barrelLayer) {
-      if (Random().nextBool()) {
-        add(Barrel(object));
-      }
-    }
-
-    final unstableFloorLayer =
-        homeMap.tileMap.getLayer<ObjectGroup>('unstableFloors')!.objects;
-
-    for (final object in unstableFloorLayer) {
-      add(UnstableFloor(object));
-    }
-
-    add(player);
-    camera.followComponent(player);
+    add(overlayComponent!);
   }
 
   // Influence la direction du joueur
   onArrowKeyChanged(Direction direction) {
     player.direction = direction;
+  }
+
+  void loadLevel(String levelName) {
+    _currentLevel?.removeFromParent();
+    _currentLevel = Level(levelName);
+    add(_currentLevel!);
+    // wait for the level to load
+    _currentLevel!.onLoad().then((_) {
+      // On ajoute le joueur à la scène
+      add(player);
+      // On place le joueur au spawn
+      player.teleport(_currentLevel!.spawnPoint);
+      // On suit le joueur en respectant les limites de la map
+      camera.followComponent(player,
+          worldBounds: Rect.fromLTRB(
+              0, 0, _currentLevel!.level.size.x, _currentLevel!.level.size.y));
+      print(_currentLevel!.level.size.x);
+      print(_currentLevel!.level.size.y);
+    });
   }
 }

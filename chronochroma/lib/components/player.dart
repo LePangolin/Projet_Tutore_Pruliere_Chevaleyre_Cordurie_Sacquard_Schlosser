@@ -72,7 +72,7 @@ class Player extends SpriteAnimationComponent
   Future<void> onLoad() async {
     super.onLoad();
     await _loadAnimations().then((_) => {animation = _idleAnimation});
-    position = Vector2(256, 560);
+    // position = Vector2(256, 560);
 
     topHitBox = RectangleHitbox(
       size: topHitBoxStandModel.size,
@@ -365,5 +365,10 @@ class Player extends SpriteAnimationComponent
         }
       }
     }
+  }
+
+  // Téléporte le personnage à la position donnée
+  void teleport(Vector2 position) {
+    this.position = position;
   }
 }
