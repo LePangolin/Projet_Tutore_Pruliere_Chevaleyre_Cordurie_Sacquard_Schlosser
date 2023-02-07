@@ -34,4 +34,5 @@ flutter:
     - assets/audio/
     - assets/tiles/
     - assets/images/idle.gif
+    - assets/images/character/32x32-bat-sprite.png
 

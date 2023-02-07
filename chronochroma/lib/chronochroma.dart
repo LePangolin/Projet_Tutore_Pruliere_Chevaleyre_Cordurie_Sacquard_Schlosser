@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:chronochroma/components/monster.dart';
 import 'package:chronochroma/components/unstableFloor.dart';
 import 'package:chronochroma/components/worldCollides.dart';
 import 'package:flame/components.dart';
@@ -12,9 +13,11 @@ import 'package:flutter/material.dart';
 import 'components/barrel.dart';
 import 'components/worldCollides.dart';
 
+
 class Chronochroma extends FlameGame with HasCollisionDetection {
   final Player player = Player();
   late TiledComponent homeMap;
+
 
   @override
   Future<void> onLoad() async {
@@ -47,6 +50,14 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     for (final object in unstableFloorLayer) {
       add(UnstableFloor(object));
     }
+
+    final bebou =
+        homeMap.tileMap.getLayer<ObjectGroup>('bebou')!.objects;
+    
+    for (final object in bebou) {
+      add(Monster(object));
+    }
+
 
     add(player);
     camera.followComponent(player);
