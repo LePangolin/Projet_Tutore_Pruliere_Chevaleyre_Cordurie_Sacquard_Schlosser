@@ -1,15 +1,10 @@
-import 'dart:developer';
-import 'dart:math';
-
 import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'components/worldCollides.dart';
+import 'worldCollides.dart';
 
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
@@ -71,7 +66,7 @@ class Player extends SpriteAnimationComponent
     position: Vector2(256 / 2 - 12, 98),
   ));
 
-  Player() : super(size: Vector2(256, 128), anchor: Anchor.center) {}
+  Player() : super(size: Vector2(256, 128), anchor: Anchor.center);
 
   @override
   Future<void> onLoad() async {
@@ -166,12 +161,10 @@ class Player extends SpriteAnimationComponent
       fallingVelocity = 0;
     }
 
-    // run applyMovements() but don't wait for it to finish
     applyMovements();
 
     velocity.x = 0;
     velocity.y = 0;
-    //print("canJump : $canJump");
 
     updatePosition();
   }
@@ -258,14 +251,12 @@ class Player extends SpriteAnimationComponent
   }
 
   // Détecteur de collision
-  // bool showme = true;
   @override
   void onCollision(intersectionPoints, other) {
     super.onCollision(intersectionPoints, other);
     if (other is WorldCollides) {
-      // if (showme) {
       if (topHitBox.isColliding) {
-        print("top hit ////////////////////////////////////////////////////");
+        //print("top hit");
         if (canJump == true && !bottomHitBox.isColliding) {
           canJump = false;
         }
@@ -279,11 +270,6 @@ class Player extends SpriteAnimationComponent
       if (frontHitBox.isColliding) {
         //print("front hit");
       }
-      // showme = false;
-      // Future.delayed(Duration(milliseconds: 1), () {
-      //   showme = true;
-      // });
-      // }
     }
   }
 
@@ -310,7 +296,6 @@ class Player extends SpriteAnimationComponent
     }
   }
 
-//this function must not stop the code execution
   void applyMovements() async {
     velocity.x = velocity.x.ceilToDouble();
     int i = 1;
@@ -329,11 +314,9 @@ class Player extends SpriteAnimationComponent
         position.y += 1;
       } else if (velocity.y < 0 && !topHitBox.isColliding) {
         position.y -= 1;
-        print("movement $j on ${velocity.y.abs()}");
       } else {
         break;
       }
-
       j++;
     }
   }
