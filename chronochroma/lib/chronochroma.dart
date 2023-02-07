@@ -1,4 +1,3 @@
-
 import 'dart:math';
 
 import 'package:chronochroma/components/monster.dart';
@@ -14,13 +13,11 @@ import 'package:flutter/material.dart';
 
 import 'components/player.dart';
 
-
 class Chronochroma extends FlameGame with HasCollisionDetection {
   final Player player = Player();
   Level? _currentLevel;
   List<String> levelsNames = ['newMethods.tmx', 'playground.tmx'];
   SpriteComponent? overlayComponent;
-
 
   @override
   Future<void> onLoad() async {
@@ -46,10 +43,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
         position: Vector2(564, 480),
         anchor: Anchor.center);
 
-
-
     add(overlayComponent!);
-
   }
 
   // Influence la direction du joueur
@@ -62,7 +56,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     _currentLevel = Level(levelName);
     add(_currentLevel!);
     // wait for the level to load
-    _currentLevel!.onLoad().then((_) {
+    _currentLevel!.load().then((_) {
       // On ajoute le joueur à la scène
       add(player);
       // On place le joueur au spawn
