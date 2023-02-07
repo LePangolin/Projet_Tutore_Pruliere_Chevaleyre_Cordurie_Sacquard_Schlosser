@@ -1,12 +1,12 @@
-import 'package:flame/game.dart';
 import './chronochroma.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import './helpers/controller.dart';
+import 'gamePage.dart';
+import 'homepage.dart';
+import 'upgrade.dart';
+import 'salonPage.dart';
 
 void main() {
-  // On crée une instance du jeu
-  final game = Chronochroma();
   // On s'assure que le binding est initialisé
   WidgetsFlutterBinding.ensureInitialized();
   // On désactive la rotation de l'écran
@@ -14,24 +14,19 @@ void main() {
           [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight])
       .then((_) =>
           // On désactive la barre de statut
-          SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-              overlays: []))
-      .then((_) => {
-            // On lance le jeu
-            runApp(MaterialApp(
-                debugShowCheckedModeBanner: false,
-                home: Scaffold(
-                  body: Stack(
-                    children: [
-                      GameWidget(game: game),
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Controller(
-                          onDirectionChanged: game.onArrowKeyChanged,
-                        ),
-                      ),
-                    ],
-                  ),
-                )))
-          });
+          SystemChrome.setEnabledSystemUIOverlays([]))
+      .then((_) =>
+          // On lance le jeu
+          runApp(MaterialApp(title: "Start screen", initialRoute: '/', routes: {
+            '/': (context) => const MyHomePage(
+                  title: 'homePage',
+                ),
+            '/upgrade': (context) => const UpgradePage(
+                  title: 'upgradePage',
+                ),
+            '/game': (context) => GamePage(),
+            '/salon': (context) => const SalonPage(
+                  title: 'salonPage',
+                ),
+          })));
 }

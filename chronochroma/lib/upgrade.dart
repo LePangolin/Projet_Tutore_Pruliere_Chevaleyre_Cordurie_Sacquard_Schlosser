@@ -1,32 +1,15 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MyHomePage(title: 'Améliorer mon personnage'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class UpgradePage extends StatefulWidget {
+  const UpgradePage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<UpgradePage> createState() => _UpgradePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _UpgradePageState extends State<UpgradePage> {
   int _counter = 0;
 
   void _incrementCounter() {
@@ -37,6 +20,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   int lvl = 0;
   int points = 100;
+  int sante = 10;
+  int vitesse = 10;
+  int force = 10;
+  int vision = 10;
 
   @override
   Widget build(BuildContext context) {
@@ -44,59 +31,162 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/images/bg.jpg'),
-              fit: BoxFit.fill,
+              image: AssetImage('assets/images/bg_1.png'),
+              fit: BoxFit.cover,
+              scale: 2.0,
             ),
           ),
           // add a image on top of joystick which will move according to joystick movement
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "Niveau: $lvl",
-                style: TextStyle(
-                  color: Color.fromARGB(221, 255, 255, 255),
-                  fontFamily: 'Calibri',
-                  letterSpacing: 0.5,
-                  fontSize: 15,
-                ),
-              ),
-              Text(
-                "Points: $points",
-                style: TextStyle(
-                  color: Color.fromARGB(221, 255, 255, 255),
-                  fontFamily: 'Cailibri',
-                  letterSpacing: 0.5,
-                  fontSize: 14,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 40, top: 10),
-                child: ElevatedButton(
+              Align(
+                alignment: Alignment.topLeft,
+                child: ElevatedButton.icon(
                     onPressed: () {
-                      if (points >= 1) {
-                        lvl += 1;
-                        points -= 1;
-                      }
-                      setState(() {});
+                      Navigator.popAndPushNamed(context, '/salon');
                     },
-                    child: const Text("Niveau supérieur")),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                    ),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      size: 25,
+                    ),
+                    label: Text("Retour")),
               ),
-              Container(
-                margin: EdgeInsets.only(bottom: 20),
-                child: Align(
-                    alignment: const Alignment(0.0, 0.0),
-                    child: Container(
-                      height: 100,
-                      width: 100,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/idle.gif'),
-                          fit: BoxFit.cover,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Align(
+                      alignment: const Alignment(0.0, 0.0),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        Column(
+                          children: [
+                            Container(
+                              height: 100,
+                              width: 100,
+                              decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage('assets/images/idle.gif'),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    )),
-              )
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Santé : $sante",
+                              style: TextStyle(
+                                color: Color.fromARGB(221, 255, 255, 255),
+                                fontFamily: 'Calibri',
+                                letterSpacing: 0.5,
+                                fontSize: 15,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              "Force : $force",
+                              style: TextStyle(
+                                color: Color.fromARGB(221, 255, 255, 255),
+                                fontFamily: 'Calibri',
+                                letterSpacing: 0.5,
+                                fontSize: 15,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              "Vitesse : $vitesse",
+                              style: TextStyle(
+                                color: Color.fromARGB(221, 255, 255, 255),
+                                fontFamily: 'Calibri',
+                                letterSpacing: 0.5,
+                                fontSize: 15,
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              "Vision : $vision",
+                              style: TextStyle(
+                                color: Color.fromARGB(221, 255, 255, 255),
+                                fontFamily: 'Calibri',
+                                letterSpacing: 0.5,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        )
+                      ])),
+                  Container(
+                      margin: const EdgeInsets.only(top: 20, bottom: 20),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {},
+                            child: const Text(
+                              "Santé +",
+                              style: TextStyle(
+                                color: Color.fromARGB(221, 255, 255, 255),
+                                fontFamily: 'Calibri',
+                                letterSpacing: 0.5,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          ElevatedButton(
+                            onPressed: () {},
+                            child: const Text(
+                              "Force +",
+                              style: TextStyle(
+                                color: Color.fromARGB(221, 255, 255, 255),
+                                fontFamily: 'Calibri',
+                                letterSpacing: 0.5,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          ElevatedButton(
+                            onPressed: () {},
+                            child: const Text(
+                              "Vitesse +",
+                              style: TextStyle(
+                                color: Color.fromARGB(221, 255, 255, 255),
+                                fontFamily: 'Calibri',
+                                letterSpacing: 0.5,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          ElevatedButton(
+                            onPressed: () {},
+                            child: const Text(
+                              "Vision +",
+                              style: TextStyle(
+                                color: Color.fromARGB(221, 255, 255, 255),
+                                fontFamily: 'Calibri',
+                                letterSpacing: 0.5,
+                                fontSize: 15,
+                              ),
+                            ),
+                          )
+                        ],
+                      ))
+                ],
+              ),
             ],
           )),
     );
