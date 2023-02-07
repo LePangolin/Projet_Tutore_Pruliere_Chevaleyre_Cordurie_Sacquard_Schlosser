@@ -16,8 +16,9 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/images/bg.jpg'),
-              fit: BoxFit.fill,
+              image: AssetImage('assets/images/bg_1.png'),
+              fit: BoxFit.cover,
+              scale: 2.0,
             ),
           ),
           // add a image on top of joystick which will move according to joystick movement
