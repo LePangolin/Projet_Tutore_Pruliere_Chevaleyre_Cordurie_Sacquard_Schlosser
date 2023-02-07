@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'monster.dart';
 import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/components/barrel.dart';
 import 'package:chronochroma/components/nextLevelDoor.dart';
@@ -55,6 +56,13 @@ class Level extends Component with HasGameRef<Chronochroma> {
 
     for (final object in nextLevelDoorLayer) {
       add(NextLevelDoor(object));
+    }
+
+    final bebou =
+        level.tileMap.getLayer<ObjectGroup>('bebou')!.objects;
+    
+    for (final object in bebou) {
+      add(Monster(object));
     }
 
     return super.onLoad();

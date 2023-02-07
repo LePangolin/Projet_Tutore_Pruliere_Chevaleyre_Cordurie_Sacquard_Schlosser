@@ -47,20 +47,6 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
         anchor: Anchor.center);
 
 
-    for (final object in unstableFloorLayer) {
-      add(UnstableFloor(object));
-    }
-
-    final bebou =
-        homeMap.tileMap.getLayer<ObjectGroup>('bebou')!.objects;
-    
-    for (final object in bebou) {
-      add(Monster(object));
-    }
-
-
-    add(player);
-    camera.followComponent(player);
 
     add(overlayComponent!);
 
