@@ -1,10 +1,15 @@
+import 'dart:math';
+
+import 'package:chronochroma/components/unstableFloor.dart';
 import 'package:chronochroma/components/worldCollides.dart';
+import 'package:flame/components.dart';
 import 'dart:developer';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:chronochroma/helpers/directions.dart';
-import 'package:chronochroma/player.dart';
+import 'package:chronochroma/components/player.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'components/barrel.dart';
 import 'components/worldCollides.dart';
 
 class Chronochroma extends FlameGame with HasCollisionDetection {
@@ -26,6 +31,23 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     }
 
     add(homeMap);
+
+    final barrelLayer =
+        homeMap.tileMap.getLayer<ObjectGroup>('barrels')!.objects;
+
+    for (final object in barrelLayer) {
+      if (Random().nextBool()) {
+        add(Barrel(object));
+      }
+    }
+
+    final unstableFloorLayer =
+        homeMap.tileMap.getLayer<ObjectGroup>('unstableFloors')!.objects;
+
+    for (final object in unstableFloorLayer) {
+      add(UnstableFloor(object));
+    }
+
     add(player);
     camera.followComponent(player);
   }
@@ -34,5 +56,4 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   onArrowKeyChanged(Direction direction) {
     player.direction = direction;
   }
-  
 }
