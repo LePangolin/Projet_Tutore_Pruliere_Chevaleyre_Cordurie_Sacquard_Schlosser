@@ -8,6 +8,9 @@ import 'worldCollides.dart';
 
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
+  
+  int health = 100;
+  
   // Attributs de direction et d'animation
   double gravity = 1.03;
   Vector2 velocity = Vector2(0, 0);
