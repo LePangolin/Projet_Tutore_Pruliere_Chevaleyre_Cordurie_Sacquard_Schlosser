@@ -14,9 +14,9 @@ class _SalonPageState extends State<SalonPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      decoration: const BoxDecoration(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/images/bg_1.png'),
           fit: BoxFit.cover,
