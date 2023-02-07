@@ -32,7 +32,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
     overlayComponent = SpriteComponent(
         sprite: await loadSprite('fadeBackground.jpg'),
-        paint: Paint()..color = const Color.fromARGB(255, 0, 0, 0),
+        paint: Paint()..color = const Color.fromARGB(0, 0, 0, 0),
         priority: 1000,
         size: Vector2(940, 520),
         position: Vector2(564, 480),
