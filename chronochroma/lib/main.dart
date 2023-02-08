@@ -7,6 +7,7 @@ import './helpers/controller.dart';
 void main() {
   // On crée une instance du jeu
   final game = Chronochroma();
+  
   // On s'assure que le binding est initialisé
   WidgetsFlutterBinding.ensureInitialized();
   // On désactive la rotation de l'écran
@@ -28,6 +29,23 @@ void main() {
                         alignment: Alignment.bottomLeft,
                         child: Controller(
                           onDirectionChanged: game.onArrowKeyChanged,
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: IconButton(
+                          icon: Image.asset('assets/images/icon/swordIcon.png'),
+                          iconSize: 128,
+                          onPressed: () => {
+                            if (game.player.canAttack) {
+                              game.player.isAttacking = true,
+                              print('attaque')
+
+                            } else {
+                              print('attaque impossible')
+                            }
+                          }
+                      
                         ),
                       ),
                     ],
