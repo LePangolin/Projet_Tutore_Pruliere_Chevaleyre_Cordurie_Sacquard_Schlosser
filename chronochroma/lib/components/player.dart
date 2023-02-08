@@ -1,14 +1,21 @@
+import 'dart:developer';
+
 import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 import 'worldCollides.dart';
 
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
+  // Attributs de vie
   int health = 100;
+
+  // Frame Invincible
+  bool isInvincible = false;
 
   // Attributs de direction et d'animation
   bool needUpdate = true;
@@ -344,7 +351,7 @@ class Player extends SpriteAnimationComponent
   }
 
   // Met à jour l'animation du personnage et sa direction
-  void updateAnimation() async{
+  void updateAnimation() async {
     //////// Gère l'orientation du personnage
     if (facingRight &&
         (direction == Direction.left ||
@@ -369,15 +376,15 @@ class Player extends SpriteAnimationComponent
         animation = _slideAnimation;
       }
     } else {
-        if (isAttacking) {
-            canAttack = false;
-          animation = _attackAnimation;
-          _attackAnimation.onComplete = () {
-            print("attack done");
-            isAttacking = false;
-            canAttack = true;
-            _attackAnimation.reset();
-          };
+      if (isAttacking) {
+        canAttack = false;
+        animation = _attackAnimation;
+        _attackAnimation.onComplete = () {
+          print("attack done");
+          isAttacking = false;
+          canAttack = true;
+          _attackAnimation.reset();
+        };
       } else {
         if (bottomHitBox.isColliding) {
           if (velocity.x == 0) {
@@ -403,5 +410,29 @@ class Player extends SpriteAnimationComponent
   // Téléporte le personnage à la position donnée
   void teleport(Vector2 position) {
     this.position = position;
+  }
+
+  Future<void> subirDegat(int degat) async {
+    if (isInvincible) return;
+    if ((health - degat) <= 0) {
+      health = 0;
+    } else {
+      ColorEffect effect = ColorEffect(
+        Color.fromARGB(255, 212, 8, 8),
+        const Offset(0.0, 0.5),
+        EffectController(
+          duration: 0.4,
+          reverseDuration: 0.4,
+        )
+      );
+      add(
+        effect
+
+      );
+      health -= degat;
+      isInvincible = true;
+      await Future.delayed(Duration(milliseconds: 1000))
+          .then((_) => isInvincible = false);
+    }
   }
 }
