@@ -8,7 +8,10 @@ import 'worldCollides.dart';
 
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
+  int health = 100;
+
   // Attributs de direction et d'animation
+  bool needUpdate = true;
   double gravity = 1.03;
   Vector2 velocity = Vector2(0, 0);
   Direction direction = Direction.none;
@@ -76,7 +79,7 @@ class Player extends SpriteAnimationComponent
   Future<void> onLoad() async {
     super.onLoad();
     await _loadAnimations().then((_) => {animation = _idleAnimation});
-    position = Vector2(256, 560);
+    // position = Vector2(256, 560);
 
     topHitBox = RectangleHitbox(
       size: topHitBoxStandModel.size,
@@ -157,28 +160,35 @@ class Player extends SpriteAnimationComponent
   void update(double dt) async {
     super.update(dt);
 
-    // Augmente la vitesse de chute si le personnage n'est pas sur le sol, sinon annule la vitesse de chute
-    if (!bottomHitBox.isColliding) {
-      if (fallingVelocity > gravity * 1.5) {
-        fallingVelocity *= gravity;
+    if (needUpdate) {
+      needUpdate = false;
+
+      // Augmente la vitesse de chute si le personnage n'est pas sur le sol, sinon annule la vitesse de chute
+      if (!bottomHitBox.isColliding) {
+        if (fallingVelocity > gravity * 1.5) {
+          fallingVelocity *= gravity;
+        } else {
+          fallingVelocity += gravity * 5;
+        }
+        if (velocity.y + fallingVelocity < yVelocityMax) {
+          velocity.y += fallingVelocity;
+        } else {
+          velocity.y = yVelocityMax;
+        }
       } else {
-        fallingVelocity += gravity * 5;
+        fallingVelocity = 0;
       }
-      if (velocity.y + fallingVelocity < yVelocityMax) {
-        velocity.y += fallingVelocity;
-      } else {
-        velocity.y = yVelocityMax;
-      }
-    } else {
-      fallingVelocity = 0;
+
+      applyMovements();
+
+      velocity.x = 0;
+      velocity.y = 0;
+
+      updatePosition();
+
+      await Future.delayed(Duration(milliseconds: 10))
+          .then((_) => {needUpdate = true});
     }
-
-    applyMovements();
-
-    velocity.x = 0;
-    velocity.y = 0;
-
-    updatePosition();
   }
 
 // Déplacement du personnage
@@ -388,5 +398,10 @@ class Player extends SpriteAnimationComponent
         }
       }
     }
+  }
+
+  // Téléporte le personnage à la position donnée
+  void teleport(Vector2 position) {
+    this.position = position;
   }
 }
