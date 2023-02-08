@@ -7,6 +7,7 @@ import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 import 'worldCollides.dart';
 import 'attackHitbox.dart';
+
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
   int health = 100;
@@ -54,25 +55,25 @@ class Player extends SpriteAnimationComponent
     position: Vector2(256 / 2 - 12, 16),
   ));
   final RectangleHitbox frontHitBoxStandModel = (RectangleHitbox(
-    size: Vector2(24, 76),
-    position: Vector2(256 / 2 + 16, 36),
+    size: Vector2(16, 76),
+    position: Vector2(256 / 2 + 16, 24),
   ));
   final RectangleHitbox bottomHitBoxStandModel = (RectangleHitbox(
     size: Vector2(28, 30),
-    position: Vector2(256 / 2 - 12, 98),
+    position: Vector2(256 / 2 - 12, 86),
   ));
 
   final RectangleHitbox topHitBoxSlideModel = (RectangleHitbox(
     size: Vector2(28, 30),
-    position: Vector2(256 / 2 - 12, 48),
+    position: Vector2(256 / 2 - 12, 36),
   ));
   final RectangleHitbox frontHitBoxSlideModel = (RectangleHitbox(
-    size: Vector2(24, 40),
-    position: Vector2(256 / 2 + 16, 68),
+    size: Vector2(16, 40),
+    position: Vector2(256 / 2 + 16, 56),
   ));
   final RectangleHitbox bottomHitBoxSlideModel = (RectangleHitbox(
     size: Vector2(28, 30),
-    position: Vector2(256 / 2 - 12, 98),
+    position: Vector2(256 / 2 - 12, 86),
   ));
 
   Player() : super(size: Vector2(256, 128), anchor: Anchor.center);
@@ -95,7 +96,6 @@ class Player extends SpriteAnimationComponent
       size: bottomHitBoxStandModel.size,
       position: bottomHitBoxStandModel.position,
     );
-    attackHitBox = AttackHitbox();
 
     topHitBox.debugMode = true;
     topHitBox.debugColor = Colors.red;
@@ -103,9 +103,7 @@ class Player extends SpriteAnimationComponent
     bottomHitBox.debugColor = Colors.red;
     frontHitBox.debugMode = true;
     frontHitBox.debugColor = Colors.orange;
-
-    attackHitBox.debugMode = true;
-    attackHitBox.debugColor = Colors.green;
+    setUpAttackHitbox();
 
     add(topHitBox);
     add(bottomHitBox);
@@ -115,9 +113,10 @@ class Player extends SpriteAnimationComponent
 // Animations correspondantes à des états pour le personnage
   Future<void> _loadAnimations() async {
     final idleSpriteSheet = SpriteSheet.fromColumnsAndRows(
-        image: await gameRef.images.load('character/Idle.png'),
-        columns: 2,
-        rows: 4);
+      image: await gameRef.images.load('character/Idle.png'),
+      columns: 2,
+      rows: 4,
+    );
     final crouchSpriteSheet = SpriteSheet.fromColumnsAndRows(
         image: await gameRef.images.load('character/crouch_idle.png'),
         columns: 2,
@@ -350,7 +349,7 @@ class Player extends SpriteAnimationComponent
   }
 
   // Met à jour l'animation du personnage et sa direction
-  void updateAnimation() async{
+  void updateAnimation() async {
     //////// Gère l'orientation du personnage
     if (facingRight &&
         (direction == Direction.left ||
@@ -375,19 +374,20 @@ class Player extends SpriteAnimationComponent
         animation = _slideAnimation;
       }
     } else {
-        if (isAttacking) {
-          animation = _attackAnimation;
-          if (canAttack){
-            add(attackHitBox);
-            canAttack = false;
-          }
-          _attackAnimation.onComplete = () {
-            print("attack done");
-            remove(attackHitBox);
-            isAttacking = false;
-            canAttack = true;
-            _attackAnimation.reset();
-          };
+      if (isAttacking) {
+        animation = _attackAnimation;
+        if (canAttack) {
+          setUpAttackHitbox();
+          add(attackHitBox);
+          canAttack = false;
+        }
+        _attackAnimation.onComplete = () {
+          print("attack done");
+          remove(attackHitBox);
+          isAttacking = false;
+          canAttack = true;
+          _attackAnimation.reset();
+        };
       } else {
         if (bottomHitBox.isColliding) {
           if (velocity.x == 0) {
@@ -408,6 +408,13 @@ class Player extends SpriteAnimationComponent
         }
       }
     }
+  }
+
+  // Instancie à nouveau la hitbox d'attaque
+  void setUpAttackHitbox() {
+    attackHitBox = AttackHitbox();
+    attackHitBox.debugMode = true;
+    attackHitBox.debugColor = Colors.green;
   }
 
   // Téléporte le personnage à la position donnée
