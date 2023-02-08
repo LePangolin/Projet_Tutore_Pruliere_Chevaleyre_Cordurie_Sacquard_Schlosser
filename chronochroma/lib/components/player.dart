@@ -20,6 +20,7 @@ class Player extends SpriteAnimationComponent
   late final SpriteAnimation _jumpAnimation;
   late final SpriteAnimation _runAnimation;
   late final SpriteAnimation _slideAnimation;
+  late final SpriteAnimation _attackAnimation;
 
   // Vitesse d'animation : plus c'est haut, plus c'est lent
   final double _idleAnimationSpeed = 0.25;
@@ -27,6 +28,7 @@ class Player extends SpriteAnimationComponent
   final double _jumpAnimationSpeed = 0.25;
   final double _runAnimationSpeed = 0.08;
   final double _slideAnimationSpeed = 0.12;
+  final double _attackAnimationSpeed = 0.12;
 
   final double _moveSpeed = 5;
   final double jumpMultiplier = 2.1;
@@ -38,6 +40,8 @@ class Player extends SpriteAnimationComponent
   bool facingRight = true;
   bool canJump = true;
   bool isCrouching = false;
+  bool canAttack = true;
+  bool isAttacking = false;
 
   late RectangleHitbox topHitBox;
   late RectangleHitbox frontHitBox;
@@ -126,6 +130,11 @@ class Player extends SpriteAnimationComponent
       columns: 4,
       rows: 3,
     );
+    final attackSpriteSheet = SpriteSheet.fromColumnsAndRows(
+      image: await gameRef.images.load('character/Attacks.png'),
+      columns: 8,
+      rows: 5,
+    );
 
     _idleAnimation = idleSpriteSheet.createAnimation(
         row: 0, stepTime: _idleAnimationSpeed, from: 0, to: 7);
@@ -141,6 +150,9 @@ class Player extends SpriteAnimationComponent
 
     _slideAnimation = slideSpriteSheet.createAnimation(
         row: 0, stepTime: _slideAnimationSpeed, from: 3, to: 8);
+
+    _attackAnimation = attackSpriteSheet.createAnimation(
+        row: 0, stepTime: _attackAnimationSpeed, from: 0, to: 6, loop: false);
   }
 
 // dt pour delta time, c'est le temps de raffraichissement
@@ -332,7 +344,7 @@ class Player extends SpriteAnimationComponent
   }
 
   // Met à jour l'animation du personnage et sa direction
-  void updateAnimation() {
+  void updateAnimation() async{
     //////// Gère l'orientation du personnage
     if (facingRight &&
         (direction == Direction.left ||
@@ -357,21 +369,32 @@ class Player extends SpriteAnimationComponent
         animation = _slideAnimation;
       }
     } else {
-      if (bottomHitBox.isColliding) {
-        if (velocity.x == 0) {
-          // Debout, bloqué par sol, pas de mouvement
-          animation = _idleAnimation;
-        } else {
-          // Debout, bloqué par sol, en mouvement
-          animation = _runAnimation;
-        }
+        if (isAttacking) {
+            canAttack = false;
+          animation = _attackAnimation;
+          _attackAnimation.onComplete = () {
+            print("attack done");
+            isAttacking = false;
+            canAttack = true;
+            _attackAnimation.reset();
+          };
       } else {
-        if (topHitBox.isColliding) {
-          // Debout, bloqué par plafond
-          animation = _jumpAnimation;
+        if (bottomHitBox.isColliding) {
+          if (velocity.x == 0) {
+            // Debout, bloqué par sol, pas de mouvement
+            animation = _idleAnimation;
+          } else {
+            // Debout, bloqué par sol, en mouvement
+            animation = _runAnimation;
+          }
         } else {
-          // Debout, pas de blocage
-          animation = _jumpAnimation;
+          if (topHitBox.isColliding) {
+            // Debout, bloqué par plafond
+            animation = _jumpAnimation;
+          } else {
+            // Debout, pas de blocage
+            animation = _jumpAnimation;
+          }
         }
       }
     }

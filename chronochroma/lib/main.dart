@@ -14,6 +14,7 @@ void main() {
           [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight])
       .then((_) =>
           // On désactive la barre de statut
+
           SystemChrome.setEnabledSystemUIOverlays([]))
       .then((_) =>
           // On lance le jeu
