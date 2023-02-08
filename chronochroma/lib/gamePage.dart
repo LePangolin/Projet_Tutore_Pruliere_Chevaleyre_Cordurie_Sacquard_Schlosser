@@ -32,6 +32,22 @@ class _GamePageState extends State<GamePage> {
                 onDirectionChanged: game.onArrowKeyChanged,
               ),
             ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: IconButton(
+                icon: Image.asset('assets/images/icon/swordIcon.png'),
+                iconSize: 128,
+                onPressed: () => {
+                  if (game.player.canAttack) {
+                    game.player.isAttacking = true,
+                    print('attaque')
+
+                  } else {
+                    print('attaque impossible')
+                  }
+                }      
+              ),
+            ),
           ],
         ),
       );
