@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="32" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="16" nextobjectid="124">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="32" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="19" nextobjectid="127">
  <tileset firstgid="1" name="SummerBG" tilewidth="32" tileheight="32" tilecount="736" columns="32">
   <image source="../images/SummerBG.jpg" width="1024" height="736"/>
  </tileset>
@@ -68,11 +67,14 @@
   </object>
  </objectgroup>
  <objectgroup id="14" name="playerspawnpoint">
-  <object id="121" name="Joueur" x="896" y="536">
+  <object id="121" name="Joueur" x="512" y="72">
    <point/>
   </object>
  </objectgroup>
  <objectgroup id="15" name="nextLevelDoor">
-  <object id="123" name="nextLevelDoor" x="1008" y="544" width="16" height="128"/>
+  <object id="123" name="nextLevelDoor" x="1008" y="576" width="16" height="64"/>
+ </objectgroup>
+ <objectgroup id="18" name="teleporters">
+  <object id="126" x="560" y="352" width="16" height="64"/>
  </objectgroup>
 </map>

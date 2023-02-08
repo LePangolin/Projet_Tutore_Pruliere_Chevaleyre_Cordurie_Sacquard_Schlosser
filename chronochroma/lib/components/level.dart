@@ -1,9 +1,10 @@
 import 'dart:math';
 
-import 'monster.dart';
 import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/components/barrel.dart';
+import 'package:chronochroma/components/monster.dart';
 import 'package:chronochroma/components/nextLevelDoor.dart';
+import 'package:chronochroma/components/TeleportSpawnPortal.dart';
 import 'package:chronochroma/components/unstableFloor.dart';
 import 'package:chronochroma/components/worldCollides.dart';
 import 'package:flame/components.dart';
@@ -29,39 +30,57 @@ class Level extends Component with HasGameRef<Chronochroma> {
 
 // Récupère la layer du sol, des murs
     final worldLayer = level.tileMap.getLayer<ObjectGroup>('ground');
-    for (final object in worldLayer!.objects) {
-      add(WorldCollides(
-        size: Vector2(object.width, object.height),
-        position: Vector2(object.x, object.y),
-      ));
+    if (worldLayer != null) {
+      for (final object in worldLayer!.objects) {
+        add(WorldCollides(
+          size: Vector2(object.width, object.height),
+          position: Vector2(object.x, object.y),
+        ));
+      }
     }
 
 // Récupère la layer des caisses
-    final barrelLayer = level.tileMap.getLayer<ObjectGroup>('barrels')!.objects;
-    for (final object in barrelLayer) {
-      if (Random().nextBool()) {
-        add(Barrel(object));
+    final barrelLayer = level.tileMap.getLayer<ObjectGroup>('barrels');
+    if (barrelLayer != null) {
+      for (final object in barrelLayer!.objects) {
+        if (Random().nextBool()) {
+          add(Barrel(object));
+        }
       }
     }
 
 // Récupère la layer des sols instables
     final unstableFloorLayer =
-        level.tileMap.getLayer<ObjectGroup>('unstableFloors')!.objects;
-    for (final object in unstableFloorLayer) {
-      add(UnstableFloor(object));
+        level.tileMap.getLayer<ObjectGroup>('unstableFloors');
+    if (unstableFloorLayer != null) {
+      for (final object in unstableFloorLayer!.objects) {
+        add(UnstableFloor(object));
+      }
     }
 
 // Récupère la layer des portes de changement de niveau
     final nextLevelDoorLayer =
-        level.tileMap.getLayer<ObjectGroup>('nextLevelDoor')!.objects;
-    for (final object in nextLevelDoorLayer) {
-      add(NextLevelDoor(object));
+        level.tileMap.getLayer<ObjectGroup>('nextLevelDoor');
+    if (nextLevelDoorLayer != null) {
+      for (final object in nextLevelDoorLayer!.objects) {
+        add(NextLevelDoor(object));
+      }
+    }
+
+// Récupère la layer des téléporteurs
+    final teleporters = level.tileMap.getLayer<ObjectGroup>('teleporters');
+    if (teleporters != null) {
+      for (final object in teleporters!.objects) {
+        add(TeleportSpawnPortal(object));
+      }
     }
 
 // Récupère la layer des monstres
-    final bebou = level.tileMap.getLayer<ObjectGroup>('bebou')!.objects;
-    for (final object in bebou) {
-      add(Monster(object));
+    final bebou = level.tileMap.getLayer<ObjectGroup>('bebou');
+    if (teleporters != null) {
+      for (final object in bebou!.objects) {
+        add(Monster(object));
+      }
     }
 
     return super.onLoad();
