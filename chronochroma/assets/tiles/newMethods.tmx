@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="32" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="16" nextobjectid="124">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="32" height="23" tilewidth="32" tileheight="32" infinite="0" nextlayerid="16" nextobjectid="145">
  <tileset firstgid="1" name="SummerBG" tilewidth="32" tileheight="32" tilecount="736" columns="32">
   <image source="../images/SummerBG.jpg" width="1024" height="736"/>
  </tileset>
@@ -31,28 +30,82 @@
   <object id="90" x="928" y="512" width="64" height="32"/>
  </objectgroup>
  <objectgroup id="11" name="barrels">
-  <object id="98" name="barrel" x="592" y="592">
+  <object id="98" name="barrel" x="662.31" y="564.141">
    <point/>
   </object>
-  <object id="99" name="barrel" x="816" y="560">
+  <object id="99" name="barrel" x="816" y="541.428">
    <point/>
   </object>
-  <object id="102" name="barrel" x="272" y="432">
+  <object id="102" name="barrel" x="269.347" y="409.448">
    <point/>
   </object>
-  <object id="103" name="barrel" x="176" y="464">
+  <object id="103" name="barrel" x="176" y="421.549">
    <point/>
   </object>
-  <object id="117" name="barrel" x="432" y="656">
+  <object id="118" name="barrel" x="449.407" y="644.061">
    <point/>
   </object>
-  <object id="118" name="barrel" x="464" y="656">
+  <object id="124" name="barrel" x="451.045" y="596.972">
    <point/>
   </object>
-  <object id="119" name="barrel" x="496" y="656">
+  <object id="125" name="barrel" x="451.045" y="592.992">
    <point/>
   </object>
-  <object id="120" name="barrel" x="528" y="656">
+  <object id="126" name="barrel" x="451.045" y="579.726">
+   <point/>
+  </object>
+  <object id="127" name="barrel" x="451.045" y="573.093">
+   <point/>
+  </object>
+  <object id="128" name="barrel" x="451.045" y="567.787">
+   <point/>
+  </object>
+  <object id="129" name="barrel" x="451.045" y="557.174">
+   <point/>
+  </object>
+  <object id="130" name="barrel" x="451.045" y="553.194">
+   <point/>
+  </object>
+  <object id="131" name="barrel" x="451.045" y="542.581">
+   <point/>
+  </object>
+  <object id="132" name="barrel" x="451.045" y="535.948">
+   <point/>
+  </object>
+  <object id="133" name="barrel" x="451.045" y="526.662">
+   <point/>
+  </object>
+  <object id="134" name="barrel" x="451.045" y="516.049">
+   <point/>
+  </object>
+  <object id="135" name="barrel" x="451.045" y="521.355">
+   <point/>
+  </object>
+  <object id="136" name="barrel" x="447.066" y="581.053">
+   <point/>
+  </object>
+  <object id="137" name="barrel" x="445.739" y="604.932">
+   <point/>
+  </object>
+  <object id="138" name="barrel" x="445.739" y="607.585">
+   <point/>
+  </object>
+  <object id="139" name="barrel" x="449.719" y="607.585">
+   <point/>
+  </object>
+  <object id="140" name="barrel" x="453.699" y="607.585">
+   <point/>
+  </object>
+  <object id="141" name="barrel" x="452.372" y="624.831">
+   <point/>
+  </object>
+  <object id="142" name="barrel" x="452.372" y="636.77">
+   <point/>
+  </object>
+  <object id="143" name="barrel" x="452.372" y="639.423">
+   <point/>
+  </object>
+  <object id="144" name="barrel" x="456.352" y="616.871">
    <point/>
   </object>
  </objectgroup>
@@ -68,7 +121,7 @@
   </object>
  </objectgroup>
  <objectgroup id="14" name="playerspawnpoint">
-  <object id="121" name="Joueur" x="896" y="536">
+  <object id="121" name="Joueur" x="368.012" y="554.572">
    <point/>
   </object>
  </objectgroup>

@@ -1,11 +1,12 @@
 import 'package:chronochroma/chronochroma.dart';
+import 'package:chronochroma/components/attackHitbox.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 import 'worldCollides.dart';
-
+import 'attackHitbox.dart';
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
   int health = 100;
@@ -46,6 +47,7 @@ class Player extends SpriteAnimationComponent
   late RectangleHitbox topHitBox;
   late RectangleHitbox frontHitBox;
   late RectangleHitbox bottomHitBox;
+  late AttackHitbox attackHitBox;
 
   final RectangleHitbox topHitBoxStandModel = (RectangleHitbox(
     size: Vector2(28, 30),
@@ -93,6 +95,7 @@ class Player extends SpriteAnimationComponent
       size: bottomHitBoxStandModel.size,
       position: bottomHitBoxStandModel.position,
     );
+    attackHitBox = AttackHitbox();
 
     topHitBox.debugMode = true;
     topHitBox.debugColor = Colors.red;
@@ -100,6 +103,9 @@ class Player extends SpriteAnimationComponent
     bottomHitBox.debugColor = Colors.red;
     frontHitBox.debugMode = true;
     frontHitBox.debugColor = Colors.orange;
+
+    attackHitBox.debugMode = true;
+    attackHitBox.debugColor = Colors.green;
 
     add(topHitBox);
     add(bottomHitBox);
@@ -370,10 +376,14 @@ class Player extends SpriteAnimationComponent
       }
     } else {
         if (isAttacking) {
-            canAttack = false;
           animation = _attackAnimation;
+          if (canAttack){
+            add(attackHitBox);
+            canAttack = false;
+          }
           _attackAnimation.onComplete = () {
             print("attack done");
+            remove(attackHitBox);
             isAttacking = false;
             canAttack = true;
             _attackAnimation.reset();
