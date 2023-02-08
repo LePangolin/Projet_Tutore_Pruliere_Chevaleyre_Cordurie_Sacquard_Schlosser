@@ -13,7 +13,7 @@ import 'package:chronochroma/components/projectile.dart';
 class Monster extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
   int health = 25;
-  bool needUpdate = false;
+  bool needUpdate = true;
   final TiledObject monster;
 
   late final SpriteAnimation _animation;
@@ -46,8 +46,8 @@ class Monster extends SpriteAnimationComponent
     if (needUpdate) {
       needUpdate = false;
       gameRef.getCurrentLevel()!.addObject(Projectile(monster.x, monster.y));
+      await Future.delayed(Duration(seconds: 3))
+          .then((_) => {needUpdate = true});
     }
-
-    await Future.delayed(Duration(seconds: 3)).then((_) => {needUpdate = true});
   }
 }
