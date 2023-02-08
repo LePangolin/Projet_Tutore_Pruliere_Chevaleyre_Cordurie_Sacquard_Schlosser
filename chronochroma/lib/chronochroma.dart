@@ -69,4 +69,8 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
       print(_currentLevel!.level.size.y);
     });
   }
+
+  Level? getCurrentLevel() {
+    return _currentLevel;
+  }
 }

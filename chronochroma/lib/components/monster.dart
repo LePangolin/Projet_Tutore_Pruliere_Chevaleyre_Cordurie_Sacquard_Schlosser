@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:flame/collisions.dart';
@@ -6,10 +8,12 @@ import 'package:flame/sprite.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
 import 'worldCollides.dart';
+import 'package:chronochroma/components/projectile.dart';
 
 class Monster extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
   int health = 25;
+  bool needUpdate = false;
   final TiledObject monster;
 
   late final SpriteAnimation _animation;
@@ -39,6 +43,11 @@ class Monster extends SpriteAnimationComponent
   void update(double dt) async {
     super.update(dt);
 
-  }
+    if (needUpdate) {
+      needUpdate = false;
+      gameRef.getCurrentLevel()!.addObject(Projectile(monster.x, monster.y));
+    }
 
+    await Future.delayed(Duration(seconds: 3)).then((_) => {needUpdate = true});
+  }
 }
