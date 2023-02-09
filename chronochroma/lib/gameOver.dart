@@ -18,18 +18,15 @@ class _gameOverState extends State<gameOver> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.5),
+        color: Colors.black.withOpacity(0.9),
       ),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "Game Over",
-              style: TextStyle(
-                fontSize: 50,
-                color: Color.fromARGB(255, 231, 4, 4),
-              ),
+            const Image(
+              image: AssetImage('assets/images/gameOver.png'),
+              width: 500,
             ),
             Container(
               margin: const EdgeInsets.only(top: 20),
@@ -38,7 +35,7 @@ class _gameOverState extends State<gameOver> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.popAndPushNamed(context,'/salon');
+                      Navigator.popAndPushNamed(context, '/salon');
                     },
                     child: const Text(
                       "Retour au salon",
@@ -52,7 +49,7 @@ class _gameOverState extends State<gameOver> {
                     margin: const EdgeInsets.only(left: 20),
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.popAndPushNamed(context,'/game');
+                        Navigator.popAndPushNamed(context, '/game');
                       },
                       child: const Text(
                         "Rejouer",
@@ -62,7 +59,7 @@ class _gameOverState extends State<gameOver> {
                         ),
                       ),
                     ),
-                  ),  
+                  ),
                 ],
               ),
             )
