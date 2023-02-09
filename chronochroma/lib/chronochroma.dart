@@ -65,7 +65,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
       add(overlayComponent!);
 
       // On replace le joueur de la map et en dessous de la transition
-      player.priority = 999;
+      player.priority = 1;
 
       // On augmente le numéro du niveau pour le prochain chargement
       currentLevelIter++;

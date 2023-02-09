@@ -82,7 +82,6 @@ class Player extends SpriteAnimationComponent
   Future<void> onLoad() async {
     super.onLoad();
     await _loadAnimations().then((_) => {animation = _idleAnimation});
-    // position = Vector2(256, 560);
 
     topHitBox = RectangleHitbox(
       size: topHitBoxStandModel.size,
@@ -160,13 +159,17 @@ class Player extends SpriteAnimationComponent
         row: 0, stepTime: _attackAnimationSpeed, from: 0, to: 6, loop: false);
   }
 
+  int frame = 0;
+  double playerDt = 0;
+
 // dt pour delta time, c'est le temps de raffraichissement
   @override
   void update(double dt) async {
-    super.update(dt);
+    if (dt >= 0.01 || playerDt >= 0.01) {
+      playerDt = 0;
+      super.update(dt);
 
-    if (needUpdate) {
-      needUpdate = false;
+      frame++;
 
       // Augmente la vitesse de chute si le personnage n'est pas sur le sol, sinon annule la vitesse de chute
       if (!bottomHitBox.isColliding) {
@@ -191,8 +194,17 @@ class Player extends SpriteAnimationComponent
 
       updatePosition();
 
-      await Future.delayed(Duration(milliseconds: 10))
-          .then((_) => {needUpdate = true});
+      if (needUpdate) {
+        needUpdate = false;
+        await Future.delayed(Duration(seconds: 1)).then((_) async {
+          print(frame);
+          frame = 0;
+          await Future.delayed(Duration(seconds: 1))
+              .then((_) => {needUpdate = true});
+        });
+      }
+    } else {
+      playerDt += dt;
     }
   }
 
