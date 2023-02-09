@@ -8,11 +8,12 @@ import 'package:flame/effects.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 import 'worldCollides.dart';
+import "../gameOver.dart";
 
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
   // Attributs de vie
-  int health = 100;
+  int health = 10;
 
   // Frame Invincible
   bool isInvincible = false;
@@ -416,19 +417,18 @@ class Player extends SpriteAnimationComponent
     if (isInvincible) return;
     if ((health - degat) <= 0) {
       health = 0;
+      gameRef.pauseEngine();
+      gameRef.overlays.add(gameOver.ID);
     } else {
       gameRef.camera.shake(intensity: 1, duration: 0.4);
       ColorEffect effect = ColorEffect(
-        Color.fromARGB(255, 212, 8, 8),
-        const Offset(0.0, 0.5),
-        EffectController(
-          duration: 0.4,
-          reverseDuration: 0.4,
-        )
-      );
-      add(
-        effect
-      );
+          Color.fromARGB(255, 212, 8, 8),
+          const Offset(0.0, 0.5),
+          EffectController(
+            duration: 0.4,
+            reverseDuration: 0.4,
+          ));
+      add(effect);
       health -= degat;
       isInvincible = true;
       await Future.delayed(Duration(milliseconds: 1000))
