@@ -41,6 +41,7 @@ class Player extends SpriteAnimationComponent
 
   bool facingRight = true;
   bool canJump = true;
+  bool canSlide = true;
   bool isCrouching = false;
   bool canAttack = true;
   bool isAttacking = false;
@@ -183,7 +184,7 @@ class Player extends SpriteAnimationComponent
       } else {
         fallingVelocity = 0;
       }
-
+      
       applyMovements();
 
       velocity.x = 0;
@@ -324,48 +325,53 @@ class Player extends SpriteAnimationComponent
   }
 
   void applyMovements() async {
-    velocity.x = velocity.x.ceilToDouble();
-    int i = 1;
-    while (!frontHitBox.isColliding && i <= velocity.x.abs()) {
-      if (facingRight) {
-        position.x += 1;
-      } else {
-        position.x -= 1;
+    if (!isAttacking) {
+      velocity.x = velocity.x.ceilToDouble();
+      int i = 1;
+      while (!frontHitBox.isColliding && i <= velocity.x.abs()) {
+        if (facingRight) {
+          position.x += 1;
+        } else {
+          position.x -= 1;
+        }
+        i++;
       }
-      i++;
-    }
-    velocity.y = velocity.y.ceilToDouble();
-    int j = 1;
-    while (j <= velocity.y.abs()) {
-      if (velocity.y > 0 && !bottomHitBox.isColliding) {
-        position.y += 1;
-      } else if (velocity.y < 0 && !topHitBox.isColliding) {
-        position.y -= 1;
-      } else {
-        break;
+      velocity.y = velocity.y.ceilToDouble();
+      int j = 1;
+      while (j <= velocity.y.abs()) {
+        if (velocity.y > 0 && !bottomHitBox.isColliding) {
+          position.y += 1;
+        } else if (velocity.y < 0 && !topHitBox.isColliding) {
+          position.y -= 1;
+        } else {
+          break;
+        }
+        j++;
       }
-      j++;
     }
   }
 
   // Met à jour l'animation du personnage et sa direction
   void updateAnimation() async {
     //////// Gère l'orientation du personnage
-    if (facingRight &&
+    if (!isAttacking) {
+      if (facingRight &&
         (direction == Direction.left ||
             direction == Direction.upLeft ||
             direction == Direction.downLeft)) {
-      flipHorizontallyAroundCenter();
-      facingRight = false;
-    } else if (!facingRight &&
+        flipHorizontallyAroundCenter();
+        facingRight = false;
+      } else if (!facingRight &&
         (direction == Direction.right ||
             direction == Direction.upRight ||
             direction == Direction.downRight)) {
-      flipHorizontallyAroundCenter();
-      facingRight = true;
+        flipHorizontallyAroundCenter();
+        facingRight = true;
+      }
     }
     //////// Gère l'animation du personnage
-    if (isCrouching) {
+    if (isCrouching && canSlide) {
+      canAttack = false;
       if (velocity.x == 0) {
         // Accroupi, pas de mouvement
         animation = _crouchAnimation;
@@ -374,7 +380,9 @@ class Player extends SpriteAnimationComponent
         animation = _slideAnimation;
       }
     } else {
+      canAttack = true;
       if (isAttacking) {
+        canSlide = false;
         animation = _attackAnimation;
         if (canAttack) {
           setUpAttackHitbox();
@@ -386,10 +394,12 @@ class Player extends SpriteAnimationComponent
           remove(attackHitBox);
           isAttacking = false;
           canAttack = true;
+          canSlide = true;
           _attackAnimation.reset();
         };
       } else {
         if (bottomHitBox.isColliding) {
+          canAttack = true;
           if (velocity.x == 0) {
             // Debout, bloqué par sol, pas de mouvement
             animation = _idleAnimation;
@@ -398,6 +408,7 @@ class Player extends SpriteAnimationComponent
             animation = _runAnimation;
           }
         } else {
+          canAttack = false;
           if (topHitBox.isColliding) {
             // Debout, bloqué par plafond
             animation = _jumpAnimation;
