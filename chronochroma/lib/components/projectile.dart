@@ -1,4 +1,5 @@
 import 'package:chronochroma/chronochroma.dart';
+import 'package:chronochroma/components/unstableFloor.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
@@ -48,7 +49,7 @@ class Projectile extends SpriteComponent
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
-    if (other is Player || other is WorldCollides) {
+    if (other is Player || other is WorldCollides || other is UnstableFloor) {
       removeFromParent();
     }
     if(other is Player){
