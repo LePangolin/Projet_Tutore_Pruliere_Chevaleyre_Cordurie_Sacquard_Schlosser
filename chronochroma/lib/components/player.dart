@@ -103,6 +103,7 @@ class Player extends SpriteAnimationComponent
     bottomHitBox.debugColor = Colors.red;
     frontHitBox.debugMode = true;
     frontHitBox.debugColor = Colors.orange;
+    
     setUpAttackHitbox();
 
     add(topHitBox);
@@ -392,7 +393,6 @@ class Player extends SpriteAnimationComponent
         animation = _slideAnimation;
       }
     } else {
-      canAttack = true;
       if (isAttacking) {
         canSlide = false;
         animation = _attackAnimation;
