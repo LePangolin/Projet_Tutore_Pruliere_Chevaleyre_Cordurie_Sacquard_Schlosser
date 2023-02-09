@@ -417,6 +417,7 @@ class Player extends SpriteAnimationComponent
     if ((health - degat) <= 0) {
       health = 0;
     } else {
+      gameRef.camera.shake(intensity: 1, duration: 0.4);
       ColorEffect effect = ColorEffect(
         Color.fromARGB(255, 212, 8, 8),
         const Offset(0.0, 0.5),
@@ -427,7 +428,6 @@ class Player extends SpriteAnimationComponent
       );
       add(
         effect
-
       );
       health -= degat;
       isInvincible = true;
@@ -435,4 +435,6 @@ class Player extends SpriteAnimationComponent
           .then((_) => isInvincible = false);
     }
   }
+
+  double get x => position.x;
 }

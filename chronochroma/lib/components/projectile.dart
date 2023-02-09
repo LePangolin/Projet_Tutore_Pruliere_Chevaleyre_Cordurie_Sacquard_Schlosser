@@ -15,13 +15,17 @@ class Projectile extends SpriteComponent
   late final SpriteAnimation _animation;
   Vector2 velocity = Vector2(2, 0);
   int degat = 2;
+  bool isLeft;
 
-  Projectile(this.x, this.y) : super(size: Vector2(50, 24));
+  Projectile(this.x, this.y, this.isLeft) : super(size: Vector2(50, 24));
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
     sprite = await gameRef.loadSprite('arrow.png');
+    if(!isLeft){
+      flipHorizontallyAroundCenter();
+    }
     position = Vector2(x, y);
     anchor = Anchor.center;
     RectangleHitbox hitbox = RectangleHitbox(size: Vector2(50, 24));
@@ -33,7 +37,12 @@ class Projectile extends SpriteComponent
   @override
   void update(double dt) async {
     super.update(dt);
-    position.x += 1;
+    if (isLeft) {
+      position.x -= 1;
+    } else{
+      position.x += 1;
+    }
+    
   }
 
   @override
