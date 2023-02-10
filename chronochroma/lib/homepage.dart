@@ -30,8 +30,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Align(
                     alignment: const Alignment(0.0, 0.0),
                     child: Container(
-                      height: 200,
-                      width: 430,
+                      height: 249,
+                      width: 442,
                       decoration: const BoxDecoration(
                         image: DecorationImage(
                           image:
