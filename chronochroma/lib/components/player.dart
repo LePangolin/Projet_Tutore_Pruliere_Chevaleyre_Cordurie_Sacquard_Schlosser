@@ -44,6 +44,7 @@ class Player extends SpriteAnimationComponent
   bool facingRight = true;
   bool canJump = true;
   bool canSlide = true;
+  bool canCrouch = true;
   bool isCrouching = false;
   bool canAttack = true;
   bool isAttacking = false;
@@ -230,7 +231,7 @@ class Player extends SpriteAnimationComponent
         }
         break;
       case Direction.down:
-        reduceHitBox(true);
+        reduceHitBox(canCrouch);
         velocity.x = 0;
         if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
           velocity.y += _moveSpeed * downMultiplier;
@@ -273,7 +274,7 @@ class Player extends SpriteAnimationComponent
         }
         break;
       case Direction.downLeft:
-        reduceHitBox(true);
+        reduceHitBox(canSlide);
         if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
           velocity.y = _moveSpeed * (downMultiplier / 2);
         }
@@ -284,7 +285,7 @@ class Player extends SpriteAnimationComponent
         }
         break;
       case Direction.downRight:
-        reduceHitBox(true);
+        reduceHitBox(canSlide);
         if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
           velocity.y += _moveSpeed * (downMultiplier / 2);
         }
@@ -295,7 +296,7 @@ class Player extends SpriteAnimationComponent
         }
         break;
       case Direction.none:
-        reduceHitBox(false);
+          reduceHitBox((isAttacking && isCrouching));
         break;
     }
     updateAnimation();
@@ -378,6 +379,10 @@ class Player extends SpriteAnimationComponent
   void updateAnimation() async {
     //////// Gère l'orientation du personnage
     if (!isAttacking) {
+      canCrouch = true;
+      canSlide = true;
+      canAttack = true;
+      canJump = true;
       if (facingRight &&
         (direction == Direction.left ||
             direction == Direction.upLeft ||
@@ -394,22 +399,23 @@ class Player extends SpriteAnimationComponent
     }
     //////// Gère l'animation du personnage
     if (isCrouching && !isAttacking) {
-      if (velocity.x == 0) {
-        // Accroupi, pas de mouvement
-        canAttack = true;
-        animation = _crouchAnimation;
-      } else {
-        if (canSlide) {
-          // Accroupi, en mouvement
-          canAttack = false;
-          animation = _slideAnimation;
-        }
+        if (velocity.x == 0) {
+          // Accroupi, pas de mouvement
+          animation = _crouchAnimation;
+        } else {
+          if (canSlide) {
+            // Accroupi, en mouvement
+            canAttack = false;
+            animation = _slideAnimation;
+          }
       }
     } else {
       if (isAttacking) {
         if (!isCrouching) {
           canSlide = false;
+          canCrouch = false;
           animation = _attackAnimation;
+          print(canCrouch);
           if (canAttack) {
             setUpAttackHitbox();
             add(attackHitBox);
@@ -421,6 +427,7 @@ class Player extends SpriteAnimationComponent
             isAttacking = false;
             canAttack = true;
             canSlide = true;
+            canCrouch = true;
             _attackAnimation.reset();
           };
         } else {
