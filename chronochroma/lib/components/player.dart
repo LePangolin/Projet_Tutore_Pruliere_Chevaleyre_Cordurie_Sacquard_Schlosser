@@ -23,6 +23,7 @@ class Player extends SpriteAnimationComponent
   late final SpriteAnimation _runAnimation;
   late final SpriteAnimation _slideAnimation;
   late final SpriteAnimation _attackAnimation;
+  late final SpriteAnimation _crouchAttackAnimation;
 
   // Vitesse d'animation : plus c'est haut, plus c'est lent
   final double _idleAnimationSpeed = 0.25;
@@ -31,6 +32,7 @@ class Player extends SpriteAnimationComponent
   final double _runAnimationSpeed = 0.08;
   final double _slideAnimationSpeed = 0.12;
   final double _attackAnimationSpeed = 0.10;
+  final double _crouchAttackAnimationSpeed = 0.10;
 
   final double _moveSpeed = 5;
   final double jumpMultiplier = 2.1;
@@ -43,6 +45,7 @@ class Player extends SpriteAnimationComponent
   bool canJump = true;
   bool isJumping = false;
   bool canSlide = true;
+  bool canCrouch = true;
   bool isCrouching = false;
   bool canAttack = true;
   bool isAttacking = false;
@@ -143,6 +146,11 @@ class Player extends SpriteAnimationComponent
       columns: 8,
       rows: 5,
     );
+    final crouchAttackSpriteSheet = SpriteSheet.fromColumnsAndRows(
+      image: await gameRef.images.load('character/crouch_attacks.png'),
+      columns: 2,
+      rows: 4,
+    );
 
     _idleAnimation = idleSpriteSheet.createAnimation(
         row: 0, stepTime: _idleAnimationSpeed, from: 0, to: 7);
@@ -161,6 +169,13 @@ class Player extends SpriteAnimationComponent
 
     _attackAnimation = attackSpriteSheet.createAnimation(
         row: 0, stepTime: _attackAnimationSpeed, from: 2, to: 6, loop: false);
+
+    _crouchAttackAnimation = crouchAttackSpriteSheet.createAnimation(
+        row: 0,
+        stepTime: _crouchAttackAnimationSpeed,
+        from: 0,
+        to: 6,
+        loop: false);
   }
 
   int frame = 0;
@@ -244,7 +259,7 @@ class Player extends SpriteAnimationComponent
     } else {
       switch (direction) {
         case Direction.down:
-          reduceHitBox(true);
+          reduceHitBox(canCrouch);
           velocity.x = 0;
           if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
             velocity.y += _moveSpeed * downMultiplier;
@@ -269,7 +284,7 @@ class Player extends SpriteAnimationComponent
           }
           break;
         case Direction.downLeft:
-          reduceHitBox(true);
+          reduceHitBox(canSlide);
           if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
             velocity.y = _moveSpeed * (downMultiplier / 2);
           }
@@ -280,7 +295,7 @@ class Player extends SpriteAnimationComponent
           }
           break;
         case Direction.downRight:
-          reduceHitBox(true);
+          reduceHitBox(canSlide);
           if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
             velocity.y += _moveSpeed * (downMultiplier / 2);
           }
@@ -291,7 +306,7 @@ class Player extends SpriteAnimationComponent
           }
           break;
         case Direction.none:
-          reduceHitBox(false);
+          reduceHitBox((isAttacking && isCrouching));
           break;
       }
     }
@@ -386,6 +401,10 @@ class Player extends SpriteAnimationComponent
   void updateAnimation() async {
     //////// Gère l'orientation du personnage
     if (!isAttacking) {
+      canCrouch = true;
+      canSlide = true;
+      canAttack = true;
+      canJump = true;
       if (facingRight &&
           (direction == Direction.left ||
               direction == Direction.upLeft ||
@@ -401,32 +420,55 @@ class Player extends SpriteAnimationComponent
       }
     }
     //////// Gère l'animation du personnage
-    if (isCrouching && canSlide) {
-      canAttack = false;
+    if (isCrouching && !isAttacking) {
       if (velocity.x == 0) {
         // Accroupi, pas de mouvement
         animation = _crouchAnimation;
       } else {
-        // Accroupi, en mouvement
-        animation = _slideAnimation;
+        if (canSlide) {
+          // Accroupi, en mouvement
+          canAttack = false;
+          animation = _slideAnimation;
+        }
       }
     } else {
       if (isAttacking) {
-        canSlide = false;
-        animation = _attackAnimation;
-        if (canAttack) {
-          setUpAttackHitbox();
-          add(attackHitBox);
-          canAttack = false;
+        if (!isCrouching) {
+          canSlide = false;
+          canCrouch = false;
+          animation = _attackAnimation;
+          print(canCrouch);
+          if (canAttack) {
+            setUpAttackHitbox();
+            add(attackHitBox);
+            canAttack = false;
+          }
+          _attackAnimation.onComplete = () {
+            print("attack done");
+            remove(attackHitBox);
+            isAttacking = false;
+            canAttack = true;
+            canSlide = true;
+            canCrouch = true;
+            _attackAnimation.reset();
+          };
+        } else {
+          canSlide = false;
+          animation = _crouchAttackAnimation;
+          if (canAttack) {
+            setUpAttackHitbox();
+            add(attackHitBox);
+            canAttack = false;
+          }
+          _crouchAttackAnimation.onComplete = () {
+            print("attack done");
+            remove(attackHitBox);
+            isAttacking = false;
+            canAttack = true;
+            canSlide = true;
+            _crouchAttackAnimation.reset();
+          };
         }
-        _attackAnimation.onComplete = () {
-          print("attack done");
-          remove(attackHitBox);
-          isAttacking = false;
-          canAttack = true;
-          canSlide = true;
-          _attackAnimation.reset();
-        };
       } else {
         if (bottomHitBox.isColliding) {
           canAttack = true;
