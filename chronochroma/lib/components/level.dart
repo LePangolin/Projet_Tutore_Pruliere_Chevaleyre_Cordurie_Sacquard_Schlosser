@@ -85,4 +85,8 @@ class Level extends Component with HasGameRef<Chronochroma> {
 
     return super.onLoad();
   }
+
+  void addObject(dynamic obj) {
+    add(obj);
+  }
 }

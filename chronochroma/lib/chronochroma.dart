@@ -72,6 +72,10 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     });
   }
 
+  Level? getCurrentLevel() {
+    return _currentLevel;
+  }
+
   void sendPlayerToSpawn() {
     player.teleport(_currentLevel!.spawnPoint);
   }
