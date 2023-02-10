@@ -1,5 +1,6 @@
 import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/components/attackHitbox.dart';
+import 'package:chronochroma/components/unstableFloor.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
@@ -13,7 +14,6 @@ class Player extends SpriteAnimationComponent
   int health = 100;
 
   // Attributs de direction et d'animation
-  bool needUpdate = true;
   double gravity = 1.03;
   Vector2 velocity = Vector2(0, 0);
   Direction direction = Direction.none;
@@ -30,7 +30,7 @@ class Player extends SpriteAnimationComponent
   final double _jumpAnimationSpeed = 0.25;
   final double _runAnimationSpeed = 0.08;
   final double _slideAnimationSpeed = 0.12;
-  final double _attackAnimationSpeed = 0.12;
+  final double _attackAnimationSpeed = 0.10;
 
   final double _moveSpeed = 5;
   final double jumpMultiplier = 2.1;
@@ -41,10 +41,12 @@ class Player extends SpriteAnimationComponent
 
   bool facingRight = true;
   bool canJump = true;
+  bool isJumping = false;
   bool canSlide = true;
   bool isCrouching = false;
   bool canAttack = true;
   bool isAttacking = false;
+  bool jumpcooldown = false;
 
   late RectangleHitbox topHitBox;
   late RectangleHitbox frontHitBox;
@@ -56,7 +58,7 @@ class Player extends SpriteAnimationComponent
     position: Vector2(256 / 2 - 12, 16),
   ));
   final RectangleHitbox frontHitBoxStandModel = (RectangleHitbox(
-    size: Vector2(16, 76),
+    size: Vector2(16, 82),
     position: Vector2(256 / 2 + 16, 24),
   ));
   final RectangleHitbox bottomHitBoxStandModel = (RectangleHitbox(
@@ -103,7 +105,7 @@ class Player extends SpriteAnimationComponent
     bottomHitBox.debugColor = Colors.red;
     frontHitBox.debugMode = true;
     frontHitBox.debugColor = Colors.orange;
-    
+
     setUpAttackHitbox();
 
     add(topHitBox);
@@ -158,93 +160,66 @@ class Player extends SpriteAnimationComponent
         row: 0, stepTime: _slideAnimationSpeed, from: 3, to: 8);
 
     _attackAnimation = attackSpriteSheet.createAnimation(
-        row: 0, stepTime: _attackAnimationSpeed, from: 0, to: 6, loop: false);
+        row: 0, stepTime: _attackAnimationSpeed, from: 2, to: 6, loop: false);
   }
 
   int frame = 0;
-  double playerDt = 0;
+  bool needFrameDisplay = true;
 
 // dt pour delta time, c'est le temps de raffraichissement
   @override
   void update(double dt) async {
-    if (dt >= 0.01 || playerDt >= 0.01) {
-      playerDt = 0;
-      super.update(dt);
+    super.update(dt);
+    frame++;
 
-      frame++;
+    if (canJump && (velocity.y + fallingVelocity) > 0) {
+      canJump = false;
+      isJumping = false;
+    }
+    print("can jump $canJump");
+    // print("velocity y : ${velocity.y}");
+    // print("chute : $fallingVelocity");
 
-      // Augmente la vitesse de chute si le personnage n'est pas sur le sol, sinon annule la vitesse de chute
-      if (!bottomHitBox.isColliding) {
-        if (fallingVelocity > gravity * 1.5) {
-          fallingVelocity *= gravity;
-        } else {
-          fallingVelocity += gravity * 5;
-        }
-        if (velocity.y + fallingVelocity < yVelocityMax) {
-          velocity.y += fallingVelocity;
-        } else {
-          velocity.y = yVelocityMax;
-        }
+    if (needFrameDisplay) {
+      needFrameDisplay = false;
+      await Future.delayed(Duration(milliseconds: 1000)).then((_) async {
+        // print(frame);
+        frame = 0;
+        needFrameDisplay = true;
+      });
+    }
+
+    // Augmente la vitesse de chute si le personnage n'est pas sur le sol, sinon annule la vitesse de chute
+    if (!bottomHitBox.isColliding) {
+      if (fallingVelocity > gravity * 1.5) {
+        fallingVelocity *= gravity;
       } else {
-        fallingVelocity = 0;
+        fallingVelocity += gravity * 5;
       }
-      
-      applyMovements();
-
-      velocity.x = 0;
-      velocity.y = 0;
-
-      updatePosition();
-
-      if (needUpdate) {
-        needUpdate = false;
-        await Future.delayed(Duration(seconds: 1)).then((_) async {
-          print(frame);
-          frame = 0;
-          await Future.delayed(Duration(seconds: 1))
-              .then((_) => {needUpdate = true});
-        });
+      if (velocity.y + fallingVelocity < yVelocityMax) {
+        velocity.y += fallingVelocity;
+      } else {
+        velocity.y = yVelocityMax;
       }
     } else {
-      playerDt += dt;
+      fallingVelocity = 0;
     }
+
+    applyMovements();
+
+    velocity.x = 0;
+    velocity.y = 0;
+
+    updatePosition();
   }
 
 // Déplacement du personnage
   updatePosition() {
-    switch (direction) {
-      case Direction.up:
-        reduceHitBox(false);
-        if (!topHitBox.isColliding && canJump) {
-          velocity.y = -_moveSpeed * jumpMultiplier;
-        }
-        break;
-      case Direction.down:
-        reduceHitBox(true);
-        velocity.x = 0;
-        if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
-          velocity.y += _moveSpeed * downMultiplier;
-        }
-        break;
-      case Direction.left:
-        reduceHitBox(false);
-        if (!frontHitBox.isColliding && !facingRight) {
-          velocity.x = -_moveSpeed;
-        } else {
-          velocity.x = 0;
-        }
-        break;
-      case Direction.right:
-        reduceHitBox(false);
-        if (!frontHitBox.isColliding && facingRight) {
-          velocity.x = _moveSpeed;
-        } else {
-          velocity.x = 0;
-        }
-        break;
-      case Direction.upLeft:
-        reduceHitBox(false);
-        if (!topHitBox.isColliding && canJump) {
+    if (isJumping) {
+      reduceHitBox(false);
+      if ((direction == Direction.upLeft || direction == Direction.left) &&
+          isJumping) {
+        if (!topHitBox.isColliding) {
           velocity.y = -_moveSpeed * jumpMultiplier;
         }
         if (!frontHitBox.isColliding && !facingRight) {
@@ -252,67 +227,110 @@ class Player extends SpriteAnimationComponent
         } else {
           velocity.x = 0;
         }
-        break;
-      case Direction.upRight:
-        reduceHitBox(false);
-        if (!topHitBox.isColliding && canJump) {
+      } else if ((direction == Direction.upRight ||
+              direction == Direction.right) &&
+          isJumping) {
+        if (!topHitBox.isColliding) {
           velocity.y = -_moveSpeed * jumpMultiplier;
         }
         if (!frontHitBox.isColliding && facingRight) {
           velocity.x = _moveSpeed;
         }
-        break;
-      case Direction.downLeft:
-        reduceHitBox(true);
-        if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
-          velocity.y = _moveSpeed * (downMultiplier / 2);
+      } else if (isJumping) {
+        if (!topHitBox.isColliding) {
+          velocity.y = -_moveSpeed * jumpMultiplier;
         }
-        if (!frontHitBox.isColliding && !facingRight) {
-          velocity.x = -_moveSpeed;
-        } else {
+      }
+    } else {
+      switch (direction) {
+        case Direction.down:
+          reduceHitBox(true);
           velocity.x = 0;
-        }
-        break;
-      case Direction.downRight:
-        reduceHitBox(true);
-        if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
-          velocity.y += _moveSpeed * (downMultiplier / 2);
-        }
-        if (!frontHitBox.isColliding && facingRight) {
-          velocity.x = _moveSpeed;
-        } else {
-          velocity.x = 0;
-        }
-        break;
-      case Direction.none:
-        reduceHitBox(false);
-        break;
+          if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
+            velocity.y += _moveSpeed * downMultiplier;
+          }
+          break;
+        case Direction.upLeft:
+        case Direction.left:
+          reduceHitBox(false);
+          if (!frontHitBox.isColliding && !facingRight) {
+            velocity.x = -_moveSpeed;
+          } else {
+            velocity.x = 0;
+          }
+          break;
+        case Direction.upRight:
+        case Direction.right:
+          reduceHitBox(false);
+          if (!frontHitBox.isColliding && facingRight) {
+            velocity.x = _moveSpeed;
+          } else {
+            velocity.x = 0;
+          }
+          break;
+        case Direction.downLeft:
+          reduceHitBox(true);
+          if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
+            velocity.y = _moveSpeed * (downMultiplier / 2);
+          }
+          if (!frontHitBox.isColliding && !facingRight) {
+            velocity.x = -_moveSpeed;
+          } else {
+            velocity.x = 0;
+          }
+          break;
+        case Direction.downRight:
+          reduceHitBox(true);
+          if (!bottomHitBox.isColliding && velocity.y.abs() < yVelocityMax) {
+            velocity.y += _moveSpeed * (downMultiplier / 2);
+          }
+          if (!frontHitBox.isColliding && facingRight) {
+            velocity.x = _moveSpeed;
+          } else {
+            velocity.x = 0;
+          }
+          break;
+        case Direction.none:
+          reduceHitBox(false);
+          break;
+      }
     }
     updateAnimation();
   }
 
   // Détecteur de collision
   @override
-  void onCollision(intersectionPoints, other) {
+  void onCollision(intersectionPoints, other) async {
     super.onCollision(intersectionPoints, other);
-    if (other is WorldCollides) {
-      if (topHitBox.isColliding) {
-        //print("top hit");
-        if (canJump == true && !bottomHitBox.isColliding) {
-          canJump = false;
-        }
-      }
-      if (bottomHitBox.isColliding) {
-        //print("bottom hit");
-        if (canJump == false) {
-          canJump = true;
-        }
-      }
-      if (frontHitBox.isColliding) {
-        //print("front hit");
+    if (topHitBox.isColliding) {
+      //print("top hit");
+      if (isJumping) {
+        isJumping = false;
       }
     }
+    if (bottomHitBox.isColliding) {
+      if (isJumping) {
+        await Future.delayed(Duration(milliseconds: 100)).then((_) async {
+          if (bottomHitBox.isColliding) {
+            isJumping = false;
+          }
+        });
+      }
+      // print("bottom hit");
+      if (canJump == false && jumpcooldown == false) {
+        jumpcooldown = true;
+        await Future.delayed(Duration(milliseconds: 300)).then((_) async {
+          canJump = true;
+          jumpcooldown = false;
+        });
+      }
+    }
+    if (frontHitBox.isColliding) {
+      //print("front hit");
+    }
   }
+
+  @override
 
   // Redimensionnement des hitbox du personnage, true pour la version basse, false pour la version haute
   void reduceHitBox(bool bool) {
@@ -369,15 +387,15 @@ class Player extends SpriteAnimationComponent
     //////// Gère l'orientation du personnage
     if (!isAttacking) {
       if (facingRight &&
-        (direction == Direction.left ||
-            direction == Direction.upLeft ||
-            direction == Direction.downLeft)) {
+          (direction == Direction.left ||
+              direction == Direction.upLeft ||
+              direction == Direction.downLeft)) {
         flipHorizontallyAroundCenter();
         facingRight = false;
       } else if (!facingRight &&
-        (direction == Direction.right ||
-            direction == Direction.upRight ||
-            direction == Direction.downRight)) {
+          (direction == Direction.right ||
+              direction == Direction.upRight ||
+              direction == Direction.downRight)) {
         flipHorizontallyAroundCenter();
         facingRight = true;
       }
