@@ -21,21 +21,24 @@ class _gameOverState extends State<gameOver> {
         color: Colors.black.withOpacity(0.9),
       ),
       child: Center(
+        
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Image(
-              image: AssetImage('assets/images/gameOver.png'),
-              width: 500,
+            Container(
+              margin: const EdgeInsets.only(top: 40),
+              child: Image(
+                image: const AssetImage('assets/images/gameOver.png'),
+                width: MediaQuery.of(context).size.width * 0.35,
+              ),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                  IconButton(
                     icon: Image.asset('assets/images/button_quitter.png'),
-                    iconSize: 200,
+                    iconSize: MediaQuery.of(context).size.width * 0.17,
                     onPressed: () {
                       Navigator.popAndPushNamed(context, '/salon');
                     },
@@ -44,7 +47,7 @@ class _gameOverState extends State<gameOver> {
                     margin: const EdgeInsets.only(left: 20),
                     child: IconButton(
                       icon: Image.asset('assets/images/button_rejouer.png'),
-                      iconSize: 200,
+                      iconSize: MediaQuery.of(context).size.width * 0.17,
                       onPressed: () {
                         Navigator.popAndPushNamed(context, '/game');
                       },

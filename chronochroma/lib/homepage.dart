@@ -14,6 +14,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
           decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage('assets/images/bg_1.png'),
@@ -23,34 +25,35 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           // add a image on top of joystick which will move according to joystick movement
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                margin: EdgeInsets.only(bottom: 20),
-                child: Align(
-                    alignment: const Alignment(0.0, 0.0),
-                    child: Container(
-                      height: 249,
-                      width: 442,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image:
-                              AssetImage('assets/images/logoMEILLEUREVER.png'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    )),
+              margin: const EdgeInsets.only(top: 40),
+              child: Image(
+                image: const AssetImage('assets/images/logoMEILLEUREVER.png'),
+                width: MediaQuery.of(context).size.width * 0.35,
               ),
-              Container(
-                margin: EdgeInsets.only(bottom: 40, top: 10),
-                child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.popAndPushNamed(context, '/salon');
-                    },
-                    child: const Text("Commencer")),
+            ),
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(left: 20),
+                    child: IconButton(
+                      icon: Image.asset('assets/images/button_commencer.png'),
+                      iconSize: MediaQuery.of(context).size.width * 0.2,
+                      onPressed: () {
+                        Navigator.popAndPushNamed(context, '/salon');
+                      },
+                    ),
+                  ),
+                ],
               ),
+            )
             ],
           )),
+
     );
   }
 }
