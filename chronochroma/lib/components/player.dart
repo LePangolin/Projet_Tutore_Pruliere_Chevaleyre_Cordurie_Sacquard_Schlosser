@@ -415,7 +415,6 @@ class Player extends SpriteAnimationComponent
           canSlide = false;
           canCrouch = false;
           animation = _attackAnimation;
-          print(canCrouch);
           if (canAttack) {
             setUpAttackHitbox();
             add(attackHitBox);
