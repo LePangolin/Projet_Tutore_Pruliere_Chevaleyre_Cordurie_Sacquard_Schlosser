@@ -6,6 +6,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
 import 'components/player.dart';
+import 'overlays/controll.dart';
 
 class Chronochroma extends FlameGame with HasCollisionDetection {
   final Player player = Player();
@@ -26,6 +27,8 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
     // On ajoute le joueur au jeu
     add(player);
+
+    overlays.add(Controll.ID);
   }
 
   // Influence la direction du joueur

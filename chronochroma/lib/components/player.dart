@@ -8,8 +8,9 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
+import '../overlays/controll.dart';
 import 'worldCollides.dart';
-import "../gameOver.dart";
+import '../overlays/gameOver.dart';
 import 'attackHitbox.dart';
 
 class Player extends SpriteAnimationComponent
@@ -436,6 +437,7 @@ class Player extends SpriteAnimationComponent
       health = 0;
       gameRef.pauseEngine();
       gameRef.overlays.add(gameOver.ID);
+      gameRef.overlays.remove(Controll.ID);
     } else {
       gameRef.camera.shake(intensity: 1, duration: 0.4);
       ColorEffect effect = ColorEffect(
