@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SalonPage extends StatefulWidget {
   const SalonPage({super.key, required this.title});
@@ -34,34 +35,44 @@ class _SalonPageState extends State<SalonPage> {
                 'https://source.unsplash.com/50x50/?portrait',
               ),
             )),
-        Positioned(
-          bottom: -63,
-          left: -10,
-          child: IconButton(
-              icon: Image.asset('assets/images/button_scores.png'),
-              iconSize: 200,
-              onPressed: () => {
-                // TODO: faire apparaitre une page web avec les scores
-              }),
+        Container(
+          child: Align(
+            alignment: const Alignment(0.0, 1.8),
+            child: Row(
+              
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.01,
+                ),
+                IconButton(
+                    icon: Image.asset('assets/images/button_scores.png'),
+                    iconSize: MediaQuery.of(context).size.width * 0.168,
+                    onPressed: () => {_launchURL()}),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.325,
+                    ),
+                IconButton(
+                    icon: Image.asset('assets/images/button_ameliorations.png'),
+                    iconSize: MediaQuery.of(context).size.width * 0.275,
+                    onPressed: () =>
+                        {Navigator.popAndPushNamed(context, '/upgrade')}),
+                IconButton(
+                    icon: Image.asset('assets/images/button_jouer.png'),
+                    iconSize: MediaQuery.of(context).size.width * 0.151,
+                    onPressed: () =>
+                        {Navigator.popAndPushNamed(context, '/game')}),
+              ],
+            ),
+          ),
         ),
-        Positioned(
-          bottom: -85,
-          right: 180,
-          child: IconButton(
-              icon: Image.asset('assets/images/button_ameliorations.png'),
-              iconSize: 250,
-              onPressed: () =>
-                  {Navigator.popAndPushNamed(context, '/upgrade')}),
-        ),
-        Positioned(
-          bottom: -60,
-          right: -17,
-          child: IconButton(
-              icon: Image.asset('assets/images/button_jouer.png'),
-              iconSize: 200,
-              onPressed: () => {Navigator.popAndPushNamed(context, '/game')}),
-        )
       ]),
     ));
+  }
+
+  Future<void> _launchURL() async {
+    Uri url = Uri.parse("https://chronochroma.alwaysdata.net/wordpress/");
+    if (!await launchUrl(url)) {
+      throw 'Could not launch $url';
+    }
   }
 }

@@ -16,6 +16,7 @@ dependencies:
   cupertino_icons: ^1.0.5
   flame_tiled: ^1.9.0
   flame_forge2d: ^0.12.4
+  url_launcher: ^6.0.9
 
 dev_dependencies:
   flutter_test:
@@ -44,4 +45,5 @@ flutter:
     - assets/images/button_jouer.png
     - assets/images/button_ameliorations.png
     - assets/images/button_scores.png
+    - assets/images/button_commencer.png
 
