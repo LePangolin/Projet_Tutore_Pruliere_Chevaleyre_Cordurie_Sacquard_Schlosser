@@ -14,9 +14,9 @@ class _SalonPageState extends State<SalonPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        decoration: const BoxDecoration(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/images/bg_1.png'),
           fit: BoxFit.cover,
@@ -25,7 +25,7 @@ class _SalonPageState extends State<SalonPage> {
       ),
       // add a image on top of joystick which will move according to joystick movement
       child: Stack(children: [
-        Positioned(
+        const Positioned(
             top: 20,
             left: 20,
             child: CircleAvatar(
@@ -35,32 +35,32 @@ class _SalonPageState extends State<SalonPage> {
               ),
             )),
         Positioned(
-          bottom: 20,
-          left: 20,
-          child: ElevatedButton(
-              onPressed: () {
-                Navigator.popAndPushNamed(context, '');
-              },
-              child: const Text("Tableau des scores")),
+          bottom: -63,
+          left: -10,
+          child: IconButton(
+              icon: Image.asset('assets/images/button_scores.png'),
+              iconSize: 200,
+              onPressed: () => {
+                // TODO: faire apparaitre une page web avec les scores
+              }),
         ),
         Positioned(
-          bottom: 20,
-          right: 100,
-          child: ElevatedButton(
-              onPressed: () {
-                Navigator.popAndPushNamed(context, '/upgrade');
-              },
-              child: const Text("Améliorations")),
+          bottom: -85,
+          right: 180,
+          child: IconButton(
+              icon: Image.asset('assets/images/button_ameliorations.png'),
+              iconSize: 250,
+              onPressed: () =>
+                  {Navigator.popAndPushNamed(context, '/upgrade')}),
         ),
         Positioned(
-          bottom: 20,
-          right: 20,
-          child: ElevatedButton(
-              onPressed: () {
-                Navigator.popAndPushNamed(context, '/game');
-              },
-              child: const Text("Jouer")),
-        ),
+          bottom: -60,
+          right: -17,
+          child: IconButton(
+              icon: Image.asset('assets/images/button_jouer.png'),
+              iconSize: 200,
+              onPressed: () => {Navigator.popAndPushNamed(context, '/game')}),
+        )
       ]),
     ));
   }

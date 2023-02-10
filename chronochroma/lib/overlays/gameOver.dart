@@ -33,31 +33,21 @@ class _gameOverState extends State<gameOver> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ElevatedButton(
+                 IconButton(
+                    icon: Image.asset('assets/images/button_quitter.png'),
+                    iconSize: 200,
                     onPressed: () {
                       Navigator.popAndPushNamed(context, '/salon');
                     },
-                    child: const Text(
-                      "Retour au salon",
-                      style: TextStyle(
-                        fontSize: 30,
-                        color: Colors.white,
-                      ),
-                    ),
                   ),
                   Container(
                     margin: const EdgeInsets.only(left: 20),
-                    child: ElevatedButton(
+                    child: IconButton(
+                      icon: Image.asset('assets/images/button_rejouer.png'),
+                      iconSize: 200,
                       onPressed: () {
                         Navigator.popAndPushNamed(context, '/game');
                       },
-                      child: const Text(
-                        "Rejouer",
-                        style: TextStyle(
-                          fontSize: 30,
-                          color: Colors.white,
-                        ),
-                      ),
                     ),
                   ),
                 ],

@@ -39,4 +39,9 @@ flutter:
     - assets/images/arrow.png
     - assets/images/gameOver.png
     - assets/images/logoMEILLEUREVER.png
+    - assets/images/button_quitter.png
+    - assets/images/button_rejouer.png
+    - assets/images/button_jouer.png
+    - assets/images/button_ameliorations.png
+    - assets/images/button_scores.png
 
