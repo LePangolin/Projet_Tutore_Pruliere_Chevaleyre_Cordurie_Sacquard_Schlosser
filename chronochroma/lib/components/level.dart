@@ -15,6 +15,9 @@ class Level extends Component with HasGameRef<Chronochroma> {
   late Vector2 spawnPoint = Vector2.zero();
   late TiledComponent level;
 
+  int randomI = 1;
+  int randomJ = 2;
+
   Level(this.name) : super();
 
   @override
@@ -43,7 +46,7 @@ class Level extends Component with HasGameRef<Chronochroma> {
     final barrelLayer = level.tileMap.getLayer<ObjectGroup>('barrels');
     if (barrelLayer != null) {
       for (final object in barrelLayer!.objects) {
-        if (Random().nextBool()) {
+        if (gameRef.pseudoRandomNG.getBoolean(1, 3)) {
           add(Barrel(object));
         }
       }
@@ -77,7 +80,7 @@ class Level extends Component with HasGameRef<Chronochroma> {
 
 // Récupère la layer des monstres
     final bebou = level.tileMap.getLayer<ObjectGroup>('bebou');
-    if (teleporters != null) {
+    if (bebou != null) {
       for (final object in bebou!.objects) {
         add(Monster(object));
       }
