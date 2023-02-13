@@ -17,18 +17,19 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     isConnected();
     return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/bg_1.png'),
-            fit: BoxFit.cover,
-            scale: 2.0,
-          ),
+        body: Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/bg_1.png'),
+          fit: BoxFit.cover,
+          scale: 2.0,
         ),
-        // add a image on top of joystick which will move according to joystick movement
-        child: Column(
+      ),
+      // add a image on top of joystick which will move according to joystick movement
+      child: Stack(children: [
+        Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
@@ -52,38 +53,33 @@ class _MyHomePageState extends State<MyHomePage> {
                       },
                     ),
                   ),
-                  connexion
-                      ? Align(
-                          child: Container(
-                            margin: const EdgeInsets.only(right: 20, top: 60),
-                            padding: const EdgeInsets.only(bottom: 60),
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.transparent),
-                                  shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(9.0),
-                                          side: const BorderSide(
-                                              color: Colors.white)))),
-                              child: const Text('Connexion',
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                  )),
-                              onPressed: () {},
-                            ),
-                          ))
-                      : Container(),
                 ],
               ),
             ),
           ],
         ),
-      ),
-    );
+        connexion
+            ? Positioned(
+                bottom: 0,
+                right: 5,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.transparent),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(9.0),
+                              side: const BorderSide(color: Colors.white)))),
+                  child: const Text('Connexion',
+                      style: TextStyle(
+                        fontSize: 20,
+                      )),
+                  onPressed: () {},
+                ),
+              )
+            : Container(),
+      ]),
+    ));
   }
 
   Future<void> isConnected() async {
