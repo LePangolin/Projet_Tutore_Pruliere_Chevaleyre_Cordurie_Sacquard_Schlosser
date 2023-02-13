@@ -4,7 +4,6 @@ import 'package:flame/flame.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-
 import 'components/player.dart';
 import 'overlays/controll.dart';
 
