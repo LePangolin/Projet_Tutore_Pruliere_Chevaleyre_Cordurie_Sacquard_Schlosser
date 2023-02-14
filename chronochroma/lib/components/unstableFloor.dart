@@ -33,11 +33,14 @@ class UnstableFloor extends SpriteComponent
     if (other is Player) {
       if (isPresent) {
         isPresent = false;
+        int levelIt = gameRef.currentLevelIter;
         Future.delayed(const Duration(seconds: 2), () {
           removeFromParent();
           Future.delayed(const Duration(seconds: 2), () {
-            gameRef.add(UnstableFloor(unstableFloor));
-            isPresent = true;
+            if (levelIt == gameRef.currentLevelIter) {
+              gameRef.currentLevel?.add(UnstableFloor(unstableFloor));
+              isPresent = true;
+            }
           });
         });
       }

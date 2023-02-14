@@ -18,5 +18,5 @@ class AttackHitbox extends SpriteAnimationComponent
     anchor = Anchor.center;
     add(hitbox);
   }
-
 }
+

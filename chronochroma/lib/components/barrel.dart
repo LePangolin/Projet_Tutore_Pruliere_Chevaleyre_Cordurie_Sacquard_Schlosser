@@ -34,7 +34,7 @@ class Barrel extends SpriteComponent
         _isPresent = false;
 
         // wait 1 second before removing the barrel
-        Future.delayed(const Duration(milliseconds: 360), () {
+        Future.delayed(const Duration(milliseconds: 200), () {
           removeFromParent();
           // camera shake
           gameRef.camera.shake(duration: 0.1, intensity: 5);

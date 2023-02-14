@@ -70,6 +70,7 @@ class NextLevelDoor extends SpriteAnimationComponent
           // Fait zoomer la caméra progressivement
           while (gameRef.camera.zoom < 2.5) {
             gameRef.camera.zoom += 0.05;
+
             await Future.delayed(const Duration(milliseconds: 25));
           }
 

@@ -12,10 +12,12 @@ import 'components/player.dart';
 class Chronochroma extends FlameGame with HasCollisionDetection {
   final Player player = Player();
   late AttackHitbox attackHitbox;
-  Level? _currentLevel;
+  Level? currentLevel;
   int currentLevelIter = 0;
   final List<String> _allLevelsList = ['map-1.tmx', 'map-2.tmx'];
   SpriteComponent? overlayComponent;
+
+  // constructor
 
   @override
   Future<void> onLoad() async {
@@ -29,9 +31,8 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
     // On ajoute le joueur au jeu
     add(player);
-    // print(player.position);
-    // On ajoute le hitbox d'attaque au jeu
-    // add(attackHitbox);
+
+    updateGame(0);
   }
 
   // Influence la direction du joueur
@@ -41,20 +42,20 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
   void loadLevel() {
     // Si on a déjà une map, on la supprime
-    _currentLevel?.removeFromParent();
+    currentLevel?.removeFromParent();
     // On charge la map à venir
-    _currentLevel =
+    currentLevel =
         Level(_allLevelsList[currentLevelIter % _allLevelsList.length]);
     // On ajoute la map au jeu
-    add(_currentLevel!);
+    add(currentLevel!);
     // On attend que la map soit chargée
-    _currentLevel!.load().then((_) async {
+    currentLevel!.load().then((_) async {
       // On place le joueur au spawn
-      player.teleport(_currentLevel!.spawnPoint);
+      player.teleport(currentLevel!.spawnPoint);
       // On suit le joueur en respectant les limites de la map
       camera.followComponent(player,
           worldBounds: Rect.fromLTRB(
-              0, 0, _currentLevel!.level.size.x, _currentLevel!.level.size.y));
+              0, 0, currentLevel!.level.size.x, currentLevel!.level.size.y));
 
       // On fixe une résolution qui s'adapte à l'écran
       camera.viewport = FixedResolutionViewport(Vector2(1600, 900));
@@ -80,6 +81,26 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   }
 
   void sendPlayerToSpawn() {
-    player.teleport(_currentLevel!.spawnPoint);
+    player.teleport(currentLevel!.spawnPoint);
+  }
+
+// dt pour delta time, c'est le temps de raffraichissement
+  void updateGame(double dt) async {
+    super.updateTree(dt);
+    super.update(dt);
+
+    await Future.delayed(Duration(milliseconds: 16)).then((_) async {
+      updateGame(0.016);
+    });
+  }
+
+  @override
+  void update(double dt) {
+    camera.update(dt);
+  }
+
+  @override
+  void updateTree(double dt) {
+    // super.updateTree(dt);
   }
 }

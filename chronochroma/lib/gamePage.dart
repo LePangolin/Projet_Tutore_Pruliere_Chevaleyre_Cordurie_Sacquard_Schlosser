@@ -5,7 +5,6 @@ import '../chronochroma.dart';
 import './helpers/controller.dart';
 
 class GamePage extends StatefulWidget {
-  
   @override
   _GamePageState createState() => _GamePageState();
 }
@@ -23,33 +22,45 @@ class _GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-          children: [
-            GameWidget(game: game),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Controller(
-                onDirectionChanged: game.onArrowKeyChanged,
-              ),
+      body: Stack(
+        children: [
+          GameWidget(game: game),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Controller(
+              onDirectionChanged: game.onArrowKeyChanged,
             ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: IconButton(
-                icon: Image.asset('assets/images/icon/swordIcon.png'),
-                iconSize: 128,
-                onPressed: () => {
-                  if (game.player.canAttack) {
-                    game.player.isAttacking = true,
-                    print('attaque')
-
-                  } else {
-                    print('attaque impossible')
-                  }
-                }      
-              ),
-            ),
-          ],
-        ),
-      );
+          ),
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: Row(children: [
+              IconButton(
+                  icon: Image.asset('assets/images/icon/swordIcon.png'),
+                  iconSize: 100,
+                  onPressed: () => {
+                        if (game.player.canAttack)
+                          {game.player.isAttacking = true, print('attaque')}
+                        else
+                          {print('attaque impossible')}
+                      }),
+              IconButton(
+                  icon: Image.asset('assets/images/icon/jumpIcon.png'),
+                  iconSize: 100,
+                  onPressed: () => {
+                        if (game.player.canJump)
+                          {
+                            game.player.isJumping = true,
+                            game.player.canJump = false,
+                            print("Jump, jump, jump, everybody jump !")
+                          }
+                        else
+                          {print('saut impossible')}
+                      }),
+            ]),
+          ),
+        ],
+      ),
+    );
   }
 }
