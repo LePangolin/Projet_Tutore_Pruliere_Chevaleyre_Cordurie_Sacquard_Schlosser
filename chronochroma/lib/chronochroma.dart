@@ -1,4 +1,6 @@
+import 'package:chronochroma/components/attackHitbox.dart';
 import 'package:chronochroma/components/level.dart';
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:chronochroma/helpers/directions.dart';
@@ -9,6 +11,7 @@ import 'components/player.dart';
 
 class Chronochroma extends FlameGame with HasCollisionDetection {
   final Player player = Player();
+  late AttackHitbox attackHitbox;
   Level? _currentLevel;
   int currentLevelIter = 0;
   final List<String> _allLevelsList = ['map-1.tmx', 'map-2.tmx'];
@@ -26,6 +29,9 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
     // On ajoute le joueur au jeu
     add(player);
+    // print(player.position);
+    // On ajoute le hitbox d'attaque au jeu
+    // add(attackHitbox);
   }
 
   // Influence la direction du joueur
@@ -66,6 +72,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
       // On replace le joueur de la map et en dessous de la transition
       player.priority = 1;
+      // attackHitbox.priority = 1;
 
       // On augmente le numéro du niveau pour le prochain chargement
       currentLevelIter++;
