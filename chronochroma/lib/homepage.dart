@@ -15,6 +15,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Compte? compte;
 
+  late String pass;
+
+  late String pseudo;
+
+  late bool result;
+
   bool notConnected = true;
 
   @override
@@ -86,6 +92,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   right: 15,
                   child: ElevatedButton(
                     style: ButtonStyle(
+                        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                            const EdgeInsets.all(13)),
                         backgroundColor: MaterialStateProperty.all<Color>(
                             Colors.transparent),
                         shape: MaterialStateProperty
@@ -96,12 +104,85 @@ class _MyHomePageState extends State<MyHomePage> {
                         style: TextStyle(
                           fontSize: 20,
                         )),
-                    onPressed: () {
-                      
+                    onPressed: () async {
+                      await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Connexion'),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  TextField(
+                                    decoration: const InputDecoration(
+                                        labelText: 'Pseudo'),
+                                    onChanged: (String value) {
+                                      pseudo = value;
+                                    },
+                                  ),
+                                  TextField(
+                                    obscureText: true,
+                                    decoration: const InputDecoration(
+                                        labelText: 'Mot de passe'),
+                                    onChanged: (String value) {
+                                      pass = value;
+                                    },
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 20),
+                                    child: ElevatedButton(
+                                        onPressed: () async {
+                                          result = await Compte.connexion(
+                                              pseudo, pass);
+                                          if (result) {
+                                            Navigator.pop(context);
+                                            _loadCompte();
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        'Erreur de connexion')));
+                                          }
+                                        },
+                                        child: const Text("Se connecter")),
+                                  ),
+                                ],
+                              ),
+                            );
+                          });
                     },
                   ),
                 )
-              : Container(),
+              : Positioned(
+                  bottom: 10,
+                  right: 15,
+                  child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Colors.transparent),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(9.0),
+                                      side: const BorderSide(
+                                          color: Colors.white)))),
+                      child: const Text('Deconnexion',
+                          style: TextStyle(
+                            fontSize: 20,
+                          )),
+                      onPressed: () async {
+                        result = await Compte.deconnexion();
+                        if (result) {
+                          setState(() {
+                            notConnected = true;
+                          });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Erreur de deconnexion')));
+                        }
+                      }),
+                ),
         ]),
       ),
     );
