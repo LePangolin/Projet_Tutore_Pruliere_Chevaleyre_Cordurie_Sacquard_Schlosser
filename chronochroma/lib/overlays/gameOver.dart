@@ -4,16 +4,16 @@ import 'package:flutter/src/widgets/framework.dart';
 import '../chronochroma.dart';
 import 'package:flutter/material.dart';
 
-class gameOver extends StatefulWidget {
+class GameOver extends StatefulWidget {
   static const String ID = "gameOver";
   final Chronochroma gameRef;
-  const gameOver({Key? key, required this.gameRef});
+  const GameOver({Key? key, required this.gameRef});
 
   @override
-  State<gameOver> createState() => _gameOverState();
+  State<GameOver> createState() => _GameOverState();
 }
 
-class _gameOverState extends State<gameOver> {
+class _GameOverState extends State<GameOver> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,7 +21,6 @@ class _gameOverState extends State<gameOver> {
         color: Colors.black.withOpacity(0.9),
       ),
       child: Center(
-        
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -36,7 +35,7 @@ class _gameOverState extends State<gameOver> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                 IconButton(
+                  IconButton(
                     icon: Image.asset('assets/images/button_quitter.png'),
                     iconSize: MediaQuery.of(context).size.width * 0.17,
                     onPressed: () {

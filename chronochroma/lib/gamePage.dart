@@ -25,15 +25,15 @@ class _GamePageState extends State<GamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        children: [        
+        children: [
           GameWidget(
             game: game,
             overlayBuilderMap: {
-              gameOver.ID: (BuildContext context, Chronochroma game) =>
-                  gameOver(gameRef: game),
+              GameOver.ID: (BuildContext context, Chronochroma game) =>
+                  GameOver(gameRef: game),
               Controll.ID: (BuildContext context, Chronochroma game) =>
                   Controll(gameRef: game)
-            },          
+            },
           ),
         ],
       ),
