@@ -40,10 +40,12 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   Future<void> onLoad() async {
     await super.onLoad();
 
+// keep 3 levels in memory
     _effectiveLevelList = List<String>.from(_allLevelsList)
       ..shuffle(Random(seed))
-      ..take(10);
-    _effectiveLevelList.insert(0, 'nexus.tmx');
+      ..insert(0, 'nexus.tmx');
+    _effectiveLevelList = _effectiveLevelList.take(3).toList();
+
     pseudoRandomNG = PseudoRandomNG(seed);
     print(seed);
     print(_effectiveLevelList);
@@ -71,41 +73,45 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   void loadLevel() {
     // Si on a déjà une map, on la supprime
     currentLevel?.removeFromParent();
-    // On charge la map à venir
-    currentLevel = Level(
-        _effectiveLevelList[currentLevelIter % _effectiveLevelList.length]);
-    // On ajoute la map au jeu
-    add(currentLevel!);
-    // On attend que la map soit chargée
-    currentLevel!.load().then((_) async {
-      // On place le joueur au spawn
-      player.teleport(currentLevel!.spawnPoint);
-      // On suit le joueur en respectant les limites de la map
-      camera.followComponent(player,
-          worldBounds: Rect.fromLTRB(
-              0, 0, currentLevel!.level.size.x, currentLevel!.level.size.y));
+    if (currentLevelIter < _effectiveLevelList.length) {
+      // On charge la map à venir
+      currentLevel = Level(
+          _effectiveLevelList[currentLevelIter % _effectiveLevelList.length]);
+      // On ajoute la map au jeu
+      add(currentLevel!);
+      // On attend que la map soit chargée
+      currentLevel!.load().then((_) async {
+        // On place le joueur au spawn
+        player.teleport(currentLevel!.spawnPoint);
+        // On suit le joueur en respectant les limites de la map
+        camera.followComponent(player,
+            worldBounds: Rect.fromLTRB(
+                0, 0, currentLevel!.level.size.x, currentLevel!.level.size.y));
 
-      // On fixe une résolution qui s'adapte à l'écran
-      camera.viewport = FixedResolutionViewport(Vector2(1600, 900));
+        // On fixe une résolution qui s'adapte à l'écran
+        camera.viewport = FixedResolutionViewport(Vector2(1600, 900));
 
-      // On fixe le zoom initial de la caméra
-      camera.zoom = 2;
+        // On fixe le zoom initial de la caméra
+        camera.zoom = 2;
 
-      // On ajoute le composant de transition entre les niveaux
-      overlayComponent?.removeFromParent();
-      overlayComponent = SpriteComponent(
-          sprite: await loadSprite('fadeBackground.jpg'),
-          paint: Paint()..color = const Color.fromARGB(0, 0, 0, 0),
-          priority: 1000);
-      add(overlayComponent!);
+        // On ajoute le composant de transition entre les niveaux
+        overlayComponent?.removeFromParent();
+        overlayComponent = SpriteComponent(
+            sprite: await loadSprite('fadeBackground.jpg'),
+            paint: Paint()..color = const Color.fromARGB(0, 0, 0, 0),
+            priority: 1000);
+        add(overlayComponent!);
 
-      // On replace le joueur au dessus de la map et en dessous de la transition
-      player.priority = 1;
-      // attackHitbox.priority = 1;
+        // On replace le joueur au dessus de la map et en dessous de la transition
+        player.priority = 1;
+        // attackHitbox.priority = 1;
 
-      // On augmente le numéro du niveau pour le prochain chargement
-      currentLevelIter++;
-    });
+        // On augmente le numéro du niveau pour le prochain chargement
+        currentLevelIter++;
+      });
+    } else {
+      gameOver();
+    }
   }
 
   Level? getCurrentLevel() {
