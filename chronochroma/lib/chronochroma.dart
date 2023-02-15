@@ -12,6 +12,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'components/player.dart';
 import 'overlays/controll.dart';
+import './overlays/gameOver.dart';
 
 class Chronochroma extends FlameGame with HasCollisionDetection {
   final Player player = Player();
@@ -29,6 +30,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   final int seed = Random().nextInt(900000) + 100000;
   late final PseudoRandomNG pseudoRandomNG;
   late List<String> _effectiveLevelList;
+  int coins = 0;
 
   SpriteComponent? overlayComponent;
 
@@ -55,7 +57,6 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
     // On ajoute le joueur au jeu
     add(player);
-
 
     updateGame(0);
 
@@ -98,7 +99,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
           priority: 1000);
       add(overlayComponent!);
 
-      // On replace le joueur de la map et en dessous de la transition
+      // On replace le joueur au dessus de la map et en dessous de la transition
       player.priority = 1;
       // attackHitbox.priority = 1;
 
@@ -133,5 +134,22 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   @override
   void updateTree(double dt) {
     // super.updateTree(dt);
+  }
+
+  void addCoin(int value) {
+    coins += value;
+    print(coins);
+  }
+
+  void gameOver() {
+    pauseEngine();
+    overlays.add(GameOver.ID);
+    overlays.remove(Controll.ID);
+    print("Total coins: " + endGameReward().toString());
+  }
+
+  int endGameReward() {
+    int levelReward = (currentLevelIter - 1) > -1 ? (currentLevelIter - 1) : 0;
+    return coins + levelReward * 2;
   }
 }

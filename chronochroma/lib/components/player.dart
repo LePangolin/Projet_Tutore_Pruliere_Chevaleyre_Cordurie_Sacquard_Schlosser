@@ -24,6 +24,7 @@ class Player extends SpriteAnimationComponent
   // Attributs de direction et d'animation
   double gravity = 1.03;
   Vector2 velocity = Vector2(0, 0);
+  double fallingVelocity = 0;
   Direction direction = Direction.none;
 
   // Animations
@@ -50,7 +51,6 @@ class Player extends SpriteAnimationComponent
   final double downMultiplier = 0.5;
   final double xVelocityMax = 10;
   final double yVelocityMax = 8;
-  double fallingVelocity = 0;
 
   // Attributs de collision
   bool facingRight = true;
@@ -68,33 +68,38 @@ class Player extends SpriteAnimationComponent
   late RectangleHitbox frontHitBox;
   late RectangleHitbox bottomHitBox;
 
-
   // Hitboxes de référence pour le joueur debout
   final RectangleHitbox topHitBoxStandModel = (RectangleHitbox(
-    size: Vector2(28, 30),
-    position: Vector2(256 / 2 - 12, 16),
+    size: Vector2(18, 24),
+    position: Vector2(256 / 2 - 8, 16),
+    isSolid: true,
   ));
   final RectangleHitbox frontHitBoxStandModel = (RectangleHitbox(
-    size: Vector2(16, 82),
+    size: Vector2(16, 78),
     position: Vector2(256 / 2 + 16, 24),
+    isSolid: true,
   ));
   final RectangleHitbox bottomHitBoxStandModel = (RectangleHitbox(
-    size: Vector2(28, 30),
-    position: Vector2(256 / 2 - 12, 86),
+    size: Vector2(18, 30),
+    position: Vector2(256 / 2 - 8, 86),
+    isSolid: true,
   ));
 
   // Hitboxes de référence pour le joueur accroupi
   final RectangleHitbox topHitBoxSlideModel = (RectangleHitbox(
-    size: Vector2(28, 30),
-    position: Vector2(256 / 2 - 12, 36),
+    size: Vector2(18, 24),
+    position: Vector2(256 / 2 - 8, 36),
+    isSolid: true,
   ));
   final RectangleHitbox frontHitBoxSlideModel = (RectangleHitbox(
-    size: Vector2(16, 40),
+    size: Vector2(16, 36),
     position: Vector2(256 / 2 + 16, 56),
+    isSolid: true,
   ));
   final RectangleHitbox bottomHitBoxSlideModel = (RectangleHitbox(
-    size: Vector2(28, 30),
-    position: Vector2(256 / 2 - 12, 86),
+    size: Vector2(18, 30),
+    position: Vector2(256 / 2 - 8, 86),
+    isSolid: true,
   ));
 
   // Constructeur
@@ -125,7 +130,6 @@ class Player extends SpriteAnimationComponent
     bottomHitBox.debugColor = Colors.red;
     frontHitBox.debugMode = true;
     frontHitBox.debugColor = Colors.orange;
-    
 
     add(topHitBox);
     add(bottomHitBox);
@@ -392,6 +396,7 @@ class Player extends SpriteAnimationComponent
       while (!frontHitBox.isColliding && i <= velocity.x.abs()) {
         if (facingRight) {
           position.x += 1;
+          Transform.translate(offset: const Offset(1, 0));
         } else {
           position.x -= 1;
         }
@@ -451,9 +456,11 @@ class Player extends SpriteAnimationComponent
           animation = _attackAnimation;
           if (canAttack) {
             if (facingRight) {
-              gameRef.attackHitbox = AttackHitbox(Vector2(65, 80), Vector2(position.x, position.y - 40));
+              gameRef.attackHitbox = AttackHitbox(
+                  Vector2(65, 80), Vector2(position.x, position.y - 40));
             } else {
-              gameRef.attackHitbox = AttackHitbox(Vector2(65, 80), Vector2(position.x - 70, position.y - 40));
+              gameRef.attackHitbox = AttackHitbox(
+                  Vector2(65, 80), Vector2(position.x - 70, position.y - 40));
             }
             gameRef.add(gameRef.attackHitbox);
             canAttack = false;
@@ -472,9 +479,11 @@ class Player extends SpriteAnimationComponent
           animation = _crouchAttackAnimation;
           if (canAttack) {
             if (facingRight) {
-              gameRef.attackHitbox = AttackHitbox(Vector2(65, 65), Vector2(position.x, position.y - 20));
+              gameRef.attackHitbox = AttackHitbox(
+                  Vector2(65, 65), Vector2(position.x, position.y - 20));
             } else {
-              gameRef.attackHitbox = AttackHitbox(Vector2(65, 65), Vector2(position.x - 70, position.y - 20));
+              gameRef.attackHitbox = AttackHitbox(
+                  Vector2(65, 65), Vector2(position.x - 70, position.y - 20));
             }
             gameRef.add(gameRef.attackHitbox);
             canAttack = false;
@@ -521,9 +530,7 @@ class Player extends SpriteAnimationComponent
     if (isInvincible) return;
     if ((health - degat) <= 0) {
       health = 0;
-      gameRef.pauseEngine();
-      gameRef.overlays.add(gameOver.ID);
-      gameRef.overlays.remove(Controll.ID);
+      gameRef.gameOver();
     } else {
       gameRef.camera.shake(intensity: 1, duration: 0.4);
       ColorEffect effect = ColorEffect(
