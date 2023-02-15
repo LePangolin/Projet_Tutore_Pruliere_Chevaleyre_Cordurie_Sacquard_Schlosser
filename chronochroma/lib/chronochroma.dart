@@ -71,7 +71,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     // Si on a déjà une map, on la supprime
     currentLevel?.removeFromParent();
     // On charge la map à venir
-    _currentLevel = Level(
+    currentLevel = Level(
         _effectiveLevelList[currentLevelIter % _effectiveLevelList.length]);
     // On ajoute la map au jeu
     add(currentLevel!);
@@ -108,7 +108,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   }
 
   Level? getCurrentLevel() {
-    return _currentLevel;
+    return currentLevel;
   }
 
   void sendPlayerToSpawn() {
