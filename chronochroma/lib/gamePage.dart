@@ -25,7 +25,7 @@ class _GamePageState extends State<GamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        children: [
+        children: [        
           GameWidget(
             game: game,
             overlayBuilderMap: {
@@ -34,6 +34,41 @@ class _GamePageState extends State<GamePage> {
               Controll.ID: (BuildContext context, Chronochroma game) =>
                   Controll(gameRef: game)
             },
+            Align(
+            alignment: Alignment.bottomLeft,
+            child: Controller(
+              onDirectionChanged: game.onArrowKeyChanged,
+            ),
+          ),
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: Row(children: [
+              IconButton(
+                  icon: Image.asset('assets/images/icon/swordIcon.png'),
+                  iconSize: 100,
+                  onPressed: () => {
+                        if (game.player.canAttack)
+                          {game.player.isAttacking = true, print('attaque')}
+                        else
+                          {print('attaque impossible')}
+                      }),
+              IconButton(
+                  icon: Image.asset('assets/images/icon/jumpIcon.png'),
+                  iconSize: 100,
+                  onPressed: () => {
+                        if (game.player.canJump)
+                          {
+                            game.player.isJumping = true,
+                            game.player.canJump = false,
+                            print("Jump, jump, jump, everybody jump !")
+                          }
+                        else
+                          {print('saut impossible')}
+                      }),
+            ]),
+            
+            
           ),
         ],
       ),

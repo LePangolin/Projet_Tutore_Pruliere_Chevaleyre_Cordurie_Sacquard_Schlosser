@@ -2,6 +2,9 @@ import 'dart:math';
 
 import 'package:chronochroma/components/level.dart';
 import 'package:chronochroma/pseudoRandomNG.dart';
+import 'package:chronochroma/components/attackHitbox.dart';
+import 'package:chronochroma/components/level.dart';
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:chronochroma/helpers/directions.dart';
@@ -12,7 +15,8 @@ import 'overlays/controll.dart';
 
 class Chronochroma extends FlameGame with HasCollisionDetection {
   final Player player = Player();
-  Level? _currentLevel;
+  late AttackHitbox attackHitbox;
+  Level? currentLevel;
   int currentLevelIter = 0;
   final List<String> _allLevelsList = [
     'map-1.tmx',
@@ -27,6 +31,8 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   late List<String> _effectiveLevelList;
 
   SpriteComponent? overlayComponent;
+
+  // constructor
 
   @override
   Future<void> onLoad() async {
@@ -50,6 +56,9 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     // On ajoute le joueur au jeu
     add(player);
 
+
+    updateGame(0);
+
     overlays.add(Controll.ID);
   }
 
@@ -60,20 +69,20 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
   void loadLevel() {
     // Si on a déjà une map, on la supprime
-    _currentLevel?.removeFromParent();
+    currentLevel?.removeFromParent();
     // On charge la map à venir
     _currentLevel = Level(
         _effectiveLevelList[currentLevelIter % _effectiveLevelList.length]);
     // On ajoute la map au jeu
-    add(_currentLevel!);
+    add(currentLevel!);
     // On attend que la map soit chargée
-    _currentLevel!.load().then((_) async {
+    currentLevel!.load().then((_) async {
       // On place le joueur au spawn
-      player.teleport(_currentLevel!.spawnPoint);
+      player.teleport(currentLevel!.spawnPoint);
       // On suit le joueur en respectant les limites de la map
       camera.followComponent(player,
           worldBounds: Rect.fromLTRB(
-              0, 0, _currentLevel!.level.size.x, _currentLevel!.level.size.y));
+              0, 0, currentLevel!.level.size.x, currentLevel!.level.size.y));
 
       // On fixe une résolution qui s'adapte à l'écran
       camera.viewport = FixedResolutionViewport(Vector2(1600, 900));
@@ -90,7 +99,8 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
       add(overlayComponent!);
 
       // On replace le joueur de la map et en dessous de la transition
-      player.priority = 999;
+      player.priority = 1;
+      // attackHitbox.priority = 1;
 
       // On augmente le numéro du niveau pour le prochain chargement
       currentLevelIter++;
@@ -102,6 +112,26 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   }
 
   void sendPlayerToSpawn() {
-    player.teleport(_currentLevel!.spawnPoint);
+    player.teleport(currentLevel!.spawnPoint);
+  }
+
+// dt pour delta time, c'est le temps de raffraichissement
+  void updateGame(double dt) async {
+    super.updateTree(dt);
+    super.update(dt);
+
+    await Future.delayed(Duration(milliseconds: 16)).then((_) async {
+      updateGame(0.016);
+    });
+  }
+
+  @override
+  void update(double dt) {
+    camera.update(dt);
+  }
+
+  @override
+  void updateTree(double dt) {
+    // super.updateTree(dt);
   }
 }

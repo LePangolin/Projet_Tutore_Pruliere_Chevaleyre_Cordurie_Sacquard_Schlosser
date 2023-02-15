@@ -3,7 +3,6 @@ import 'package:chronochroma/components/attackHitbox.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
-import 'attackHitbox.dart';
 import 'player.dart';
 
 class Barrel extends SpriteComponent
@@ -30,12 +29,12 @@ class Barrel extends SpriteComponent
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
-    if (other is Player && gameRef.player.isAttacking) {
+    if (other is AttackHitbox && gameRef.player.isAttacking) {
       if (_isPresent) {
         _isPresent = false;
 
         // wait 1 second before removing the barrel
-        Future.delayed(const Duration(milliseconds: 360), () {
+        Future.delayed(const Duration(milliseconds: 200), () {
           removeFromParent();
           // camera shake
           gameRef.camera.shake(duration: 0.1, intensity: 5);
