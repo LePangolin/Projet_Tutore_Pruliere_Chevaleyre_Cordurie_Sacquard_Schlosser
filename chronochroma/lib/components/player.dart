@@ -1,14 +1,25 @@
+import 'dart:developer';
+
 import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/components/attackHitbox.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
+import '../overlays/controll.dart';
+import 'worldCollides.dart';
+import '../overlays/gameOver.dart';
+import 'attackHitbox.dart';
 
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
-  int health = 100;
+  // Attributs de vie
+  int health = 10;
+
+  // Frame Invincible
+  bool isInvincible = false;
 
   // Attributs de direction et d'animation
   double gravity = 1.03;
@@ -505,4 +516,30 @@ class Player extends SpriteAnimationComponent
   void teleport(Vector2 position) {
     this.position = position;
   }
+
+  Future<void> subirDegat(int degat) async {
+    if (isInvincible) return;
+    if ((health - degat) <= 0) {
+      health = 0;
+      gameRef.pauseEngine();
+      gameRef.overlays.add(gameOver.ID);
+      gameRef.overlays.remove(Controll.ID);
+    } else {
+      gameRef.camera.shake(intensity: 1, duration: 0.4);
+      ColorEffect effect = ColorEffect(
+          Color.fromARGB(255, 212, 8, 8),
+          const Offset(0.0, 0.5),
+          EffectController(
+            duration: 0.4,
+            reverseDuration: 0.4,
+          ));
+      add(effect);
+      health -= degat;
+      isInvincible = true;
+      await Future.delayed(Duration(milliseconds: 1000))
+          .then((_) => isInvincible = false);
+    }
+  }
+
+  double get x => position.x;
 }

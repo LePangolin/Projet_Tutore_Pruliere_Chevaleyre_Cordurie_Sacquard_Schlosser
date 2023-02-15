@@ -4,7 +4,7 @@ services:
     volumes:
       - ./app/:/app/
     ports:
-      - "3010:3010"
+      - "8100:8100"
     depends_on:
       - db
     working_dir: /app/
@@ -12,14 +12,4 @@ services:
       - bash
       - -c
       - "npm install && npm start"
-  db:
-    image: mysql:5.7.40
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: chronochroma
-      MYSQL_USER: chronochroma
-      MYSQL_PASSWORD: chronochroma
-    volumes:
-      - ./db/:/var/lib/mysql
-    ports:
-      - "3306:3306"
+

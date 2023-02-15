@@ -1,8 +1,10 @@
+import 'package:chronochroma/overlays/controll.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
 import '../chronochroma.dart';
 import './helpers/controller.dart';
+import 'overlays/gameOver.dart';
 
 class GamePage extends StatefulWidget {
   @override
@@ -23,9 +25,16 @@ class _GamePageState extends State<GamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
-        children: [
-          GameWidget(game: game),
-          Align(
+        children: [        
+          GameWidget(
+            game: game,
+            overlayBuilderMap: {
+              gameOver.ID: (BuildContext context, Chronochroma game) =>
+                  gameOver(gameRef: game),
+              Controll.ID: (BuildContext context, Chronochroma game) =>
+                  Controll(gameRef: game)
+            },
+            Align(
             alignment: Alignment.bottomLeft,
             child: Controller(
               onDirectionChanged: game.onArrowKeyChanged,
@@ -58,6 +67,8 @@ class _GamePageState extends State<GamePage> {
                           {print('saut impossible')}
                       }),
             ]),
+            
+            
           ),
         ],
       ),
