@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:connectivity_plus/connectivity_plus.dart';
 class Compte {
   static Compte? _instance;
 
@@ -55,6 +55,9 @@ class Compte {
   }
 
   static Future<bool> connexion(String pseudo, String pass) async {
+    if(!await checkConnexion()){
+      return false;
+    }
     var response = await http.post(
         Uri.parse("http://serverchronochroma.alwaysdata.net/user/login"),
         body: {"pseudo": pseudo, "mdp": pass});
@@ -78,6 +81,9 @@ class Compte {
   }
 
   static Future<bool> deconnexion() async {
+    if(! await checkConnexion()){
+      return false;
+    }
     try {
       _instance = null;
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -89,6 +95,9 @@ class Compte {
   }
 
   static Future<bool> updateAvatar(String? avatar) async {
+    if(! await checkConnexion()){
+      return false;
+    }
     if (avatar != null) {
       _instance!._avatarUrl = avatar;
       var response = await http.post(
@@ -104,6 +113,15 @@ class Compte {
       }
     } else {
       return false;
+    }
+  }
+
+  static Future<bool> checkConnexion() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      return false;
+    } else {
+      return true;
     }
   }
 

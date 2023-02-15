@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:chronochroma/components/compte.dart';
@@ -30,6 +31,10 @@ class _SalonPageState extends State<SalonPage> {
 
   late bool isImage;
 
+  bool _ableToReachInternet = false;
+
+  String lastState = "notConnected";
+
   List<String> imageFormat = [
     ".png",
     ".jpg",
@@ -40,12 +45,23 @@ class _SalonPageState extends State<SalonPage> {
     ".ico"
   ];
 
+  bool snackshow = false;
+  
+  SnackBar snack = const SnackBar(
+    content: Text("Vous n'êtes pas connecté à internet, aucune modification ne sera sauvegardée."),
+    duration: Duration(seconds: 15)
+  );
+  
+
   @override
   void initState() {
     super.initState();
     _loadCompte();
+    _checkInternetConnectivity();
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      _checkInternetConnectivity();
+    });
   }
-
   Future<void> _loadCompte() async {
     compte = await Compte.getInstance();
     if (compte != null) {
@@ -59,6 +75,22 @@ class _SalonPageState extends State<SalonPage> {
       });
     }
   }
+
+  Future<void> _checkInternetConnectivity() async {
+    _ableToReachInternet = await Compte.checkConnexion();
+    if (_ableToReachInternet!) {
+      if(snackshow){
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        snackshow = false;
+      }
+    } else {
+      if(!snackshow){
+        ScaffoldMessenger.of(context).showSnackBar(snack);
+        snackshow = true;
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -107,12 +139,19 @@ class _SalonPageState extends State<SalonPage> {
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                               primary: Colors.red),
-                                          onPressed: () {
-                                            Compte.deconnexion();
-                                            setState(() {
-                                              isConnected = false;
-                                              Navigator.of(context).pop();
-                                            });
+                                          onPressed: () async {
+                                            result = await Compte.deconnexion();
+                                            if (result) {
+                                              setState(() {
+                                                isConnected = false;
+                                              });
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(const SnackBar(
+                                                      content: Text(
+                                                          "Erreur de déconnexion")));
+                                            }
+                                            Navigator.of(context).pop();
                                           },
                                           child: const Text("Déconnexion",
                                               style: TextStyle(
@@ -165,9 +204,10 @@ class _SalonPageState extends State<SalonPage> {
                           });
                     },
                     child: CircleAvatar(
-                      radius: 30,
-                      backgroundImage: NetworkImage(url!),
-                    ),
+                        radius: 30,
+                        backgroundImage: !_ableToReachInternet
+                            ? Image.asset('assets/images/avatar.png').image
+                            : NetworkImage(url!)),
                   ),
                   Container(
                     margin: const EdgeInsets.only(left: 10),
@@ -257,7 +297,7 @@ class _SalonPageState extends State<SalonPage> {
                 height: 150,
                 child: IconButton(
                     icon: Image.asset('assets/images/button_scores.png'),
-                    onPressed: () => {_launchURL()}),
+                    onPressed: () => {}),
               )),
           Positioned(
             bottom: -20,
@@ -286,10 +326,10 @@ class _SalonPageState extends State<SalonPage> {
     );
   }
 
-  Future<void> _launchURL() async {
-    Uri url = Uri.parse("https://chronochroma.alwaysdata.net/wordpress/");
-    if (!await launchUrl(url)) {
-      throw 'Could not launch $url';
-    }
-  }
+  // Future<void> _launchURL() async {
+  //   Uri url = Uri.parse("https://chronochroma.alwaysdata.net/wordpress/");
+  //   if (!await launchUrl(url)) {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
 }

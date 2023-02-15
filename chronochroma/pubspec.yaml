@@ -19,6 +19,7 @@ dependencies:
   url_launcher: ^6.0.9
   shared_preferences: ^2.0.17
   http: ^0.13.5
+  connectivity_plus: ^3.0.3
 
 dev_dependencies:
   flutter_test:
@@ -48,4 +49,4 @@ flutter:
     - assets/images/button_ameliorations.png
     - assets/images/button_scores.png
     - assets/images/button_commencer.png
-
+    - assets/images/avatar.png

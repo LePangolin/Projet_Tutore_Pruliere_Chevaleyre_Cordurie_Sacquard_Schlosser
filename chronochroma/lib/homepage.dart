@@ -1,6 +1,5 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'components/compte.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -23,10 +22,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
   bool notConnected = true;
 
+  bool? _ableToReachInternet;
+
+  SnackBar snack = const SnackBar(
+      content: Text("Vous n'êtes pas connecté à internet, aucune modification ne sera sauvegardée."),
+      duration: Duration(seconds: 15));
+
+  bool snackshow = false;
+
   @override
   void initState() {
     super.initState();
     _loadCompte();
+    _checkInternetConnectivity();
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      _checkInternetConnectivity();
+    });
   }
 
   Future<void> _loadCompte() async {
@@ -39,6 +50,23 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         notConnected = false;
       });
+    }
+  }
+
+  Future<void> _checkInternetConnectivity() async {
+    _ableToReachInternet = await Compte.checkConnexion();
+    if (mounted) {
+      if (_ableToReachInternet!) {
+        if (snackshow) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          snackshow = false;
+        }
+      } else {
+        if (!snackshow) {
+          ScaffoldMessenger.of(context).showSnackBar(snack);
+          snackshow = true;
+        }
+      }
     }
   }
 
