@@ -56,6 +56,29 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
+router.post("/avatar", async (req, res, next) => {
+  if (!req.body) {
+    next(400);
+  }
+  if (!req.body.token || !req.body.avatar) {
+    next(400);
+  } else {
+    let result = await User.updateAvatar(req.body.token, req.body.avatar);
+    if (result.error) {
+      next(500);
+    } else {
+      res.setHeader("Content-Type", "application/json");
+      res.statusCode = result.status;
+      res.send(
+        JSON.stringify({
+          message: result.statusText,
+          code: result.status,
+        })
+      );
+    }
+  }
+});
+
 router.all("*", (req, res, next) => {
   next(404);
 });
