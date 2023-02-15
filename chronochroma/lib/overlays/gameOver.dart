@@ -27,10 +27,39 @@ class _GameOverState extends State<GameOver> {
             Container(
               margin: const EdgeInsets.only(top: 40),
               child: Image(
-                image: const AssetImage('assets/images/gameOver.png'),
+                image: widget.gameRef.win
+                    ? const AssetImage('assets/images/logoMEILLEUREVER.png')
+                    : const AssetImage('assets/images/gameOver.png'),
                 width: MediaQuery.of(context).size.width * 0.35,
               ),
             ),
+            Container(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // 2 texts
+                Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  child: Text(
+                    'Score: ${widget.gameRef.endGameReward()}',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 20, left: 20),
+                  child: Text(
+                    'Temps: ${widget.gameRef.chronometerMinutesSecondes()}',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ],
+            )),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
