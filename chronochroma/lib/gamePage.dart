@@ -22,7 +22,6 @@ class _GamePageState extends State<GamePage> {
   @override
   void initState() {
     super.initState();
-    game = Chronochroma();
     Timer.periodic(Duration(milliseconds: 500), (timer) {
       try {
         setState(() {
@@ -33,18 +32,23 @@ class _GamePageState extends State<GamePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    // récuperer les arguments de la route
-    final args =
-        ModalRoute.of(context)!.settings.arguments;
-    // si on a une seed custom
-
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)!.settings.arguments;
     if (args != null) {
       args as int;
       game = Chronochroma(seed: args);
     } else {
       game = Chronochroma();
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // récuperer les arguments de la route
+
+    // si on a une seed custom
+
     return Scaffold(
       body: Stack(
         children: [
