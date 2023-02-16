@@ -60,8 +60,10 @@ class _UpgradePageState extends State<UpgradePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Align(
-                      alignment: const Alignment(0.0, 0.0),
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
                         Column(
                           children: [
                             Container(
@@ -76,49 +78,63 @@ class _UpgradePageState extends State<UpgradePage> {
                             ),
                           ],
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Santé : $sante",
-                              style: TextStyle(
-                                color: Color.fromARGB(221, 255, 255, 255),
-                                fontFamily: 'Calibri',
-                                letterSpacing: 0.5,
-                                fontSize: 15,
-                              ),
+                        Container(
+                          margin: const EdgeInsets.only(left: 30),
+                          padding: const EdgeInsets.only(top:30, bottom: 30, left: 20, right: 20),
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/images/upgrades/background.png'),
+                              fit: BoxFit.fill,
                             ),
-                            SizedBox(height: 5),
-                            Text(
-                              "Force : $force",
-                              style: TextStyle(
-                                color: Color.fromARGB(221, 255, 255, 255),
-                                fontFamily: 'Calibri',
-                                letterSpacing: 0.5,
-                                fontSize: 15,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Santé : $sante",
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 32, 140, 15),
+                                  fontFamily: 'Calibri',
+                                  letterSpacing: 0.5,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              "Vitesse : $vitesse",
-                              style: TextStyle(
-                                color: Color.fromARGB(221, 255, 255, 255),
-                                fontFamily: 'Calibri',
-                                letterSpacing: 0.5,
-                                fontSize: 15,
+                              SizedBox(height: 5),
+                              Text(
+                                "Force : $force",
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 255, 42, 42),
+                                  fontFamily: 'Calibri',
+                                  letterSpacing: 0.5,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              "Vision : $vision",
-                              style: TextStyle(
-                                color: Color.fromARGB(221, 255, 255, 255),
-                                fontFamily: 'Calibri',
-                                letterSpacing: 0.5,
-                                fontSize: 15,
+                              SizedBox(height: 5),
+                              Text(
+                                "Vision : $vision",
+                                style: TextStyle(
+                                  color: Color.fromARGB(253, 129, 3, 255),
+                                  fontFamily: 'Calibri',
+                                  letterSpacing: 0.5,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ],
+                              SizedBox(height: 5),
+                              Text(
+                                "Vitesse : $vitesse",
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 10, 104, 255),
+                                  fontFamily: 'Calibri',
+                                  letterSpacing: 0.5,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                              ),
+                          )],
+                          ),
                         )
                       ])),
                   Container(
@@ -126,63 +142,35 @@ class _UpgradePageState extends State<UpgradePage> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: const Text(
-                              "Santé +",
-                              style: TextStyle(
-                                color: Color.fromARGB(221, 255, 255, 255),
-                                fontFamily: 'Calibri',
-                                letterSpacing: 0.5,
-                                fontSize: 15,
-                              ),
-                            ),
+                          IconButton(
+                            icon: Image.asset('assets/images/upgrades/health.png'),
+                            iconSize: 50,
+                            onPressed: () => {}
                           ),
                           SizedBox(
                             width: 10,
                           ),
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: const Text(
-                              "Force +",
-                              style: TextStyle(
-                                color: Color.fromARGB(221, 255, 255, 255),
-                                fontFamily: 'Calibri',
-                                letterSpacing: 0.5,
-                                fontSize: 15,
-                              ),
-                            ),
+                          IconButton(
+                            icon: Image.asset('assets/images/upgrades/atk.png'),
+                            iconSize: 50,
+                            onPressed: () => {}
                           ),
                           SizedBox(
                             width: 10,
                           ),
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: const Text(
-                              "Vitesse +",
-                              style: TextStyle(
-                                color: Color.fromARGB(221, 255, 255, 255),
-                                fontFamily: 'Calibri',
-                                letterSpacing: 0.5,
-                                fontSize: 15,
-                              ),
-                            ),
+                          IconButton(
+                            icon: Image.asset('assets/images/upgrades/vision.png'),
+                            iconSize: 50,
+                            onPressed: () => {}
                           ),
                           SizedBox(
                             width: 10,
                           ),
-                          ElevatedButton(
-                            onPressed: () {},
-                            child: const Text(
-                              "Vision +",
-                              style: TextStyle(
-                                color: Color.fromARGB(221, 255, 255, 255),
-                                fontFamily: 'Calibri',
-                                letterSpacing: 0.5,
-                                fontSize: 15,
-                              ),
-                            ),
-                          )
+                          IconButton(
+                            icon: Image.asset('assets/images/upgrades/speed.png'),
+                            iconSize: 50,
+                            onPressed: () => {}
+                          ),
                         ],
                       ))
                 ],
