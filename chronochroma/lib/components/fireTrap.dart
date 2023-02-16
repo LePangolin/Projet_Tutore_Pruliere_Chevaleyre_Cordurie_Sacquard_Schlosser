@@ -59,7 +59,7 @@ class FireTrap extends SpriteAnimationComponent
       };
       _animation.onComplete = () async {
         hitbox.removeFromParent();
-        await Future.delayed(const Duration(milliseconds: 5000)).then((_) {
+        await Future.delayed(const Duration(milliseconds: 100)).then((_) {
           _isPresent = true;
         });
       };
@@ -70,7 +70,7 @@ class FireTrap extends SpriteAnimationComponent
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
     if (other is Player) {
-      gameRef.player.subirDegat(1);
+      gameRef.player.subirDegat(10000000000000);
     }
   }
 }
