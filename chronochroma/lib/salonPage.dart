@@ -3,7 +3,10 @@ import 'dart:developer';
 
 import 'package:chronochroma/components/compte.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
+
+import 'components/signIn.dart';
+import 'components/signup.dart';
 
 class SalonPage extends StatefulWidget {
   const SalonPage({super.key, required this.title});
@@ -31,7 +34,11 @@ class _SalonPageState extends State<SalonPage> {
 
   late bool isImage;
 
+
+  bool insciptionTab = false;
+
   String? seed;
+
 
   bool _ableToReachInternet = false;
 
@@ -96,6 +103,7 @@ class _SalonPageState extends State<SalonPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -242,51 +250,7 @@ class _SalonPageState extends State<SalonPage> {
                       fontSize: 20,
                     )),
                 onPressed: () async {
-                  await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Connexion'),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextField(
-                                decoration:
-                                    const InputDecoration(labelText: 'Pseudo'),
-                                onChanged: (String value) {
-                                  pseudo = value;
-                                },
-                              ),
-                              TextField(
-                                obscureText: true,
-                                decoration: const InputDecoration(
-                                    labelText: 'Mot de passe'),
-                                onChanged: (String value) {
-                                  pass = value;
-                                },
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(top: 20),
-                                child: ElevatedButton(
-                                    onPressed: () async {
-                                      result =
-                                          await Compte.connexion(pseudo, pass);
-                                      if (result) {
-                                        Navigator.pop(context);
-                                        _loadCompte();
-                                      } else {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(const SnackBar(
-                                                content: Text(
-                                                    'Erreur de connexion')));
-                                      }
-                                    },
-                                    child: const Text("Se connecter")),
-                              ),
-                            ],
-                          ),
-                        );
-                      });
+                  modalConnexion();
                 },
               ),
             ),
@@ -371,6 +335,53 @@ class _SalonPageState extends State<SalonPage> {
         ]),
       ),
     );
+  }
+
+  void modalConnexion() async {
+    String title = insciptionTab ? 'Inscription' : 'Connexion';
+    String inkwellText = insciptionTab
+        ? 'Déjà un compte ? Connectez-vous'
+        : 'Pas encore de compte ? Inscrivez-vous';
+    await showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return SingleChildScrollView(
+              child: AlertDialog(
+                  title: Text(title),
+                  content: Container(
+                    child: Column(
+                      children: [
+                        !insciptionTab
+                            ? SignIn(update: (bool result) {
+                                setState(() {
+                                  _loadCompte();
+                                });
+                              })
+                            : signup(update: (bool result) {
+                                setState(() {
+                                  _loadCompte();
+                                });
+                              }),
+                        Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          child: InkWell(
+                            child: Text(inkwellText),
+                            onTap: () async {
+                              setState(() {
+                                print(insciptionTab);
+                                insciptionTab = !insciptionTab;
+                              });
+                              Navigator.pop(context);
+                              modalConnexion();
+                              SystemChrome.setEnabledSystemUIOverlays([]);
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  )));
+        });
   }
 
   // Future<void> _launchURL() async {
