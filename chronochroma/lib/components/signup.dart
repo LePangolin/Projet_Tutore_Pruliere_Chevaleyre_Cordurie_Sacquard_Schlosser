@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import './compte.dart';
 
 class signup extends StatefulWidget {
@@ -48,6 +49,7 @@ class _signupState extends State<signup> {
                 result = await Compte.inscription(pseudo, pass, avatar: avatar);
                 widget.update(result);
                 if (result) {
+                  SystemChrome.setEnabledSystemUIOverlays([]);
                   Navigator.pop(context);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

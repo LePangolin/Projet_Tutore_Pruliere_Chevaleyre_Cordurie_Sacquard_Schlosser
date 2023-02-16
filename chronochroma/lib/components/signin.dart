@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import "compte.dart";
@@ -41,6 +42,7 @@ class _SignInState extends State<SignIn> {
                 widget.update(result);
                 if (result) {
                   Navigator.pop(context);
+                  SystemChrome.setEnabledSystemUIOverlays([]);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Erreur de connexion')));

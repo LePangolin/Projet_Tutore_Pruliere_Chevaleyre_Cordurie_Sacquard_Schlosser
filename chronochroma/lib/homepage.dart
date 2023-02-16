@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:chronochroma/components/signIn.dart';
 import 'package:chronochroma/components/signup.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'components/compte.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -24,6 +26,8 @@ class _MyHomePageState extends State<MyHomePage> {
   bool notConnected = true;
 
   bool? _ableToReachInternet;
+
+  bool insciptionTab = false;
 
   SnackBar snack = const SnackBar(
       content: Text(
@@ -75,7 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         decoration: const BoxDecoration(
@@ -135,17 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           fontSize: 20,
                         )),
                     onPressed: () async {
-                      await showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                                title: const Text('Connexion'),
-                                content: signup(update: (bool result) {
-                                  setState(() {
-                                    _loadCompte();
-                                  });
-                                }));
-                          });
+                      modalConnexion();
                     },
                   ),
                 )
@@ -182,5 +178,52 @@ class _MyHomePageState extends State<MyHomePage> {
         ]),
       ),
     );
+  }
+
+  void modalConnexion() async {
+    String title = insciptionTab ? 'Inscription' : 'Connexion';
+    String inkwellText = insciptionTab
+        ? 'Déjà un compte ? Connectez-vous'
+        : 'Pas encore de compte ? Inscrivez-vous';
+    await showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return SingleChildScrollView(
+              child: AlertDialog(
+                  title: Text(title),
+                  content: Container(
+                    child: Column(
+                      children: [
+                        !insciptionTab
+                            ? SignIn(update: (bool result) {
+                                setState(() {
+                                  _loadCompte();
+                                });
+                              })
+                            : signup(update: (bool result) {
+                                setState(() {
+                                  _loadCompte();
+                                });
+                              }),
+                        Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          child: InkWell(
+                            child: Text(inkwellText),
+                            onTap: () async {
+                              setState(() {
+                                print(insciptionTab);
+                                insciptionTab = !insciptionTab;
+                              });
+                              Navigator.pop(context);
+                              modalConnexion();
+                              SystemChrome.setEnabledSystemUIOverlays([]);
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  )));
+        });
   }
 }
