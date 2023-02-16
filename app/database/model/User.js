@@ -4,16 +4,23 @@ const { createLink } = require("./User_Personnage");
 const crypto = require("crypto");
 
 async function createUser(avatar, pseudo, mdp) {
+  let tabChar = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
   let user = await getUser(pseudo, mdp);
   if (user.data.length > 0) {
     return { status: 409, statusText: "Pseudo déjà utilisé" };
   } else {
     if (!avatar) {
-      avatar = "/img/avatar.png";
+      avatar = "http://serverchronochroma.alwaysdata.net/img/avatar.png";
+    }
+    let longToken = 10;
+    let token = "";
+    for (let i = 0; i < longToken; i++) {
+      token += tabChar[Math.floor(Math.random() * tabChar.length)];
     }
     let newuser = await supabase.from("utilisateur").insert({
       avatar_url: avatar,
       pseudo: pseudo,
+      token: token,
       motdepasse: crypto
         .createHmac("sha256", "cucurbitacae")
         .update(mdp)
@@ -49,7 +56,7 @@ async function createUser(avatar, pseudo, mdp) {
 async function getUser(pseudo, mdp, fn) {
   let user = await supabase
     .from("utilisateur")
-    .select("id, avatar_url, pseudo, score")
+    .select("id, avatar_url, pseudo, score, token")
     .eq("pseudo", pseudo)
     .eq(
       "motdepasse",
@@ -77,13 +84,23 @@ async function getUser(pseudo, mdp, fn) {
         return { status: 500, statusText: "Erreur serveur" };
       } else {
         user.data[0].personnage = charData.data[0];
+        user.data[0].status = 200;
         return user.data[0];
       }
     }
   }
 }
 
+async function updateAvatar(token, avatar) {
+  let user = await supabase.from("utilisateur").update({ avatar_url: avatar }).eq("token", token);
+  if (user.error) {
+    return { status: 500, statusText: "Erreur serveur" };
+  }
+  return { status: 200, statusText: "Avatar mis à jour" };
+}
+
 module.exports = {
   createUser,
   getUser,
+  updateAvatar,
 };

@@ -59,7 +59,7 @@ class FireTrap extends SpriteAnimationComponent
       };
       _animation.onComplete = () async {
         hitbox.removeFromParent();
-        await Future.delayed(const Duration(milliseconds: 5000)).then((_) {
+        await Future.delayed(const Duration(milliseconds: 100)).then((_) {
           _isPresent = true;
         });
       };
