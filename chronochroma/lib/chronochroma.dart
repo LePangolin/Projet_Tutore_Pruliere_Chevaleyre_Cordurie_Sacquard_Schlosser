@@ -35,6 +35,9 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   late final PseudoRandomNG pseudoRandomNG;
   late List<String> _effectiveLevelList;
   int coins = 0;
+  // StopWatch
+  late final Stopwatch _stopwatch = Stopwatch();
+  bool win = false;
 
   SpriteComponent? overlayComponent;
 
@@ -117,11 +120,16 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
         player.priority = 1;
         // attackHitbox.priority = 1;
 
+        if (currentLevelIter == 1) {
+          _stopwatch.start();
+        }
+
         // On augmente le numéro du niveau pour le prochain chargement
         currentLevelIter++;
       });
     } else {
       gameOver();
+      win = true;
     }
   }
 
@@ -158,19 +166,28 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
   void addCoin(int value) {
     coins += value;
-    print(coins);
   }
 
   void gameOver() {
+    _stopwatch.stop();
     pauseEngine();
     overlays.add(GameOver.ID);
     overlays.remove(Controll.ID);
-    print("Total coins: " + endGameReward().toString());
+    player.saturation = 0;
   }
 
   int endGameReward() {
-    int levelReward = (currentLevelIter - 1) > -1 ? (currentLevelIter - 1) : 0;
+    int levelReward = (currentLevelIter - 2) >= 0 ? (currentLevelIter - 2) : 0;
     return coins + levelReward * 2;
   }
 
+  int chronometerValue() {
+    return _stopwatch.elapsed.inSeconds;
+  }
+
+  String chronometerMinutesSecondes() {
+    int minutes = _stopwatch.elapsed.inMinutes;
+    int secondes = _stopwatch.elapsed.inSeconds - minutes * 60;
+    return "$minutes minutes et ${secondes} secondes";
+  }
 }

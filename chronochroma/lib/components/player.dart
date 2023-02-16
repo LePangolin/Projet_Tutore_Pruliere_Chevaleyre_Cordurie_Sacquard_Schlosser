@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/components/attackHitbox.dart';
+import 'package:chronochroma/components/coin.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
@@ -16,7 +17,10 @@ import 'attackHitbox.dart';
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
   // Attributs de vie
-  int health = 10;
+  int health = 400;
+  final int maxHealth = 400;
+  // Tableau des stades de vie
+  late final List<int> healthStages;
 
   // Frame Invincible
   bool isInvincible = false;
@@ -26,6 +30,7 @@ class Player extends SpriteAnimationComponent
   Vector2 velocity = Vector2(0, 0);
   double fallingVelocity = 0;
   Direction direction = Direction.none;
+  double saturation = 0;
 
   // Animations
   late final SpriteAnimation _idleAnimation;
@@ -37,9 +42,9 @@ class Player extends SpriteAnimationComponent
   late final SpriteAnimation _crouchAttackAnimation;
 
   // Vitesse d'animation : plus c'est haut, plus c'est lent
-  final double _idleAnimationSpeed = 0.25;
-  final double _crouchAnimationSpeed = 0.25;
-  final double _jumpAnimationSpeed = 0.25;
+  final double _idleAnimationSpeed = 0.15;
+  final double _crouchAnimationSpeed = 0.15;
+  final double _jumpAnimationSpeed = 0.15;
   final double _runAnimationSpeed = 0.08;
   final double _slideAnimationSpeed = 0.12;
   final double _attackAnimationSpeed = 0.10;
@@ -62,6 +67,7 @@ class Player extends SpriteAnimationComponent
   bool canAttack = true;
   bool isAttacking = false;
   bool jumpCooldown = false;
+  bool needSaturationUpdate = true;
 
   // Hitboxes effectives
   late RectangleHitbox topHitBox;
@@ -72,7 +78,6 @@ class Player extends SpriteAnimationComponent
   final RectangleHitbox topHitBoxStandModel = (RectangleHitbox(
     size: Vector2(18, 24),
     position: Vector2(256 / 2 - 8, 16),
-    isSolid: true,
   ));
   final RectangleHitbox frontHitBoxStandModel = (RectangleHitbox(
     size: Vector2(16, 78),
@@ -89,7 +94,6 @@ class Player extends SpriteAnimationComponent
   final RectangleHitbox topHitBoxSlideModel = (RectangleHitbox(
     size: Vector2(18, 24),
     position: Vector2(256 / 2 - 8, 36),
-    isSolid: true,
   ));
   final RectangleHitbox frontHitBoxSlideModel = (RectangleHitbox(
     size: Vector2(16, 36),
@@ -105,7 +109,7 @@ class Player extends SpriteAnimationComponent
   // Constructeur
   Player() : super(size: Vector2(256, 128), anchor: Anchor.center);
 
-  // Ajout de l'animation par défaut et des hitboxes
+  // Ajout de l'animation par défaut et des hitboxes et définition des stades de vie
   @override
   Future<void> onLoad() async {
     super.onLoad();
@@ -134,6 +138,12 @@ class Player extends SpriteAnimationComponent
     add(topHitBox);
     add(bottomHitBox);
     add(frontHitBox);
+
+    healthStages = [
+      (health * 0.75).floor(),
+      (health * 0.5).floor(),
+      (health * 0.25).floor()
+    ];
   }
 
 // Paramètrages des animations pour le personnage
@@ -212,9 +222,26 @@ class Player extends SpriteAnimationComponent
       canJump = false;
       isJumping = false;
     }
-    // print("can jump $canJump");
-    // print("velocity y : ${velocity.y}");
-    // print("chute : $fallingVelocity");
+
+    if (gameRef.currentLevelIter > 1 && health > 0) {
+      health--;
+
+      if (health == 0) {
+        gameRef.gameOver();
+      }
+
+      if (needSaturationUpdate) {
+        needSaturationUpdate = false;
+
+// health 100% gives = 0 and health 0% gives -1
+        saturation = (health / maxHealth) - 1;
+
+        await Future.delayed(const Duration(milliseconds: 500)).then((_) async {
+          needSaturationUpdate = true;
+        });
+      }
+      print("health $health");
+    }
 
     if (needFrameDisplay) {
       needFrameDisplay = false;
@@ -345,23 +372,23 @@ class Player extends SpriteAnimationComponent
   @override
   void onCollision(intersectionPoints, other) async {
     super.onCollision(intersectionPoints, other);
-    if (topHitBox.isColliding) {
-      //print("top hit");
-      if (isJumping) {
-        isJumping = false;
+    if (other is! Coin) {
+      if (topHitBox.isColliding) {
+        print("topHitBox.isColliding");
+        if (isJumping) {
+          isJumping = false;
+        }
       }
-    }
-    if (bottomHitBox.isColliding) {
-      if (canJump == false && jumpCooldown == false) {
-        jumpCooldown = true;
-        await Future.delayed(Duration(milliseconds: 100)).then((_) async {
-          canJump = true;
-          jumpCooldown = false;
-        });
+      if (bottomHitBox.isColliding) {
+        if (canJump == false && jumpCooldown == false) {
+          jumpCooldown = true;
+          await Future.delayed(Duration(milliseconds: 100)).then((_) async {
+            canJump = true;
+            jumpCooldown = false;
+          });
+        }
       }
-    }
-    if (frontHitBox.isColliding) {
-      //print("front hit");
+      if (frontHitBox.isColliding) {}
     }
   }
 
@@ -466,7 +493,6 @@ class Player extends SpriteAnimationComponent
             canAttack = false;
           }
           _attackAnimation.onComplete = () {
-            print("attack done");
             gameRef.remove(gameRef.attackHitbox);
             isAttacking = false;
             canAttack = true;
@@ -489,7 +515,6 @@ class Player extends SpriteAnimationComponent
             canAttack = false;
           }
           _crouchAttackAnimation.onComplete = () {
-            print("attack done");
             gameRef.remove(gameRef.attackHitbox);
             isAttacking = false;
             canAttack = true;

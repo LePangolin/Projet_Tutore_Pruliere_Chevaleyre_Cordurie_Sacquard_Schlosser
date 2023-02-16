@@ -16,6 +16,8 @@ dependencies:
   cupertino_icons: ^1.0.5
   flame_tiled: ^1.9.0
   flame_forge2d: ^0.12.4
+  url_launcher: ^6.0.9
+  themed: ^4.0.0
   shared_preferences: ^2.0.17
   http: ^0.13.5
   connectivity_plus: ^3.0.3
@@ -29,7 +31,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
-    - assets/images/background.png
     - assets/images/joystick_background.png
     - assets/images/joystick_knob.png
     - assets/images/grass/

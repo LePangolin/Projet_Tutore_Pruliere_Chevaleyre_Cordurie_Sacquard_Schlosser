@@ -28,7 +28,6 @@ class Coin extends SpriteAnimationComponent
         anchor: Anchor.topLeft,
         position: Vector2(-4, -4));
     hitbox.debugMode = true;
-    hitbox.isSolid = true;
     add(hitbox);
     anchor = Anchor.center;
   }
@@ -49,10 +48,9 @@ class Coin extends SpriteAnimationComponent
     super.onCollision(intersectionPoints, other);
     if (other is Player) {
       if (_isPresent) {
+        removeFromParent();
         _isPresent = false;
         gameRef.addCoin(1);
-
-        removeFromParent();
       }
     }
   }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="25" height="15" tilewidth="32" tileheight="32" infinite="0" nextlayerid="11" nextobjectid="19">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="25" height="15" tilewidth="32" tileheight="32" infinite="0" nextlayerid="12" nextobjectid="25">
  <tileset firstgid="1" name="dirt" tilewidth="32" tileheight="32" tilecount="1" columns="1">
   <image source="../images/grass/dirt.png" width="32" height="32"/>
  </tileset>
@@ -27,7 +27,7 @@
   <object id="5" x="768" y="360" width="16" height="56"/>
  </objectgroup>
  <objectgroup id="5" name="playerspawnpoint">
-  <object id="6" x="416" y="352">
+  <object id="6" x="480" y="376">
    <point/>
   </object>
  </objectgroup>
@@ -39,6 +39,20 @@
    <point/>
   </object>
   <object id="10" x="48" y="432">
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="11" name="coins">
+  <object id="19" x="360" y="328">
+   <point/>
+  </object>
+  <object id="20" x="416" y="328">
+   <point/>
+  </object>
+  <object id="21" x="560" y="320">
+   <point/>
+  </object>
+  <object id="24" x="712" y="352">
    <point/>
   </object>
  </objectgroup>
