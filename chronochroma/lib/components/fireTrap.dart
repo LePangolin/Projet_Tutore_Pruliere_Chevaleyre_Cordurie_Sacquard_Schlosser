@@ -70,7 +70,7 @@ class FireTrap extends SpriteAnimationComponent
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
     if (other is Player) {
-      gameRef.player.subirDegat(5);
+      gameRef.player.subirDegat(100);
     }
   }
 }

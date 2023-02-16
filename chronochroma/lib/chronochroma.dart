@@ -174,6 +174,6 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   String chronometerMinutesSecondes() {
     int minutes = _stopwatch.elapsed.inMinutes;
     int secondes = _stopwatch.elapsed.inSeconds - minutes * 60;
-    return "$minutes minutes et ${secondes}secondes";
+    return "$minutes minutes et ${secondes} secondes";
   }
 }

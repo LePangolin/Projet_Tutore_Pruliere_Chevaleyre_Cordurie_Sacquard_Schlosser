@@ -27,7 +27,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
-    - assets/images/background.png
     - assets/images/joystick_background.png
     - assets/images/joystick_knob.png
     - assets/images/grass/
@@ -46,4 +45,3 @@ flutter:
     - assets/images/button_ameliorations.png
     - assets/images/button_scores.png
     - assets/images/button_commencer.png
-

@@ -16,7 +16,9 @@ import 'attackHitbox.dart';
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
   // Attributs de vie
-  int health = 10;
+  int health = 400;
+  // Tableau des stades de vie
+  late final List<int> healthStages;
 
   // Frame Invincible
   bool isInvincible = false;
@@ -26,6 +28,7 @@ class Player extends SpriteAnimationComponent
   Vector2 velocity = Vector2(0, 0);
   double fallingVelocity = 0;
   Direction direction = Direction.none;
+  double saturation = 1;
 
   // Animations
   late final SpriteAnimation _idleAnimation;
@@ -62,6 +65,7 @@ class Player extends SpriteAnimationComponent
   bool canAttack = true;
   bool isAttacking = false;
   bool jumpCooldown = false;
+  bool needSaturationUpdate = true;
 
   // Hitboxes effectives
   late RectangleHitbox topHitBox;
@@ -105,7 +109,7 @@ class Player extends SpriteAnimationComponent
   // Constructeur
   Player() : super(size: Vector2(256, 128), anchor: Anchor.center);
 
-  // Ajout de l'animation par défaut et des hitboxes
+  // Ajout de l'animation par défaut et des hitboxes et définition des stades de vie
   @override
   Future<void> onLoad() async {
     super.onLoad();
@@ -134,6 +138,12 @@ class Player extends SpriteAnimationComponent
     add(topHitBox);
     add(bottomHitBox);
     add(frontHitBox);
+
+    healthStages = [
+      (health * 0.75).floor(),
+      (health * 0.5).floor(),
+      (health * 0.25).floor()
+    ];
   }
 
 // Paramètrages des animations pour le personnage
@@ -212,9 +222,33 @@ class Player extends SpriteAnimationComponent
       canJump = false;
       isJumping = false;
     }
-    // print("can jump $canJump");
-    // print("velocity y : ${velocity.y}");
-    // print("chute : $fallingVelocity");
+
+    if (gameRef.currentLevelIter > 1 && health > 0) {
+      health--;
+
+      if (health == 0) {
+        gameRef.gameOver();
+      }
+
+      // if (needSaturationUpdate) {
+      //   needSaturationUpdate = false;
+
+      //   if (health > healthStages[0]) {
+      //     saturation = 1.0;
+      //   } else if (health > healthStages[1]) {
+      //     saturation = 0.75;
+      //   } else if (health > healthStages[2]) {
+      //     saturation = 0.5;
+      //   } else {
+      //     saturation = 0.25;
+      //   }
+
+      //   await Future.delayed(const Duration(milliseconds: 250)).then((_) async {
+      //     needSaturationUpdate = true;
+      //   });
+      // }
+      print("health $health");
+    }
 
     if (needFrameDisplay) {
       needFrameDisplay = false;

@@ -16,7 +16,7 @@ class Monster extends SpriteAnimationComponent
   int health = 25;
   bool needUpdate = true;
   final TiledObject monster;
-  int degat = 3;
+  int degat = 50;
 
   late final SpriteAnimation _animationLeft;
   late final SpriteAnimation _animationRight;
@@ -75,7 +75,9 @@ class Monster extends SpriteAnimationComponent
 
     if (needUpdate) {
       needUpdate = false;
-      gameRef.getCurrentLevel()!.addObject(Projectile(monster.x, monster.y, isLeft));
+      gameRef
+          .getCurrentLevel()!
+          .addObject(Projectile(monster.x, monster.y, isLeft));
       await Future.delayed(Duration(seconds: 3))
           .then((_) => {needUpdate = true});
     }

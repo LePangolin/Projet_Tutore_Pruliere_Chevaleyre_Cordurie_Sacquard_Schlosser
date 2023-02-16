@@ -15,7 +15,7 @@ class Projectile extends SpriteComponent
   double y;
   late final SpriteAnimation _animation;
   Vector2 velocity = Vector2(2, 0);
-  int degat = 2;
+  int degat = 50;
   bool isLeft;
 
   Projectile(this.x, this.y, this.isLeft) : super(size: Vector2(50, 24));
@@ -24,7 +24,7 @@ class Projectile extends SpriteComponent
   Future<void> onLoad() async {
     await super.onLoad();
     sprite = await gameRef.loadSprite('arrow.png');
-    if(!isLeft){
+    if (!isLeft) {
       flipHorizontallyAroundCenter();
     }
     position = Vector2(x, y);
@@ -40,10 +40,9 @@ class Projectile extends SpriteComponent
     super.update(dt);
     if (isLeft) {
       position.x -= 1;
-    } else{
+    } else {
       position.x += 1;
     }
-    
   }
 
   @override
@@ -52,7 +51,7 @@ class Projectile extends SpriteComponent
     if (other is Player || other is WorldCollides || other is UnstableFloor) {
       removeFromParent();
     }
-    if(other is Player){
+    if (other is Player) {
       gameRef.player.subirDegat(degat);
     }
   }
