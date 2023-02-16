@@ -46,10 +46,7 @@ class _ControllState extends State<Controll> {
                       {
                         widget.gameRef.player.isJumping = true,
                         widget.gameRef.player.canJump = false,
-                        print("Jump, jump, jump, everybody jump !")
                       }
-                    else
-                      {print('saut impossible')}
                   }),
         ]),
       ),

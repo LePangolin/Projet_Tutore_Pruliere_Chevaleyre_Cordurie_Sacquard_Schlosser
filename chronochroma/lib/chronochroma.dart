@@ -152,7 +152,6 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
   void addCoin(int value) {
     coins += value;
-    print(coins);
   }
 
   void gameOver() {
@@ -160,10 +159,11 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     pauseEngine();
     overlays.add(GameOver.ID);
     overlays.remove(Controll.ID);
+    player.saturation = 0;
   }
 
   int endGameReward() {
-    int levelReward = (currentLevelIter - 1) > -1 ? (currentLevelIter - 1) : 0;
+    int levelReward = (currentLevelIter - 2) >= 0 ? (currentLevelIter - 2) : 0;
     return coins + levelReward * 2;
   }
 
