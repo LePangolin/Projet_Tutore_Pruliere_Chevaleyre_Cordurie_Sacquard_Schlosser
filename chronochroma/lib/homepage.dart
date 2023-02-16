@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:chronochroma/components/signup.dart';
 import 'package:flutter/material.dart';
 import 'components/compte.dart';
 
@@ -25,7 +26,8 @@ class _MyHomePageState extends State<MyHomePage> {
   bool? _ableToReachInternet;
 
   SnackBar snack = const SnackBar(
-      content: Text("Vous n'êtes pas connecté à internet, aucune modification ne sera sauvegardée."),
+      content: Text(
+          "Vous n'êtes pas connecté à internet, aucune modification ne sera sauvegardée."),
       duration: Duration(seconds: 15));
 
   bool snackshow = false;
@@ -137,46 +139,16 @@ class _MyHomePageState extends State<MyHomePage> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: const Text('Connexion'),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  TextField(
-                                    decoration: const InputDecoration(
-                                        labelText: 'Pseudo'),
-                                    onChanged: (String value) {
-                                      pseudo = value;
-                                    },
-                                  ),
-                                  TextField(
-                                    obscureText: true,
-                                    decoration: const InputDecoration(
-                                        labelText: 'Mot de passe'),
-                                    onChanged: (String value) {
-                                      pass = value;
-                                    },
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 20),
-                                    child: ElevatedButton(
-                                        onPressed: () async {
-                                          result = await Compte.connexion(
-                                              pseudo, pass);
-                                          if (result) {
-                                            Navigator.pop(context);
-                                            _loadCompte();
-                                          } else {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(const SnackBar(
-                                                    content: Text(
-                                                        'Erreur de connexion')));
-                                          }
-                                        },
-                                        child: const Text("Se connecter")),
-                                  ),
-                                ],
-                              ),
-                            );
+                                title: const Text('Connexion'),
+                                content: signup(update: (bool result) {
+                                  setState(() {
+                                    if (result) {
+                                      notConnected = false;
+                                    } else {
+                                      notConnected = true;
+                                    }
+                                  });
+                                }));
                           });
                     },
                   ),

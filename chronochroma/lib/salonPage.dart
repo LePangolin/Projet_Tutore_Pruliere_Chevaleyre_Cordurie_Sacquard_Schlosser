@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:chronochroma/components/compte.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SalonPage extends StatefulWidget {
   const SalonPage({super.key, required this.title});
@@ -46,12 +45,11 @@ class _SalonPageState extends State<SalonPage> {
   ];
 
   bool snackshow = false;
-  
+
   SnackBar snack = const SnackBar(
-    content: Text("Vous n'êtes pas connecté à internet, aucune modification ne sera sauvegardée."),
-    duration: Duration(seconds: 15)
-  );
-  
+      content: Text(
+          "Vous n'êtes pas connecté à internet, aucune modification ne sera sauvegardée."),
+      duration: Duration(seconds: 15));
 
   @override
   void initState() {
@@ -62,6 +60,7 @@ class _SalonPageState extends State<SalonPage> {
       _checkInternetConnectivity();
     });
   }
+
   Future<void> _loadCompte() async {
     compte = await Compte.getInstance();
     if (compte != null) {
@@ -79,18 +78,17 @@ class _SalonPageState extends State<SalonPage> {
   Future<void> _checkInternetConnectivity() async {
     _ableToReachInternet = await Compte.checkConnexion();
     if (_ableToReachInternet!) {
-      if(snackshow){
+      if (snackshow) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         snackshow = false;
       }
     } else {
-      if(!snackshow){
+      if (!snackshow) {
         ScaffoldMessenger.of(context).showSnackBar(snack);
         snackshow = true;
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
