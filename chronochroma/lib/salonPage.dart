@@ -34,7 +34,11 @@ class _SalonPageState extends State<SalonPage> {
 
   late bool isImage;
 
+
   bool insciptionTab = false;
+
+  String? seed;
+
 
   bool _ableToReachInternet = false;
 
@@ -273,13 +277,59 @@ class _SalonPageState extends State<SalonPage> {
                         {Navigator.popAndPushNamed(context, '/upgrade')}),
               ),
               SizedBox(
-                width: MediaQuery.of(context).size.width * 0.18,
-                height: 150,
-                child: IconButton(
-                    icon: Image.asset('assets/images/button_jouer.png'),
-                    onPressed: () =>
-                        {Navigator.popAndPushNamed(context, '/game')}),
-              )
+                  width: MediaQuery.of(context).size.width * 0.18,
+                  height: 150,
+                  child: IconButton(
+                      icon: Image.asset('assets/images/button_jouer.png'),
+                      onPressed: () async {
+                        await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Lancer une partie'),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    TextField(
+                                      decoration: const InputDecoration(
+                                          labelText: 'Seed (optionnel)'),
+                                      onChanged: (String value) {
+                                        seed = value;
+                                      },
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 20),
+                                      child: ElevatedButton(
+                                          onPressed: () {
+                                            if (seed == null ||
+                                                seed!.isEmpty ||
+                                                seed == ' ') {
+                                              Navigator.pop(context);
+                                              Navigator.pushNamed(
+                                                  context, '/game');
+                                            } else {
+                                              RegExp regExp = RegExp(r'^\d{6}$');
+                                              if(!regExp.hasMatch(seed!)) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        'La seed doit être un nombre à 6 chiffres')));
+                                                return;
+                                              }
+                                              Navigator.pop(context);
+                                              Navigator.pushNamed(
+                                                  context, '/game',
+                                                  arguments: seed);
+                                            }
+                                          },
+                                          child:
+                                              const Text("Lancer la partie")),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            });
+                      }))
             ]),
           )
         ]),

@@ -48,7 +48,11 @@ class _GameOverState extends State<GameOver> {
                       icon: Image.asset('assets/images/button_rejouer.png'),
                       iconSize: MediaQuery.of(context).size.width * 0.17,
                       onPressed: () {
-                        Navigator.popAndPushNamed(context, '/game');
+                        if(widget.gameRef.setSeed){
+                          Navigator.popAndPushNamed(context, '/game', arguments: widget.gameRef.seed);
+                        }else{
+                          Navigator.popAndPushNamed(context, '/game');
+                        }
                       },
                     ),
                   ),

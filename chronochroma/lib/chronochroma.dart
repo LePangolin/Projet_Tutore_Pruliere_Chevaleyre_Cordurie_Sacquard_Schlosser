@@ -26,8 +26,12 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     'map-4.tmx',
     'map-5.tmx',
   ];
+
+  // on vérifie si c'est une seed "custom"
+  bool setSeed = false;
+
   // random betweeen 100000 and 999999
-  final int seed = Random().nextInt(900000) + 100000;
+  int seed;
   late final PseudoRandomNG pseudoRandomNG;
   late List<String> _effectiveLevelList;
   int coins = 0;
@@ -35,6 +39,13 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   SpriteComponent? overlayComponent;
 
   // constructor
+  Chronochroma({this.seed: 0}) {
+    if (seed != 0) {
+      setSeed = true;
+    } else {
+      seed = Random().nextInt(900000) + 100000;
+    }
+  }
 
   @override
   Future<void> onLoad() async {
@@ -124,7 +135,10 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
 // dt pour delta time, c'est le temps de raffraichissement
   void updateGame(double dt) async {
-    super.updateTree(dt);
+    try {
+      super.updateTree(dt);
+    } catch (e) {}
+
     super.update(dt);
 
     await Future.delayed(Duration(milliseconds: 16)).then((_) async {
@@ -158,4 +172,5 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     int levelReward = (currentLevelIter - 1) > -1 ? (currentLevelIter - 1) : 0;
     return coins + levelReward * 2;
   }
+
 }

@@ -18,11 +18,21 @@ class _GamePageState extends State<GamePage> {
   @override
   void initState() {
     super.initState();
-    game = Chronochroma();
   }
 
   @override
   Widget build(BuildContext context) {
+    // récuperer les arguments de la route
+    final args =
+        ModalRoute.of(context)!.settings.arguments;
+    // si on a une seed custom
+
+    if (args != null) {
+      args as int;
+      game = Chronochroma(seed: args);
+    } else {
+      game = Chronochroma();
+    }
     return Scaffold(
       body: Stack(
         children: [

@@ -37,6 +37,7 @@ flutter:
     - assets/images/icon/
     - assets/audio/
     - assets/tiles/
+    - assets/images/upgrades/
     - assets/images/idle.gif
     - assets/images/character/32x32-bat-sprite.png
     - assets/images/arrow.png
@@ -49,3 +50,9 @@ flutter:
     - assets/images/button_scores.png
     - assets/images/button_commencer.png
     - assets/images/avatar.png
+    - assets/images/upgrades/atk.png
+    - assets/images/upgrades/health.png
+    - assets/images/upgrades/speed.png
+    - assets/images/upgrades/vision.png
+    - assets/images/upgrades/background.png
+    - assets/images/FireTrap.png
