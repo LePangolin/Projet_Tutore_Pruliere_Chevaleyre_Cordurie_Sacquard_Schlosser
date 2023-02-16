@@ -142,11 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 title: const Text('Connexion'),
                                 content: signup(update: (bool result) {
                                   setState(() {
-                                    if (result) {
-                                      notConnected = false;
-                                    } else {
-                                      notConnected = true;
-                                    }
+                                    _loadCompte();
                                   });
                                 }));
                           });
