@@ -83,11 +83,11 @@ class _UpgradePageState extends State<UpgradePage> {
                         Column(
                           children: [
                             Container(
-                              height: 100,
+                              height: 155,
                               width: 100,
                               decoration: const BoxDecoration(
                                 image: DecorationImage(
-                                  image: AssetImage('assets/images/idle.gif'),
+                                  image: AssetImage('assets/images/gifU.gif'),
                                   fit: BoxFit.cover,
                                 ),
                               ),
