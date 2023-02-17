@@ -43,16 +43,6 @@ class Level extends Component with HasGameRef<Chronochroma> {
       }
     }
 
-// Récupère la layer des caisses
-    final barrelLayer = level.tileMap.getLayer<ObjectGroup>('barrels');
-    if (barrelLayer != null) {
-      for (final object in barrelLayer.objects) {
-        if (gameRef.pseudoRandomNG.getBoolean(1, 3)) {
-          add(Barrel(object));
-        }
-      }
-    }
-
 // Récupère la layer des sols instables
     final unstableFloorLayer =
         level.tileMap.getLayer<ObjectGroup>('unstableFloors');
@@ -95,11 +85,23 @@ class Level extends Component with HasGameRef<Chronochroma> {
       }
     }
 
+    // Récupère la layer des caisses
+    final barrelLayer = level.tileMap.getLayer<ObjectGroup>('barrels');
+    if (barrelLayer != null) {
+      for (final object in barrelLayer.objects) {
+        if (gameRef.pseudoRandomNG.getBoolean(1, 3)) {
+          add(Barrel(object));
+        }
+      }
+    }
+
     // Récupère la layer des pièces
     final coins = level.tileMap.getLayer<ObjectGroup>('coins');
     if (coins != null) {
       for (final object in coins.objects) {
-        add(Coin(object));
+        if (gameRef.pseudoRandomNG.getBoolean(3, 4)) {
+          add(Coin(object));
+        }
       }
     }
 
@@ -107,7 +109,9 @@ class Level extends Component with HasGameRef<Chronochroma> {
     final traps = level.tileMap.getLayer<ObjectGroup>('traps');
     if (traps != null) {
       for (final object in traps.objects) {
-        add(FireTrap(object));
+        if (gameRef.pseudoRandomNG.getBoolean(1, 2)) {
+          add(FireTrap(object));
+        }
       }
     }
 

@@ -16,17 +16,19 @@ class Monster extends SpriteAnimationComponent
   int health = 25;
   bool needUpdate = true;
   final TiledObject monster;
-  int degat = 50;
 
   late final SpriteAnimation _animationLeft;
   late final SpriteAnimation _animationRight;
   late bool isLeft;
+  late int atkDelay;
+  final List<int> atkDelayLevels = [3000, 3500, 4000, 5000, 6000];
 
   Monster(this.monster) : super(size: Vector2(32, 32));
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+    atkDelay = atkDelayLevels[gameRef.compte?.persoVueMax ?? 0];
     await _loadAnimations().then((_) => {
           if (gameRef.player.x > monster.x)
             {
@@ -78,7 +80,7 @@ class Monster extends SpriteAnimationComponent
       gameRef
           .getCurrentLevel()!
           .addObject(Projectile(monster.x, monster.y, isLeft));
-      await Future.delayed(Duration(seconds: 3))
+      await Future.delayed(Duration(milliseconds: atkDelay))
           .then((_) => {needUpdate = true});
     }
   }
@@ -86,8 +88,6 @@ class Monster extends SpriteAnimationComponent
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
-    if (other is Player) {
-      gameRef.player.subirDegat(degat);
-    }
+    if (other is Player) {}
   }
 }

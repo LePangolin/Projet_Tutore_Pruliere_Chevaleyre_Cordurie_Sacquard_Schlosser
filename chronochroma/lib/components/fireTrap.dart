@@ -15,12 +15,18 @@ class FireTrap extends SpriteAnimationComponent
   bool _isPresent = true;
   late SpriteAnimation _animation;
   late RectangleHitbox hitbox;
+  late int atkDelay;
+  final List<int> atkDelayLevels = [3000, 3500, 4000, 5000, 6000];
+  late double speed;
+  final List<double> speedLevels = [0.15, 0.13, 0.12, 0.11, 0.10];
 
   FireTrap(this.fireTrap);
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+    atkDelay = atkDelayLevels[gameRef.compte?.persoVueMax ?? 0];
+    speed = speedLevels[gameRef.compte?.persoVueMax ?? 0];
     await _loadAnimations().then((_) => {animation = _animation});
     size = Vector2(64, 128);
     position = Vector2(fireTrap.x, fireTrap.y);
@@ -42,7 +48,7 @@ class FireTrap extends SpriteAnimationComponent
     );
 
     _animation = spriteSheet.createAnimation(
-        row: 0, stepTime: 0.15, from: 0, to: 9, loop: false);
+        row: 0, stepTime: speed, from: 0, to: 9, loop: false);
   }
 
   @override
@@ -51,7 +57,6 @@ class FireTrap extends SpriteAnimationComponent
     if (_isPresent) {
       _isPresent = false;
       _animation.reset();
-      // on third frame, add hitbox
       _animation.onFrame = (frame) {
         if (frame == 5) {
           add(hitbox);
@@ -59,7 +64,7 @@ class FireTrap extends SpriteAnimationComponent
       };
       _animation.onComplete = () async {
         hitbox.removeFromParent();
-        await Future.delayed(const Duration(milliseconds: 100)).then((_) {
+        await Future.delayed(Duration(milliseconds: atkDelay)).then((_) {
           _isPresent = true;
         });
       };

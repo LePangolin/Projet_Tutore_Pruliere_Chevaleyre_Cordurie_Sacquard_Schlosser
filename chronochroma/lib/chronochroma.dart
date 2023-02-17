@@ -13,10 +13,12 @@ import 'package:flutter/material.dart';
 import 'components/player.dart';
 import 'overlays/controll.dart';
 import './overlays/gameOver.dart';
+import 'package:chronochroma/components/compte.dart';
 
 class Chronochroma extends FlameGame with HasCollisionDetection {
   final Player player = Player();
   late AttackHitbox attackHitbox;
+  late Compte? compte;
   Level? currentLevel;
   int currentLevelIter = 0;
   final List<String> _allLevelsList = [
@@ -54,7 +56,8 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   Future<void> onLoad() async {
     await super.onLoad();
 
-// keep 3 levels in memory
+    compte = await Compte.getInstance();
+
     _effectiveLevelList = List<String>.from(_allLevelsList)
       ..shuffle(Random(seed))
       ..insert(0, 'nexus.tmx');

@@ -58,7 +58,6 @@
    <point/>
   </object>
  </objectgroup>
- <objectgroup id="14" name="bebou"/>
  <objectgroup id="14" name="playerspawnpoint">
   <object id="121" name="Joueur" x="80" y="136">
    <point/>

@@ -17,22 +17,20 @@ import 'attackHitbox.dart';
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
   // Attributs de vie
-  int health = 400;
-  final int maxHealth = 400;
-  // Tableau des stades de vie
-  late final List<int> healthStages;
+  late int health;
+  late final int maxHealth;
+  final List<int> healthLevels = [1700, 2500, 3500, 4500, 5600];
 
-  // Frame Invincible
-  bool isInvincible = false;
-
-  // Attributs de direction et d'animation
-  double gravity = 1.03;
+  // Attributs de direction et d'effets
+  final double gravity = 1.03;
   Vector2 velocity = Vector2(0, 0);
   double fallingVelocity = 0;
   Direction direction = Direction.none;
   double saturation = 0;
+  late int damageDeal;
+  final List<int> damageDealLevels = [10, 15, 20, 25, 30];
 
-  // Animations
+  // Attributs d'animation
   late final SpriteAnimation _idleAnimation;
   late final SpriteAnimation _crouchAnimation;
   late final SpriteAnimation _jumpAnimation;
@@ -41,23 +39,25 @@ class Player extends SpriteAnimationComponent
   late final SpriteAnimation _attackAnimation;
   late final SpriteAnimation _crouchAttackAnimation;
 
-  // Vitesse d'animation : plus c'est haut, plus c'est lent
+  // Attributs de vitesse d'animation
   final double _idleAnimationSpeed = 0.15;
   final double _crouchAnimationSpeed = 0.15;
   final double _jumpAnimationSpeed = 0.15;
   final double _runAnimationSpeed = 0.08;
   final double _slideAnimationSpeed = 0.12;
-  final double _attackAnimationSpeed = 0.10;
-  final double _crouchAttackAnimationSpeed = 0.10;
+  late final double _attackAnimationSpeed;
+  late final double _crouchAttackAnimationSpeed;
+  final List<double> attackAnimationSpeedLevels = [0.10, 0.9, 0.8, 0.07, 0.05];
 
-  // Vitesse de déplacement
+  // Attributs de déplacement
   final double _moveSpeed = 5;
   final double jumpMultiplier = 2.2;
   final double downMultiplier = 0.5;
-  final double xVelocityMax = 10;
+  late final double xMultiplier;
+  final List<double> xMultiplierLevels = [1, 1.1, 1.2, 1.3, 1.4];
   final double yVelocityMax = 8;
 
-  // Attributs de collision
+  // Attributs d'états et de permissions
   bool facingRight = true;
   bool canJump = true;
   bool isJumping = false;
@@ -68,13 +68,14 @@ class Player extends SpriteAnimationComponent
   bool isAttacking = false;
   bool jumpCooldown = false;
   bool needSaturationUpdate = true;
+  bool isInvincible = false;
 
-  // Hitboxes effectives
+  // Attributs hitboxes effectives
   late RectangleHitbox topHitBox;
   late RectangleHitbox frontHitBox;
   late RectangleHitbox bottomHitBox;
 
-  // Hitboxes de référence pour le joueur debout
+  // Attributs hitboxes de référence pour le joueur debout
   final RectangleHitbox topHitBoxStandModel = (RectangleHitbox(
     size: Vector2(18, 24),
     position: Vector2(256 / 2 - 8, 16),
@@ -90,7 +91,7 @@ class Player extends SpriteAnimationComponent
     isSolid: true,
   ));
 
-  // Hitboxes de référence pour le joueur accroupi
+  // Attributs hitboxes de référence pour le joueur accroupi
   final RectangleHitbox topHitBoxSlideModel = (RectangleHitbox(
     size: Vector2(18, 24),
     position: Vector2(256 / 2 - 8, 36),
@@ -106,15 +107,9 @@ class Player extends SpriteAnimationComponent
     isSolid: true,
   ));
 
-  // Constructeur
-  Player() : super(size: Vector2(256, 128), anchor: Anchor.center);
-
-  // Ajout de l'animation par défaut et des hitboxes et définition des stades de vie
-  @override
-  Future<void> onLoad() async {
-    super.onLoad();
-    await _loadAnimations().then((_) => {animation = _idleAnimation});
-
+  // Constructeur du joueur
+  Player() : super(size: Vector2(256, 128), anchor: Anchor.center) {
+    // Définition des hitboxes
     topHitBox = RectangleHitbox(
       size: topHitBoxStandModel.size,
       position: topHitBoxStandModel.position,
@@ -128,6 +123,7 @@ class Player extends SpriteAnimationComponent
       position: bottomHitBoxStandModel.position,
     );
 
+    // Définition des couleurs de debug
     topHitBox.debugMode = true;
     topHitBox.debugColor = Colors.red;
     bottomHitBox.debugMode = true;
@@ -135,18 +131,31 @@ class Player extends SpriteAnimationComponent
     frontHitBox.debugMode = true;
     frontHitBox.debugColor = Colors.orange;
 
+    // Ajout des hitboxes au joueur
     add(topHitBox);
     add(bottomHitBox);
     add(frontHitBox);
-
-    healthStages = [
-      (health * 0.75).floor(),
-      (health * 0.5).floor(),
-      (health * 0.25).floor()
-    ];
   }
 
-// Paramètrages des animations pour le personnage
+  // Chargement des animations
+  @override
+  Future<void> onLoad() async {
+    super.onLoad();
+    // Récupération des améliorations
+    maxHealth = healthLevels[(gameRef.compte?.persoVieMax) ?? 0]; // Vie
+    damageDeal =
+        damageDealLevels[(gameRef.compte?.persoForceMax) ?? 0]; // Degats
+    xMultiplier = xMultiplierLevels[
+        (gameRef.compte?.persoVitesseMax) ?? 0]; // Vitesse de déplacement
+    _attackAnimationSpeed = attackAnimationSpeedLevels[
+        (gameRef.compte?.persoVitesseMax) ?? 0]; // Vitesse d'attaque
+    _crouchAttackAnimationSpeed = _attackAnimationSpeed;
+
+    health = maxHealth;
+    await _loadAnimations().then((_) => {animation = _idleAnimation});
+  }
+
+  // Paramètrages des animations pour le personnage
   Future<void> _loadAnimations() async {
     final idleSpriteSheet = SpriteSheet.fromColumnsAndRows(
       image: await gameRef.images.load('character/Idle.png'),
@@ -212,7 +221,7 @@ class Player extends SpriteAnimationComponent
   int frame = 0;
   bool needFrameDisplay = true;
 
-  // dt pour delta time, c'est le temps de raffraichissement
+  // dt pour delta time, c'est le temps de rafraichissement
   @override
   void update(double dt) async {
     super.update(dt);
@@ -232,10 +241,7 @@ class Player extends SpriteAnimationComponent
 
       if (needSaturationUpdate) {
         needSaturationUpdate = false;
-
-// health 100% gives = 0 and health 0% gives -1
         saturation = (health / maxHealth) - 1;
-
         await Future.delayed(const Duration(milliseconds: 500)).then((_) async {
           needSaturationUpdate = true;
         });
@@ -292,7 +298,7 @@ class Player extends SpriteAnimationComponent
           velocity.y = -_moveSpeed * jumpMultiplier;
         }
         if (!frontHitBox.isColliding && !facingRight) {
-          velocity.x = -_moveSpeed;
+          velocity.x = -_moveSpeed * xMultiplier;
         } else {
           velocity.x = 0;
         }
@@ -303,7 +309,7 @@ class Player extends SpriteAnimationComponent
           velocity.y = -_moveSpeed * jumpMultiplier;
         }
         if (!frontHitBox.isColliding && facingRight) {
-          velocity.x = _moveSpeed;
+          velocity.x = _moveSpeed * xMultiplier;
         }
       } else if (isJumping) {
         if (!topHitBox.isColliding) {
@@ -323,7 +329,7 @@ class Player extends SpriteAnimationComponent
         case Direction.left:
           reduceHitBox(false);
           if (!frontHitBox.isColliding && !facingRight) {
-            velocity.x = -_moveSpeed;
+            velocity.x = -_moveSpeed * xMultiplier;
           } else {
             velocity.x = 0;
           }
@@ -332,7 +338,7 @@ class Player extends SpriteAnimationComponent
         case Direction.right:
           reduceHitBox(false);
           if (!frontHitBox.isColliding && facingRight) {
-            velocity.x = _moveSpeed;
+            velocity.x = _moveSpeed * xMultiplier;
           } else {
             velocity.x = 0;
           }
@@ -343,7 +349,7 @@ class Player extends SpriteAnimationComponent
             velocity.y = _moveSpeed * (downMultiplier / 2);
           }
           if (!frontHitBox.isColliding && !facingRight) {
-            velocity.x = -_moveSpeed;
+            velocity.x = -_moveSpeed * xMultiplier;
           } else {
             velocity.x = 0;
           }
@@ -354,7 +360,7 @@ class Player extends SpriteAnimationComponent
             velocity.y += _moveSpeed * (downMultiplier / 2);
           }
           if (!frontHitBox.isColliding && facingRight) {
-            velocity.x = _moveSpeed;
+            velocity.x = _moveSpeed * xMultiplier;
           } else {
             velocity.x = 0;
           }
