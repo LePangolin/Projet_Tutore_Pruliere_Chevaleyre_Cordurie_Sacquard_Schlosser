@@ -9,6 +9,7 @@ async function createPersonnage(fn) {
     });
 }
 
+
 module.exports = {
     createPersonnage,
 };
