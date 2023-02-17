@@ -79,6 +79,81 @@ router.post("/avatar", async (req, res, next) => {
   }
 });
 
+router.post("/amelioration", async (req, res, next) => {
+  if (!req.body) {
+    next(400);
+  }
+  if (!req.body.token || !req.body.amelioration) {
+    next(400);
+  } else {
+    let result = await User.updateAmelioration(
+      req.body.token,
+      req.body.amelioration
+    );
+    if (result.error) {
+      next(500);
+    } else {
+      res.setHeader("Content-Type", "application/json");
+      res.statusCode = result.status;
+      res.send(
+        JSON.stringify({
+          message: result.statusText,
+          code: result.status,
+        })
+      );
+    }
+  }
+});
+
+router.post("/party", async (req, res, next) => {
+  if (!req.body) {
+    next(400);
+  }
+  if (!req.body.token || !req.body.score || !req.body.seed || !req.body.custom) {
+    next(400);
+  } else {
+    let result = await User.savePartie(
+      req.body.token,
+      req.body.score,
+      req.body.seed,
+      req.body.custom
+    );
+    if (result.error) {
+      next(500);
+    } else {
+      res.setHeader("Content-Type", "application/json");
+      res.statusCode = result.status;
+      res.send(
+        JSON.stringify({
+          message: result.statusText,
+          code: result.status,
+        })
+      );
+    }
+  }
+});
+
+router.get("/party/best/:token", async (req, res, next) => {
+  if (!req.params.token) {
+    next(400);
+  } else {
+    let result = await User.getBestPartie(req.params.token);
+    if (result.error) {
+      next(500);
+    } else {
+      res.setHeader("Content-Type", "application/json");
+      res.statusCode = result.status;
+      res.send(
+        JSON.stringify({
+          message: result.statusText,
+          code: result.status,
+          data: result.data,
+        })
+      );
+    }
+  }
+});
+
 router.all("*", (req, res, next) => {
   next(404);
 });
