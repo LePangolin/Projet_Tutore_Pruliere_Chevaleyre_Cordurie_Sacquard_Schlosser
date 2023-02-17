@@ -3,9 +3,15 @@
     <head>
         <title>Chronochroma</title>
         <meta charset="utf-8">
+        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     </head>
     <body>
         <h1>App is running</h1>
         <p>App is running</p>
     </body>
+    <script>
+        fetch('/partie/best')
+            .then(response => response.json())
+            .then(data => console.log(data));
+    </script>
 </html>

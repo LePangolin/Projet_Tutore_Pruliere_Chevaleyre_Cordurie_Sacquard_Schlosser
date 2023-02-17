@@ -151,6 +151,21 @@ class Compte {
     }
   }
 
+  static Future<bool> sendPartie(String score,  int seed, bool custom) async {
+    if (!await checkConnexion()) {
+      return false;
+    }
+    print(custom.toString());
+    print(seed.toString());
+    var response = await http.post(Uri.parse("http://serverchronochroma.alwaysdata.net/user/party"), body: {"token": _instance!._token, "score": score, "seed": seed.toString(), "custom": custom.toString()});
+    inspect(response);
+    if (response.statusCode < 200 || response.statusCode > 299) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   String? get pseudo => _pseudo;
 
   String? get avatarUrl => _avatarUrl;

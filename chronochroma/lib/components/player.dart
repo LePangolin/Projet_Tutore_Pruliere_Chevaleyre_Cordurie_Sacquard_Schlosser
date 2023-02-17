@@ -17,8 +17,8 @@ import 'attackHitbox.dart';
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
   // Attributs de vie
-  int health = 400;
-  final int maxHealth = 400;
+  int health = 1700;
+  final int maxHealth = 1700;
   // Tableau des stades de vie
   late final List<int> healthStages;
 
@@ -240,7 +240,7 @@ class Player extends SpriteAnimationComponent
           needSaturationUpdate = true;
         });
       }
-      print("health $health");
+      // print("health $health");
     }
 
     if (needFrameDisplay) {
