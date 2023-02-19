@@ -38,6 +38,7 @@ class Compte {
     if (_instance == null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? account = prefs.getString('account');
+      // account = null;
       if (account != null) {
         Map<String, dynamic> json = jsonDecode(account);
         _instance = Compte._(
@@ -120,7 +121,11 @@ class Compte {
 
   static Future<bool> upgradeCharacter(CharacterUpgrades? upgrade) async {
     if (!await checkConnexion()) {
-      print("1 pas de connexion");
+      // print("1 pas de connexion");
+      return false;
+    }
+    if (_instance == null) {
+      // print("2 pas de compte");
       return false;
     }
     if (upgrade != null) {
@@ -129,10 +134,10 @@ class Compte {
               "http://serverchronochroma.alwaysdata.net/user/amelioration"),
           body: {"token": _instance!._token, "amelioration": upgrade.name});
       if (response.statusCode < 200 || response.statusCode > 299) {
-        print("amelioration : ${upgrade.name}");
-        print("erreur ${response.statusCode}");
-        print(
-            "return false dans le if (response.statusCode < 200 || response.statusCode > 299)");
+        // print("amelioration : ${upgrade.name}");
+        // print("erreur ${response.statusCode}");
+        // print(
+        //     "return false dans le if (response.statusCode < 200 || response.statusCode > 299)");
         return false;
       } else {
         switch (upgrade) {
@@ -151,11 +156,11 @@ class Compte {
         }
         Map<String, dynamic> json = jsonDecode(response.body);
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('account', response.body);
+        prefs.setString('account', _instance!.toJsonString());
         return true;
       }
     } else {
-      print("3 pas d'upgrade");
+      // print("3 pas d'upgrade");
       return false;
     }
   }
@@ -194,10 +199,9 @@ class Compte {
     }
   }
 
-  String toJsonString(){
+  String toJsonString() {
     return '{"data":{"pseudo":"$_pseudo","avatar_url":"$_avatarUrl","score":$_score,"token":"$_token","personnage":{"santeMax":$_persoVieMax,"vitesseMax":$_persoVitesseMax,"forceMax":$_persoForceMax,"vueMax":$_persoVueMax}}}';
   }
-  
 
   String? get pseudo => _pseudo;
 

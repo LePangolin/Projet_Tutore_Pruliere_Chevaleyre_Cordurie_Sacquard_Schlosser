@@ -271,7 +271,7 @@ class Player extends SpriteAnimationComponent
           needSaturationUpdate = true;
         });
       }
-      print("health $health");
+      print("damages $damageDeal");
     }
 
     if (needFrameDisplay) {
