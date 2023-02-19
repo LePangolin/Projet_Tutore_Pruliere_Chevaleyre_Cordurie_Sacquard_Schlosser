@@ -101,16 +101,16 @@ class Compte {
       return false;
     }
     if (avatar != null) {
-      _instance!._avatarUrl = avatar;
       var response = await http.post(
           Uri.parse("http://serverchronochroma.alwaysdata.net/user/avatar"),
           body: {"token": _instance!._token, "avatar": avatar});
       if (response.statusCode < 200 || response.statusCode > 299) {
         return false;
       } else {
+        _instance!._avatarUrl = avatar;
         Map<String, dynamic> json = jsonDecode(response.body);
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('account', response.body);
+        prefs.setString('account', _instance!.toJsonString());
         return true;
       }
     } else {
@@ -193,6 +193,11 @@ class Compte {
       return true;
     }
   }
+
+  String toJsonString(){
+    return '{"data":{"pseudo":"$_pseudo","avatar_url":"$_avatarUrl","score":$_score,"token":"$_token","personnage":{"santeMax":$_persoVieMax,"vitesseMax":$_persoVitesseMax,"forceMax":$_persoForceMax,"vueMax":$_persoVueMax}}}';
+  }
+  
 
   String? get pseudo => _pseudo;
 
