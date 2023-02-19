@@ -47,7 +47,13 @@ class Player extends SpriteAnimationComponent
   final double _slideAnimationSpeed = 0.12;
   late final double _attackAnimationSpeed;
   late final double _crouchAttackAnimationSpeed;
-  final List<double> attackAnimationSpeedLevels = [0.10, 0.9, 0.8, 0.07, 0.05];
+  final List<double> attackAnimationSpeedLevels = [
+    0.10,
+    0.09,
+    0.08,
+    0.07,
+    0.05
+  ];
 
   // Attributs de déplacement
   final double _moveSpeed = 5;
@@ -142,13 +148,27 @@ class Player extends SpriteAnimationComponent
   Future<void> onLoad() async {
     super.onLoad();
     // Récupération des améliorations
-    maxHealth = healthLevels[(gameRef.compte?.persoVieMax) ?? 0]; // Vie
-    damageDeal =
-        damageDealLevels[(gameRef.compte?.persoForceMax) ?? 0]; // Degats
-    xMultiplier = xMultiplierLevels[
-        (gameRef.compte?.persoVitesseMax) ?? 0]; // Vitesse de déplacement
-    _attackAnimationSpeed = attackAnimationSpeedLevels[
-        (gameRef.compte?.persoVitesseMax) ?? 0]; // Vitesse d'attaque
+
+    // maxHealth = healthLevels[((gameRef.compte?.persoVieMax)! - 1) ?? 0]; // Vie
+    maxHealth = (gameRef.compte?.persoVieMax != null)
+        ? healthLevels[gameRef.compte!.persoVieMax! - 1]
+        : healthLevels[0]; // Vie
+    // damageDeal =
+    //     damageDealLevels[((gameRef.compte?.persoForceMax)! - 1) ?? 0]; // Degats
+    damageDeal = (gameRef.compte?.persoForceMax != null)
+        ? damageDealLevels[gameRef.compte!.persoForceMax! - 1]
+        : damageDealLevels[0]; // Degats
+    // xMultiplier = xMultiplierLevels[((gameRef.compte?.persoVitesseMax)! - 1) ??
+    //     0]; // Vitesse de déplacement
+    xMultiplier = (gameRef.compte?.persoVitesseMax != null)
+        ? xMultiplierLevels[gameRef.compte!.persoVitesseMax! - 1]
+        : xMultiplierLevels[0]; // Vitesse de déplacement
+    // _attackAnimationSpeed = attackAnimationSpeedLevels[
+    //     ((gameRef.compte?.persoVitesseMax!)! - 1) ?? 0]; // Vitesse d'attaque
+    _attackAnimationSpeed = (gameRef.compte?.persoVitesseMax != null)
+        ? attackAnimationSpeedLevels[gameRef.compte!.persoVitesseMax! - 1]
+        : attackAnimationSpeedLevels[0]; // Vitesse d'attaque
+    // _crouchAttackAnimationSpeed = _attackAnimationSpeed;
     _crouchAttackAnimationSpeed = _attackAnimationSpeed;
 
     health = maxHealth;
@@ -226,6 +246,11 @@ class Player extends SpriteAnimationComponent
   void update(double dt) async {
     super.update(dt);
     frame++;
+    // print("health $health");
+    // print("_attackAnimationSpeed $_attackAnimationSpeed");
+    // print("_crouchAttackAnimationSpeed $_crouchAttackAnimationSpeed");
+    // print("xMultiplier $xMultiplier");
+    // print("damageDeal $damageDeal");
 
     if (canJump && (velocity.y + fallingVelocity) > 0) {
       canJump = false;

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:chronochroma/components/characterUpgrades.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -113,6 +114,48 @@ class Compte {
         return true;
       }
     } else {
+      return false;
+    }
+  }
+
+  static Future<bool> upgradeCharacter(CharacterUpgrades? upgrade) async {
+    if (!await checkConnexion()) {
+      print("1 pas de connexion");
+      return false;
+    }
+    if (upgrade != null) {
+      var response = await http.post(
+          Uri.parse(
+              "http://serverchronochroma.alwaysdata.net/user/amelioration"),
+          body: {"token": _instance!._token, "amelioration": upgrade.name});
+      if (response.statusCode < 200 || response.statusCode > 299) {
+        print("amelioration : ${upgrade.name}");
+        print("erreur ${response.statusCode}");
+        print(
+            "return false dans le if (response.statusCode < 200 || response.statusCode > 299)");
+        return false;
+      } else {
+        switch (upgrade) {
+          case CharacterUpgrades.vie:
+            _instance!._persoVieMax = _instance!._persoVieMax! + 1;
+            break;
+          case CharacterUpgrades.vitesse:
+            _instance!._persoVitesseMax = _instance!._persoVitesseMax! + 1;
+            break;
+          case CharacterUpgrades.force:
+            _instance!._persoForceMax = _instance!._persoForceMax! + 1;
+            break;
+          case CharacterUpgrades.vue:
+            _instance!._persoVueMax = _instance!._persoVueMax! + 1;
+            break;
+        }
+        Map<String, dynamic> json = jsonDecode(response.body);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('account', response.body);
+        return true;
+      }
+    } else {
+      print("3 pas d'upgrade");
       return false;
     }
   }
