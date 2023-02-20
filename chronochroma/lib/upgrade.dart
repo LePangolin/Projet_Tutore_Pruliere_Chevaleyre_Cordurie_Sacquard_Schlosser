@@ -1,3 +1,5 @@
+import 'package:chronochroma/components/characterUpgrades.dart';
+import 'package:chronochroma/components/compte.dart';
 import 'package:flutter/material.dart';
 
 class UpgradePage extends StatefulWidget {
@@ -11,15 +13,99 @@ class UpgradePage extends StatefulWidget {
 
 class _UpgradePageState extends State<UpgradePage> {
   int coins = 2000;
+  late Compte? compte;
   int sante = 1;
   int vitesse = 1;
   int force = 1;
   int vision = 1;
+  final List<String> santeMaxCost = ["50", "125", "200", "300", "MAX"];
+  final List<String> vitesseMaxCost = ["70", "100", "200", "300", "MAX"];
+  final List<String> forceMaxCost = ["50", "75", "100", "150", "MAX"];
+  final List<String> visionMaxCost = ["30", "60", "90", "130", "MAX"];
+  bool pendingRequest = false;
 
-  List<String> santeMaxCost = ["50", "125", "200", "300", "MAX"];
-  List<String> vitesseMaxCost = ["70", "100", "200", "300", "MAX"];
-  List<String> forceMaxCost = ["50", "75", "100", "150", "MAX"];
-  List<String> visionMaxCost = ["30", "60", "90", "130", "MAX"];
+  @override
+  void initState() {
+    super.initState();
+    _loadCompte();
+  }
+
+  Future<void> _loadCompte() async {
+    compte = await Compte.getInstance();
+    if (compte == null) {
+      setState(() {
+        sante = 1;
+        vitesse = 1;
+        force = 1;
+        vision = 1;
+      });
+    } else {
+      setState(() {
+        sante = compte?.persoVieMax ?? 1;
+        vitesse = compte?.persoVitesseMax ?? 1;
+        force = compte?.persoForceMax ?? 1;
+        vision = compte?.persoVueMax ?? 1;
+      });
+    }
+  }
+
+  void _upgrade(int statLevel, CharacterUpgrades skillToUpgrade,
+      List<String> statCostArray) {
+    // S'il n'y a pas de requête en cours ET que le niveau de la statistique est inférieur au nombre de niveaux possibles ET que le joueur a assez de pièces
+    if (!pendingRequest &&
+        statLevel < statCostArray.length &&
+        coins >= int.parse(statCostArray[statLevel - 1])) {
+      // Alors une requête est lancée
+      pendingRequest = true;
+      Compte.upgradeCharacter(skillToUpgrade).then((applied) {
+        // Si la requête a abouti
+        if (applied) {
+          // Alors on met à jour les données du joueur
+          setState(() {
+            coins -= int.parse(statCostArray[statLevel - 1]);
+            switch (skillToUpgrade) {
+              case CharacterUpgrades.vie:
+                sante++;
+                break;
+              case CharacterUpgrades.vitesse:
+                vitesse++;
+                break;
+              case CharacterUpgrades.force:
+                force++;
+                break;
+              case CharacterUpgrades.vue:
+                vision++;
+                break;
+            }
+          });
+        } else {
+          // Sinon on affiche un message d'erreur
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('L\'amélioration n\'a pas pu être enrégistrée'),
+          ));
+        }
+        // On indique que la requête est terminée
+        pendingRequest = false;
+      });
+    } else {
+      // Sinon on affiche un message d'erreur si aucun ScaffoldMessenger n'est présent
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      if (pendingRequest) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Une amélioration est déjà en cours'),
+        ));
+      } else if (statLevel >= statCostArray.length) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content:
+              Text('Vous avez atteint le niveau maximum dans cette compétence'),
+        ));
+      } else if (coins < int.parse(statCostArray[statLevel - 1])) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Vous n\'avez pas assez de pièces'),
+        ));
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,31 +252,27 @@ class _UpgradePageState extends State<UpgradePage> {
                                   icon: Image.asset(
                                       'assets/images/upgrades/health.png'),
                                   iconSize: 50,
-                                  onPressed: () {
-                                    if (sante < 5) {
-                                      if (coins >= int.parse(santeMaxCost[sante - 1])) {
-                                        setState(() {
-                                          coins -=
-                                              int.parse(santeMaxCost[sante - 1]);
-                                          sante++;
-                                        });
-                                      }
-                                    }
-                                  }),
+                                  onPressed: () => {
+                                        _upgrade(sante, CharacterUpgrades.vie,
+                                            santeMaxCost)
+                                      }),
                               Row(
                                 children: [
                                   Text(
                                     "${santeMaxCost[sante - 1]}",
                                     style: TextStyle(
-                                      color: (sante <5) ? Color.fromARGB(255, 255, 196, 0) : Color.fromARGB(255, 255, 136, 0),
+                                      color: (sante < santeMaxCost.length)
+                                          ? Color.fromARGB(255, 255, 196, 0)
+                                          : Color.fromARGB(255, 255, 136, 0),
                                       fontFamily: 'Calibri',
                                       letterSpacing: 0.5,
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  if (sante < 5)
-                                    Image.asset("assets/images/coin.png",height: 10)
+                                  if (sante < santeMaxCost.length)
+                                    Image.asset("assets/images/coin.png",
+                                        height: 10)
                                 ],
                               )
                             ],
@@ -205,31 +287,26 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/atk.png'),
                                   iconSize: 50,
                                   onPressed: () => {
-                                    if (force < 5) {
-                                      if (coins >= int.parse(forceMaxCost[force - 1])) {
-                                        setState(() {
-                                          coins -=
-                                              int.parse(forceMaxCost[
-                                                  force - 1]);
-                                          force++;
-                                        })
-                                      }
-                                    }
-                                  }),
+                                        _upgrade(force, CharacterUpgrades.force,
+                                            forceMaxCost)
+                                      }),
                               Row(
                                 children: [
                                   Text(
                                     "${forceMaxCost[force - 1]}",
                                     style: TextStyle(
-                                      color: (force <5) ? Color.fromARGB(255, 255, 196, 0) : Color.fromARGB(255, 255, 136, 0),
+                                      color: (force < forceMaxCost.length)
+                                          ? Color.fromARGB(255, 255, 196, 0)
+                                          : Color.fromARGB(255, 255, 136, 0),
                                       fontFamily: 'Calibri',
                                       letterSpacing: 0.5,
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  if (force < 5)
-                                    Image.asset("assets/images/coin.png",height: 10)
+                                  if (force < forceMaxCost.length)
+                                    Image.asset("assets/images/coin.png",
+                                        height: 10)
                                 ],
                               )
                             ],
@@ -244,31 +321,26 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/vision.png'),
                                   iconSize: 50,
                                   onPressed: () => {
-                                    if (vision < 5) {
-                                      if (coins >= int.parse(visionMaxCost[vision - 1])) {
-                                        setState(() {
-                                          coins -=
-                                              int.parse(visionMaxCost[
-                                                  vision - 1]);
-                                          vision++;
-                                        })
-                                      }
-                                    }
-                                  }),
+                                        _upgrade(vision, CharacterUpgrades.vue,
+                                            visionMaxCost)
+                                      }),
                               Row(
                                 children: [
                                   Text(
                                     "${visionMaxCost[vision - 1]}",
                                     style: TextStyle(
-                                      color: (vision <5) ? Color.fromARGB(255, 255, 196, 0) : Color.fromARGB(255, 255, 136, 0),
+                                      color: (vision < visionMaxCost.length)
+                                          ? Color.fromARGB(255, 255, 196, 0)
+                                          : Color.fromARGB(255, 255, 136, 0),
                                       fontFamily: 'Calibri',
                                       letterSpacing: 0.5,
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  if (vision < 5)
-                                    Image.asset("assets/images/coin.png",height: 10)
+                                  if (vision < visionMaxCost.length)
+                                    Image.asset("assets/images/coin.png",
+                                        height: 10)
                                 ],
                               )
                             ],
@@ -283,32 +355,28 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/speed.png'),
                                   iconSize: 50,
                                   onPressed: () => {
-                                    if (vitesse < 5) {
-                                      if (coins >= int.parse(vitesseMaxCost[vitesse - 1])) {
-                                        setState(() {
-                                          coins -=
-                                              int.parse(vitesseMaxCost[
-                                                  vitesse - 1]);
-                                          vitesse++;
-                                        })
-                                      }
-                                    }
-                                  }),
+                                        _upgrade(
+                                            vitesse,
+                                            CharacterUpgrades.vitesse,
+                                            vitesseMaxCost)
+                                      }),
                               Row(
                                 children: [
                                   Text(
                                     "${vitesseMaxCost[vitesse - 1]}",
                                     style: TextStyle(
-                                      color: (vitesse <5) ? Color.fromARGB(255, 255, 196, 0) : Color.fromARGB(255, 255, 136, 0),
+                                      color: (vitesse < vitesseMaxCost.length)
+                                          ? Color.fromARGB(255, 255, 196, 0)
+                                          : Color.fromARGB(255, 255, 136, 0),
                                       fontFamily: 'Calibri',
                                       letterSpacing: 0.5,
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
                                     ),
-                                    
                                   ),
-                                  if (vitesse < 5)
-                                    Image.asset("assets/images/coin.png",height: 10)
+                                  if (vitesse < vitesseMaxCost.length)
+                                    Image.asset("assets/images/coin.png",
+                                        height: 10)
                                 ],
                               )
                             ],

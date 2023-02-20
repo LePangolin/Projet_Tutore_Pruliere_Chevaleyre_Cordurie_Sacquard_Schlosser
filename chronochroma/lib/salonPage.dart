@@ -258,7 +258,7 @@ class _SalonPageState extends State<SalonPage> {
               bottom: -20,
               left: 10,
               child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.18,
+                width: MediaQuery.of(context).size.width * 0.195,
                 height: 150,
                 child: IconButton(
                     icon: Image.asset('assets/images/button_scores.png'),
