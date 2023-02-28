@@ -199,6 +199,21 @@ class Compte {
     }
   }
 
+  static Future<bool> sendPartie(String score,  int seed, bool custom) async {
+    if (!await checkConnexion()) {
+      return false;
+    }
+    print(custom.toString());
+    print(seed.toString());
+    var response = await http.post(Uri.parse("http://serverchronochroma.alwaysdata.net/user/party"), body: {"token": _instance!._token, "score": score, "seed": seed.toString(), "custom": custom.toString()});
+    inspect(response);
+    if (response.statusCode < 200 || response.statusCode > 299) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  
   String toJsonString() {
     return '{"data":{"pseudo":"$_pseudo","avatar_url":"$_avatarUrl","score":$_score,"token":"$_token","personnage":{"santeMax":$_persoVieMax,"vitesseMax":$_persoVitesseMax,"forceMax":$_persoForceMax,"vueMax":$_persoVueMax}}}';
   }

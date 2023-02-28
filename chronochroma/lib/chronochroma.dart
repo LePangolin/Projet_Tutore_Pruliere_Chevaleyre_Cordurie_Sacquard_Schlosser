@@ -10,6 +10,7 @@ import 'package:flame/flame.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'components/compte.dart';
 import 'components/player.dart';
 import 'overlays/controll.dart';
 import './overlays/gameOver.dart';
@@ -31,6 +32,8 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
   // on vérifie si c'est une seed "custom"
   bool setSeed = false;
+
+  bool send = false;
 
   // random betweeen 100000 and 999999
   int seed;
@@ -87,7 +90,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     player.direction = direction;
   }
 
-  void loadLevel() {
+  void loadLevel() async {
     // Si on a déjà une map, on la supprime
     currentLevel?.removeFromParent();
     if (currentLevelIter < _effectiveLevelList.length) {
@@ -131,8 +134,8 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
         currentLevelIter++;
       });
     } else {
-      gameOver();
       win = true;
+      gameOver();
     }
   }
 
@@ -171,12 +174,23 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     coins += value;
   }
 
-  void gameOver() {
+  void gameOver() async {
     _stopwatch.stop();
     pauseEngine();
     overlays.add(GameOver.ID);
     overlays.remove(Controll.ID);
     player.saturation = 0;
+    if(win && !send){
+        int minutes = _stopwatch.elapsed.inMinutes;
+        int secondes = _stopwatch.elapsed.inSeconds - minutes * 60;
+      bool res = await Compte.sendPartie("${minutes}min ${secondes}sec", seed, setSeed);
+      if(res){
+        print("Partie envoyée");
+        send  = true;
+      }else{
+        print("Partie non envoyée");
+      }
+    }
   }
 
   int endGameReward() {

@@ -17,9 +17,11 @@ import 'attackHitbox.dart';
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
   // Attributs de vie
+
   late int health;
   late final int maxHealth;
   final List<int> healthLevels = [1700, 2500, 3500, 4500, 5600];
+
 
   // Attributs de direction et d'effets
   final double gravity = 1.03;
@@ -271,7 +273,6 @@ class Player extends SpriteAnimationComponent
           needSaturationUpdate = true;
         });
       }
-      print("damages $damageDeal");
     }
 
     if (needFrameDisplay) {
