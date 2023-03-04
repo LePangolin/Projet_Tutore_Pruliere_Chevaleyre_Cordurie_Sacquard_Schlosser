@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/components/attackHitbox.dart';
+import 'package:chronochroma/components/coin.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
@@ -16,17 +17,22 @@ import 'attackHitbox.dart';
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
   // Attributs de vie
-  int health = 10;
 
-  // Frame Invincible
-  bool isInvincible = false;
+  late int health;
+  late final int maxHealth;
+  final List<int> healthLevels = [1700, 2500, 3500, 4500, 5600];
 
-  // Attributs de direction et d'animation
-  double gravity = 1.03;
+
+  // Attributs de direction et d'effets
+  final double gravity = 1.03;
   Vector2 velocity = Vector2(0, 0);
+  double fallingVelocity = 0;
   Direction direction = Direction.none;
+  double saturation = 0;
+  late int damageDeal;
+  final List<int> damageDealLevels = [10, 15, 20, 25, 30];
 
-  // Animations
+  // Attributs d'animation
   late final SpriteAnimation _idleAnimation;
   late final SpriteAnimation _crouchAnimation;
   late final SpriteAnimation _jumpAnimation;
@@ -35,24 +41,31 @@ class Player extends SpriteAnimationComponent
   late final SpriteAnimation _attackAnimation;
   late final SpriteAnimation _crouchAttackAnimation;
 
-  // Vitesse d'animation : plus c'est haut, plus c'est lent
-  final double _idleAnimationSpeed = 0.25;
-  final double _crouchAnimationSpeed = 0.25;
-  final double _jumpAnimationSpeed = 0.25;
+  // Attributs de vitesse d'animation
+  final double _idleAnimationSpeed = 0.15;
+  final double _crouchAnimationSpeed = 0.15;
+  final double _jumpAnimationSpeed = 0.15;
   final double _runAnimationSpeed = 0.08;
   final double _slideAnimationSpeed = 0.12;
-  final double _attackAnimationSpeed = 0.10;
-  final double _crouchAttackAnimationSpeed = 0.10;
+  late final double _attackAnimationSpeed;
+  late final double _crouchAttackAnimationSpeed;
+  final List<double> attackAnimationSpeedLevels = [
+    0.10,
+    0.09,
+    0.08,
+    0.07,
+    0.05
+  ];
 
-  // Vitesse de déplacement
+  // Attributs de déplacement
   final double _moveSpeed = 5;
   final double jumpMultiplier = 2.2;
   final double downMultiplier = 0.5;
-  final double xVelocityMax = 10;
+  late final double xMultiplier;
+  final List<double> xMultiplierLevels = [1, 1.1, 1.2, 1.3, 1.4];
   final double yVelocityMax = 8;
-  double fallingVelocity = 0;
 
-  // Attributs de collision
+  // Attributs d'états et de permissions
   bool facingRight = true;
   bool canJump = true;
   bool isJumping = false;
@@ -62,50 +75,49 @@ class Player extends SpriteAnimationComponent
   bool canAttack = true;
   bool isAttacking = false;
   bool jumpCooldown = false;
+  bool needSaturationUpdate = true;
+  bool isInvincible = false;
 
-  // Hitboxes effectives
+  // Attributs hitboxes effectives
   late RectangleHitbox topHitBox;
   late RectangleHitbox frontHitBox;
   late RectangleHitbox bottomHitBox;
 
-
-  // Hitboxes de référence pour le joueur debout
+  // Attributs hitboxes de référence pour le joueur debout
   final RectangleHitbox topHitBoxStandModel = (RectangleHitbox(
-    size: Vector2(28, 30),
-    position: Vector2(256 / 2 - 12, 16),
+    size: Vector2(18, 24),
+    position: Vector2(256 / 2 - 8, 16),
   ));
   final RectangleHitbox frontHitBoxStandModel = (RectangleHitbox(
-    size: Vector2(16, 82),
+    size: Vector2(16, 78),
     position: Vector2(256 / 2 + 16, 24),
+    isSolid: true,
   ));
   final RectangleHitbox bottomHitBoxStandModel = (RectangleHitbox(
-    size: Vector2(28, 30),
-    position: Vector2(256 / 2 - 12, 86),
+    size: Vector2(18, 30),
+    position: Vector2(256 / 2 - 8, 86),
+    isSolid: true,
   ));
 
-  // Hitboxes de référence pour le joueur accroupi
+  // Attributs hitboxes de référence pour le joueur accroupi
   final RectangleHitbox topHitBoxSlideModel = (RectangleHitbox(
-    size: Vector2(28, 30),
-    position: Vector2(256 / 2 - 12, 36),
+    size: Vector2(18, 24),
+    position: Vector2(256 / 2 - 8, 36),
   ));
   final RectangleHitbox frontHitBoxSlideModel = (RectangleHitbox(
-    size: Vector2(16, 40),
+    size: Vector2(16, 36),
     position: Vector2(256 / 2 + 16, 56),
+    isSolid: true,
   ));
   final RectangleHitbox bottomHitBoxSlideModel = (RectangleHitbox(
-    size: Vector2(28, 30),
-    position: Vector2(256 / 2 - 12, 86),
+    size: Vector2(18, 30),
+    position: Vector2(256 / 2 - 8, 86),
+    isSolid: true,
   ));
 
-  // Constructeur
-  Player() : super(size: Vector2(256, 128), anchor: Anchor.center);
-
-  // Ajout de l'animation par défaut et des hitboxes
-  @override
-  Future<void> onLoad() async {
-    super.onLoad();
-    await _loadAnimations().then((_) => {animation = _idleAnimation});
-
+  // Constructeur du joueur
+  Player() : super(size: Vector2(256, 128), anchor: Anchor.center) {
+    // Définition des hitboxes
     topHitBox = RectangleHitbox(
       size: topHitBoxStandModel.size,
       position: topHitBoxStandModel.position,
@@ -119,20 +131,53 @@ class Player extends SpriteAnimationComponent
       position: bottomHitBoxStandModel.position,
     );
 
+    // Définition des couleurs de debug
     topHitBox.debugMode = true;
     topHitBox.debugColor = Colors.red;
     bottomHitBox.debugMode = true;
     bottomHitBox.debugColor = Colors.red;
     frontHitBox.debugMode = true;
     frontHitBox.debugColor = Colors.orange;
-    
 
+    // Ajout des hitboxes au joueur
     add(topHitBox);
     add(bottomHitBox);
     add(frontHitBox);
   }
 
-// Paramètrages des animations pour le personnage
+  // Chargement des animations
+  @override
+  Future<void> onLoad() async {
+    super.onLoad();
+    // Récupération des améliorations
+
+    // maxHealth = healthLevels[((gameRef.compte?.persoVieMax)! - 1) ?? 0]; // Vie
+    maxHealth = (gameRef.compte?.persoVieMax != null)
+        ? healthLevels[gameRef.compte!.persoVieMax! - 1]
+        : healthLevels[0]; // Vie
+    // damageDeal =
+    //     damageDealLevels[((gameRef.compte?.persoForceMax)! - 1) ?? 0]; // Degats
+    damageDeal = (gameRef.compte?.persoForceMax != null)
+        ? damageDealLevels[gameRef.compte!.persoForceMax! - 1]
+        : damageDealLevels[0]; // Degats
+    // xMultiplier = xMultiplierLevels[((gameRef.compte?.persoVitesseMax)! - 1) ??
+    //     0]; // Vitesse de déplacement
+    xMultiplier = (gameRef.compte?.persoVitesseMax != null)
+        ? xMultiplierLevels[gameRef.compte!.persoVitesseMax! - 1]
+        : xMultiplierLevels[0]; // Vitesse de déplacement
+    // _attackAnimationSpeed = attackAnimationSpeedLevels[
+    //     ((gameRef.compte?.persoVitesseMax!)! - 1) ?? 0]; // Vitesse d'attaque
+    _attackAnimationSpeed = (gameRef.compte?.persoVitesseMax != null)
+        ? attackAnimationSpeedLevels[gameRef.compte!.persoVitesseMax! - 1]
+        : attackAnimationSpeedLevels[0]; // Vitesse d'attaque
+    // _crouchAttackAnimationSpeed = _attackAnimationSpeed;
+    _crouchAttackAnimationSpeed = _attackAnimationSpeed;
+
+    health = maxHealth;
+    await _loadAnimations().then((_) => {animation = _idleAnimation});
+  }
+
+  // Paramètrages des animations pour le personnage
   Future<void> _loadAnimations() async {
     final idleSpriteSheet = SpriteSheet.fromColumnsAndRows(
       image: await gameRef.images.load('character/Idle.png'),
@@ -198,19 +243,37 @@ class Player extends SpriteAnimationComponent
   int frame = 0;
   bool needFrameDisplay = true;
 
-  // dt pour delta time, c'est le temps de raffraichissement
+  // dt pour delta time, c'est le temps de rafraichissement
   @override
   void update(double dt) async {
     super.update(dt);
     frame++;
+    // print("health $health");
+    // print("_attackAnimationSpeed $_attackAnimationSpeed");
+    // print("_crouchAttackAnimationSpeed $_crouchAttackAnimationSpeed");
+    // print("xMultiplier $xMultiplier");
+    // print("damageDeal $damageDeal");
 
     if (canJump && (velocity.y + fallingVelocity) > 0) {
       canJump = false;
       isJumping = false;
     }
-    // print("can jump $canJump");
-    // print("velocity y : ${velocity.y}");
-    // print("chute : $fallingVelocity");
+
+    if (gameRef.currentLevelIter > 1 && health > 0) {
+      health--;
+
+      if (health == 0) {
+        gameRef.gameOver();
+      }
+
+      if (needSaturationUpdate) {
+        needSaturationUpdate = false;
+        saturation = (health / maxHealth) - 1;
+        await Future.delayed(const Duration(milliseconds: 500)).then((_) async {
+          needSaturationUpdate = true;
+        });
+      }
+    }
 
     if (needFrameDisplay) {
       needFrameDisplay = false;
@@ -261,7 +324,7 @@ class Player extends SpriteAnimationComponent
           velocity.y = -_moveSpeed * jumpMultiplier;
         }
         if (!frontHitBox.isColliding && !facingRight) {
-          velocity.x = -_moveSpeed;
+          velocity.x = -_moveSpeed * xMultiplier;
         } else {
           velocity.x = 0;
         }
@@ -272,7 +335,7 @@ class Player extends SpriteAnimationComponent
           velocity.y = -_moveSpeed * jumpMultiplier;
         }
         if (!frontHitBox.isColliding && facingRight) {
-          velocity.x = _moveSpeed;
+          velocity.x = _moveSpeed * xMultiplier;
         }
       } else if (isJumping) {
         if (!topHitBox.isColliding) {
@@ -292,7 +355,7 @@ class Player extends SpriteAnimationComponent
         case Direction.left:
           reduceHitBox(false);
           if (!frontHitBox.isColliding && !facingRight) {
-            velocity.x = -_moveSpeed;
+            velocity.x = -_moveSpeed * xMultiplier;
           } else {
             velocity.x = 0;
           }
@@ -301,7 +364,7 @@ class Player extends SpriteAnimationComponent
         case Direction.right:
           reduceHitBox(false);
           if (!frontHitBox.isColliding && facingRight) {
-            velocity.x = _moveSpeed;
+            velocity.x = _moveSpeed * xMultiplier;
           } else {
             velocity.x = 0;
           }
@@ -312,7 +375,7 @@ class Player extends SpriteAnimationComponent
             velocity.y = _moveSpeed * (downMultiplier / 2);
           }
           if (!frontHitBox.isColliding && !facingRight) {
-            velocity.x = -_moveSpeed;
+            velocity.x = -_moveSpeed * xMultiplier;
           } else {
             velocity.x = 0;
           }
@@ -323,7 +386,7 @@ class Player extends SpriteAnimationComponent
             velocity.y += _moveSpeed * (downMultiplier / 2);
           }
           if (!frontHitBox.isColliding && facingRight) {
-            velocity.x = _moveSpeed;
+            velocity.x = _moveSpeed * xMultiplier;
           } else {
             velocity.x = 0;
           }
@@ -341,23 +404,23 @@ class Player extends SpriteAnimationComponent
   @override
   void onCollision(intersectionPoints, other) async {
     super.onCollision(intersectionPoints, other);
-    if (topHitBox.isColliding) {
-      //print("top hit");
-      if (isJumping) {
-        isJumping = false;
+    if (other is! Coin) {
+      if (topHitBox.isColliding) {
+        print("topHitBox.isColliding");
+        if (isJumping) {
+          isJumping = false;
+        }
       }
-    }
-    if (bottomHitBox.isColliding) {
-      if (canJump == false && jumpCooldown == false) {
-        jumpCooldown = true;
-        await Future.delayed(Duration(milliseconds: 100)).then((_) async {
-          canJump = true;
-          jumpCooldown = false;
-        });
+      if (bottomHitBox.isColliding) {
+        if (canJump == false && jumpCooldown == false) {
+          jumpCooldown = true;
+          await Future.delayed(Duration(milliseconds: 100)).then((_) async {
+            canJump = true;
+            jumpCooldown = false;
+          });
+        }
       }
-    }
-    if (frontHitBox.isColliding) {
-      //print("front hit");
+      if (frontHitBox.isColliding) {}
     }
   }
 
@@ -392,6 +455,7 @@ class Player extends SpriteAnimationComponent
       while (!frontHitBox.isColliding && i <= velocity.x.abs()) {
         if (facingRight) {
           position.x += 1;
+          Transform.translate(offset: const Offset(1, 0));
         } else {
           position.x -= 1;
         }
@@ -451,17 +515,21 @@ class Player extends SpriteAnimationComponent
           animation = _attackAnimation;
           if (canAttack) {
             if (facingRight) {
-              gameRef.attackHitbox = AttackHitbox(Vector2(65, 80), Vector2(position.x, position.y - 40));
+              gameRef.attackHitbox = AttackHitbox(
+                  Vector2(65, 80), Vector2(position.x, position.y - 40));
             } else {
-              gameRef.attackHitbox = AttackHitbox(Vector2(65, 80), Vector2(position.x - 70, position.y - 40));
+              gameRef.attackHitbox = AttackHitbox(
+                  Vector2(65, 80), Vector2(position.x - 70, position.y - 40));
             }
             gameRef.add(gameRef.attackHitbox);
             canAttack = false;
           }
           _attackAnimation.onComplete = () {
+
             print("attack done");
             gameRef.attackHitbox!.removeFromParent();
             print("hitbox removed");
+
             isAttacking = false;
             canAttack = true;
             canSlide = true;
@@ -473,15 +541,16 @@ class Player extends SpriteAnimationComponent
           animation = _crouchAttackAnimation;
           if (canAttack) {
             if (facingRight) {
-              gameRef.attackHitbox = AttackHitbox(Vector2(65, 65), Vector2(position.x, position.y - 20));
+              gameRef.attackHitbox = AttackHitbox(
+                  Vector2(65, 65), Vector2(position.x, position.y - 20));
             } else {
-              gameRef.attackHitbox = AttackHitbox(Vector2(65, 65), Vector2(position.x - 70, position.y - 20));
+              gameRef.attackHitbox = AttackHitbox(
+                  Vector2(65, 65), Vector2(position.x - 70, position.y - 20));
             }
             gameRef.add(gameRef.attackHitbox);
             canAttack = false;
           }
           _crouchAttackAnimation.onComplete = () {
-            print("attack done");
             gameRef.remove(gameRef.attackHitbox);
             isAttacking = false;
             canAttack = true;
@@ -522,9 +591,7 @@ class Player extends SpriteAnimationComponent
     if (isInvincible) return;
     if ((health - degat) <= 0) {
       health = 0;
-      gameRef.pauseEngine();
-      gameRef.overlays.add(gameOver.ID);
-      gameRef.overlays.remove(Controll.ID);
+      gameRef.gameOver();
     } else {
       gameRef.camera.shake(intensity: 1, duration: 0.4);
       ColorEffect effect = ColorEffect(

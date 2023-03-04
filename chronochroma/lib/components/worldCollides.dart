@@ -8,6 +8,6 @@ class WorldCollides extends PositionComponent {
   @override
   Future<void>? onLoad() async {
     await super.onLoad();
-    add(RectangleHitbox());
+    add(RectangleHitbox(isSolid: true));
   }
 }

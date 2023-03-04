@@ -19,6 +19,9 @@ app.use(session({
 const userRouter = require('./router/user');
 app.use('/user', userRouter);
 
+const partieRouter = require('./router/partie');
+app.use('/partie', partieRouter);
+
 
 // Création des routes statiques
 app.use("/js",express.static('public/js'));

@@ -23,35 +23,33 @@ class _ControllState extends State<Controll> {
         ),
       ),
       Positioned(
-            bottom: 10,
-            right: 10,
-            child: Row(children: [
-              IconButton(
-                  icon: Image.asset('assets/images/icon/swordIcon.png'),
-                  iconSize: 100,
-                  onPressed: () => {
-                        if (widget.gameRef.player.canAttack)
-                          {widget.gameRef.player.isAttacking = true, print('attaque')}
-                        else
-                          {print('attaque impossible')}
-                      }),
-              IconButton(
-                  icon: Image.asset('assets/images/icon/jumpIcon.png'),
-                  iconSize: 100,
-                  onPressed: () => {
-                        if (widget.gameRef.player.canJump)
-                          {
-                            widget.gameRef.player.isJumping = true,
-                            widget.gameRef.player.canJump = false,
-                            print("Jump, jump, jump, everybody jump !")
-                          }
-                        else
-                          {print('saut impossible')}
-                      }),
-                ]),
-            
-            
-            ),
+        bottom: 10,
+        right: 10,
+        child: Row(children: [
+          IconButton(
+              icon: Image.asset('assets/images/icon/swordIcon.png'),
+              iconSize: 80,
+              onPressed: () => {
+                    if (widget.gameRef.player.canAttack)
+                      {
+                        widget.gameRef.player.isAttacking = true,
+                        print('attaque')
+                      }
+                    else
+                      {print('attaque impossible')}
+                  }),
+          IconButton(
+              icon: Image.asset('assets/images/icon/jumpIcon.png'),
+              iconSize: 80,
+              onPressed: () => {
+                    if (widget.gameRef.player.canJump)
+                      {
+                        widget.gameRef.player.isJumping = true,
+                        widget.gameRef.player.canJump = false,
+                      }
+                  }),
+        ]),
+      ),
     ]);
   }
 }

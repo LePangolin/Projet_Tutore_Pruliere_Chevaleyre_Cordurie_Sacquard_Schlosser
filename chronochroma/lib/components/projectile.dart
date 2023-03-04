@@ -13,18 +13,23 @@ class Projectile extends SpriteComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
   double x;
   double y;
-  late final SpriteAnimation _animation;
   Vector2 velocity = Vector2(2, 0);
-  int degat = 2;
   bool isLeft;
+  late final SpriteAnimation _animation;
+  late int degat;
+  late int speed;
+  final List speedLevels = [3, 3, 2, 2, 1];
 
   Projectile(this.x, this.y, this.isLeft) : super(size: Vector2(50, 24));
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+    degat = 50 + gameRef.currentLevelIter * 20;
+    speed = speedLevels[gameRef.compte?.persoVueMax ?? 0];
+
     sprite = await gameRef.loadSprite('arrow.png');
-    if(!isLeft){
+    if (!isLeft) {
       flipHorizontallyAroundCenter();
     }
     position = Vector2(x, y);
@@ -39,11 +44,10 @@ class Projectile extends SpriteComponent
   void update(double dt) async {
     super.update(dt);
     if (isLeft) {
-      position.x -= 1;
-    } else{
-      position.x += 1;
+      position.x -= speed;
+    } else {
+      position.x += speed;
     }
-    
   }
 
   @override
@@ -52,7 +56,7 @@ class Projectile extends SpriteComponent
     if (other is Player || other is WorldCollides || other is UnstableFloor) {
       removeFromParent();
     }
-    if(other is Player){
+    if (other is Player) {
       gameRef.player.subirDegat(degat);
     }
   }
