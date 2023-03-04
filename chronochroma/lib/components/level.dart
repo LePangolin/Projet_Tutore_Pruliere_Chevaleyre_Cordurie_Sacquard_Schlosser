@@ -5,6 +5,7 @@ import 'package:chronochroma/components/barrel.dart';
 import 'package:chronochroma/components/coin.dart';
 import 'package:chronochroma/components/fireTrap.dart';
 import 'package:chronochroma/components/monster.dart';
+import 'package:chronochroma/components/skeleton.dart';
 import 'package:chronochroma/components/nextLevelDoor.dart';
 import 'package:chronochroma/components/portalTeleportSpawn.dart';
 import 'package:chronochroma/components/returnSpawnObjects.dart';
@@ -82,6 +83,13 @@ class Level extends Component with HasGameRef<Chronochroma> {
     if (bebou != null) {
       for (final object in bebou.objects) {
         add(Monster(object));
+      }
+    }
+
+    final squelette = level.tileMap.getLayer<ObjectGroup>('squelette');
+    if (squelette != null) {
+      for (final object in squelette!.objects) {
+        add(Skeleton(object));
       }
     }
 

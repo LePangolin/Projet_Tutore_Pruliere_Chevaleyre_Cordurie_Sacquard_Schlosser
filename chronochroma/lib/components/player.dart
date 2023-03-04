@@ -525,7 +525,11 @@ class Player extends SpriteAnimationComponent
             canAttack = false;
           }
           _attackAnimation.onComplete = () {
-            gameRef.remove(gameRef.attackHitbox);
+
+            print("attack done");
+            gameRef.attackHitbox!.removeFromParent();
+            print("hitbox removed");
+
             isAttacking = false;
             canAttack = true;
             canSlide = true;

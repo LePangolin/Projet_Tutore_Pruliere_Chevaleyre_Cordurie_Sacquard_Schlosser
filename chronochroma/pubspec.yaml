@@ -50,6 +50,7 @@ flutter:
     - assets/images/button_ameliorations.png
     - assets/images/button_scores.png
     - assets/images/button_commencer.png
+    - assets/images/skeleton/
     - assets/images/avatar.png
     - assets/images/upgrades/atk.png
     - assets/images/upgrades/health.png
@@ -57,3 +58,4 @@ flutter:
     - assets/images/upgrades/vision.png
     - assets/images/upgrades/background.png
     - assets/images/FireTrap.png
+
