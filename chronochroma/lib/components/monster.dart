@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:chronochroma/chronochroma.dart';
+import 'package:chronochroma/components/attackHitbox.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
@@ -86,6 +87,11 @@ class Monster extends SpriteAnimationComponent
     super.onCollision(intersectionPoints, other);
     if (other is Player) {
       gameRef.player.subirDegat(degat);
+    } else if (other is AttackHitbox) {
+      health -= 25;
+      if (health <= 0) {
+        removeFromParent();
+      }
     }
   }
 }

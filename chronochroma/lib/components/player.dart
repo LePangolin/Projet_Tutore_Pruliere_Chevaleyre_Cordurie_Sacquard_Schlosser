@@ -460,7 +460,8 @@ class Player extends SpriteAnimationComponent
           }
           _attackAnimation.onComplete = () {
             print("attack done");
-            gameRef.remove(gameRef.attackHitbox);
+            gameRef.attackHitbox!.removeFromParent();
+            print("hitbox removed");
             isAttacking = false;
             canAttack = true;
             canSlide = true;

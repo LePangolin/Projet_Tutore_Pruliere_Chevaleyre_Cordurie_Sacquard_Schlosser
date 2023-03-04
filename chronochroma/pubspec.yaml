@@ -46,4 +46,6 @@ flutter:
     - assets/images/button_ameliorations.png
     - assets/images/button_scores.png
     - assets/images/button_commencer.png
+    - assets/images/skeleton/
+
 
