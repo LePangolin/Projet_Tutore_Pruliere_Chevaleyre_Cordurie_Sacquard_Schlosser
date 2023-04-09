@@ -15,7 +15,6 @@ import 'package:chronochroma/components/player.dart';
 
 class Skeleton extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
-
   int health = 25;
   bool needUpdate = true;
   final TiledObject skeleton;
@@ -48,8 +47,11 @@ class Skeleton extends SpriteAnimationComponent
     debugMode = true;
     debugColor = Colors.green;
 
-    skeletonHitbox = RectangleHitbox(size: Vector2(40, 90), position: Vector2(115, 80), anchor: Anchor.topLeft);
-    
+    skeletonHitbox = RectangleHitbox(
+        size: Vector2(40, 90),
+        position: Vector2(115, 80),
+        anchor: Anchor.topLeft);
+
     print(skeletonHitbox.position);
     priority = 1;
     skeletonHitbox.debugMode = true;
@@ -58,40 +60,40 @@ class Skeleton extends SpriteAnimationComponent
 
   Future<void> _loadAnimations() async {
     final idleSpriteSheet = await SpriteSheet.fromColumnsAndRows(
-      image: await gameRef.images.load('skeleton/Idle.png'),
+      image: await gameRef.images.load('monsters/skeleton/Idle.png'),
       columns: 4,
       rows: 1,
     );
 
     final attackSpriteSheet = await SpriteSheet.fromColumnsAndRows(
-      image: await gameRef.images.load('skeleton/Attack.png'),
+      image: await gameRef.images.load('monsters/skeleton/Attack.png'),
       columns: 8,
       rows: 1,
     );
 
     final deathSpriteSheet = await SpriteSheet.fromColumnsAndRows(
-      image: await gameRef.images.load('skeleton/Death.png'),
+      image: await gameRef.images.load('monsters/skeleton/Death.png'),
       columns: 4,
       rows: 1,
     );
 
     final hurtSpriteSheet = await SpriteSheet.fromColumnsAndRows(
-      image: await gameRef.images.load('skeleton/Hurt.png'),
+      image: await gameRef.images.load('monsters/skeleton/Hurt.png'),
       columns: 4,
       rows: 1,
     );
 
-    _idleAnimation =
-        idleSpriteSheet.createAnimation(row: 0, stepTime: _idleAnimationSpeed, from: 0, to: 3);
+    _idleAnimation = idleSpriteSheet.createAnimation(
+        row: 0, stepTime: _idleAnimationSpeed, from: 0, to: 3);
 
-    _attackAnimation =
-        attackSpriteSheet.createAnimation(row: 0, stepTime: _attackAnimationSpeed, from: 0, to: 7, loop: false);
+    _attackAnimation = attackSpriteSheet.createAnimation(
+        row: 0, stepTime: _attackAnimationSpeed, from: 0, to: 7, loop: false);
 
-    _deathAnimation =
-        deathSpriteSheet.createAnimation(row: 0, stepTime: _deathAnimationSpeed, from: 0, to: 3, loop: false);
+    _deathAnimation = deathSpriteSheet.createAnimation(
+        row: 0, stepTime: _deathAnimationSpeed, from: 0, to: 3, loop: false);
 
-    _hurtAnimation =
-        hurtSpriteSheet.createAnimation(row: 0, stepTime: _hurtAnimationSpeed, from: 0, to: 3, loop: false);
+    _hurtAnimation = hurtSpriteSheet.createAnimation(
+        row: 0, stepTime: _hurtAnimationSpeed, from: 0, to: 3, loop: false);
   }
 
   @override
@@ -108,7 +110,7 @@ class Skeleton extends SpriteAnimationComponent
       facingRight = false;
     }
 
-    if (isHurt) { 
+    if (isHurt) {
       animation = _hurtAnimation;
       _hurtAnimation.onComplete = () {
         _hurtAnimation.reset();
@@ -126,14 +128,16 @@ class Skeleton extends SpriteAnimationComponent
 
     // le squelette attaque toute les 2 secondes
     if (needUpdate && !isHurt) {
-      print ("needUpdate");
+      print("needUpdate");
       needUpdate = false;
       SkeletonAttackHitbox attackHitbox;
       if (!facingRight) {
-        attackHitbox = SkeletonAttackHitbox(Vector2(110, 70), Vector2(skeleton.x - 120, skeleton.y - 80));
+        attackHitbox = SkeletonAttackHitbox(
+            Vector2(110, 70), Vector2(skeleton.x - 120, skeleton.y - 80));
       } else {
-        attackHitbox = SkeletonAttackHitbox(Vector2(110, 70), Vector2(skeleton.x + 10, skeleton.y - 80));
-      }  
+        attackHitbox = SkeletonAttackHitbox(
+            Vector2(110, 70), Vector2(skeleton.x + 10, skeleton.y - 80));
+      }
       animation = _attackAnimation;
       _attackAnimation.onFrame = (frame) {
         if (frame == 5) {
@@ -151,17 +155,20 @@ class Skeleton extends SpriteAnimationComponent
             });
       };
     }
-    }
+  }
 
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
-    if (other is Player) { // Si le joueur entre en contact avec le squelette, le joueur prend des degats
+    if (other is Player) {
+      // Si le joueur entre en contact avec le squelette, le joueur prend des degats
       gameRef.player.subirDegat(degat);
-    } else if (other is AttackHitbox) { // Si le joueur attaque le squelette, le squelette prend des degats
+    } else if (other is AttackHitbox) {
+      // Si le joueur attaque le squelette, le squelette prend des degats
       health -= 5;
       isHurt = true;
-      if (health <= 0) { // Si le squelette n'a plus de vie, il meurt
+      if (health <= 0) {
+        // Si le squelette n'a plus de vie, il meurt
         isDead = true;
       }
     }

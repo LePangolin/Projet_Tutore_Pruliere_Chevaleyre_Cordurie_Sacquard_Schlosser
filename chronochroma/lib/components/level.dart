@@ -10,6 +10,7 @@ import 'package:chronochroma/components/nextLevelDoor.dart';
 import 'package:chronochroma/components/portalTeleportSpawn.dart';
 import 'package:chronochroma/components/returnSpawnObjects.dart';
 import 'package:chronochroma/components/unstableFloor.dart';
+import 'package:chronochroma/components/upwardTeleport.dart';
 import 'package:chronochroma/components/voidTeleportSpawn.dart';
 import 'package:chronochroma/components/worldCollides.dart';
 import 'package:flame/components.dart';
@@ -70,6 +71,14 @@ class Level extends Component with HasGameRef<Chronochroma> {
       }
     }
 
+    final upwardTeleport =
+        level.tileMap.getLayer<ObjectGroup>('upwardTeleport');
+    if (upwardTeleport != null) {
+      for (final object in upwardTeleport.objects) {
+        add(UpwardTeleport(object));
+      }
+    }
+
     // Récupère la layer void
     final voidTeleport = level.tileMap.getLayer<ObjectGroup>('void');
     if (voidTeleport != null) {
@@ -79,16 +88,16 @@ class Level extends Component with HasGameRef<Chronochroma> {
     }
 
 // Récupère la layer des monstres
-    final bebou = level.tileMap.getLayer<ObjectGroup>('bebou');
-    if (bebou != null) {
-      for (final object in bebou.objects) {
+    final bat = level.tileMap.getLayer<ObjectGroup>('bat');
+    if (bat != null) {
+      for (final object in bat.objects) {
         add(Monster(object));
       }
     }
 
-    final squelette = level.tileMap.getLayer<ObjectGroup>('squelette');
-    if (squelette != null) {
-      for (final object in squelette!.objects) {
+    final skeleton = level.tileMap.getLayer<ObjectGroup>('skeleton');
+    if (skeleton != null) {
+      for (final object in skeleton.objects) {
         add(Skeleton(object));
       }
     }

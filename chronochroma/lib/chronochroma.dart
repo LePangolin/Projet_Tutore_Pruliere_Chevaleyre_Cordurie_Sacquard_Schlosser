@@ -23,11 +23,9 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   Level? currentLevel;
   int currentLevelIter = 0;
   final List<String> _allLevelsList = [
-    'map-1.tmx',
-    'map-2.tmx',
-    'map-3.tmx',
-    'map-4.tmx',
-    'map-5.tmx',
+    'map-6.tmx',
+    'map-7.tmx',
+    'map-8.tmx',
   ];
 
   // on vérifie si c'est une seed "custom"
@@ -149,15 +147,17 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
 // dt pour delta time, c'est le temps de raffraichissement
   void updateGame(double dt) async {
-    try {
-      super.updateTree(dt);
-    } catch (e) {}
+    if (!paused) {
+      try {
+        super.updateTree(dt);
+      } catch (e) {}
 
-    super.update(dt);
+      super.update(dt);
 
-    await Future.delayed(Duration(milliseconds: 16)).then((_) async {
-      updateGame(0.016);
-    });
+      await Future.delayed(Duration(milliseconds: 16)).then((_) async {
+        updateGame(0.016);
+      });
+    }
   }
 
   @override
@@ -180,14 +180,15 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     overlays.add(GameOver.ID);
     overlays.remove(Controll.ID);
     player.saturation = 0;
-    if(win && !send){
-        int minutes = _stopwatch.elapsed.inMinutes;
-        int secondes = _stopwatch.elapsed.inSeconds - minutes * 60;
-      bool res = await Compte.sendPartie("${minutes}min ${secondes}sec", seed, setSeed);
-      if(res){
+    if (win && !send) {
+      int minutes = _stopwatch.elapsed.inMinutes;
+      int secondes = _stopwatch.elapsed.inSeconds - minutes * 60;
+      bool res = await Compte.sendPartie(
+          "${minutes}min ${secondes}sec", seed, setSeed);
+      if (res) {
         print("Partie envoyée");
-        send  = true;
-      }else{
+        send = true;
+      } else {
         print("Partie non envoyée");
       }
     }
@@ -205,6 +206,6 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   String chronometerMinutesSecondes() {
     int minutes = _stopwatch.elapsed.inMinutes;
     int secondes = _stopwatch.elapsed.inSeconds - minutes * 60;
-    return "$minutes minutes et ${secondes} secondes";
+    return "$minutes minutes et $secondes secondes";
   }
 }

@@ -34,7 +34,7 @@ class Coin extends SpriteAnimationComponent
 
   Future<void> _loadAnimations() async {
     final spriteSheet = SpriteSheet.fromColumnsAndRows(
-      image: await gameRef.images.load('spinningCoin.png'),
+      image: await gameRef.images.load('dynamic_elements/spinningCoin.png'),
       columns: 6,
       rows: 1,
     );

@@ -108,7 +108,7 @@ class _JoystickState extends State<Joystick> {
         width: 150,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/joystick_background.png'),
+            image: AssetImage('assets/images/icons/joystick_background.png'),
             fit: BoxFit.cover,
             opacity: 0.5,
           ),
@@ -121,7 +121,7 @@ class _JoystickState extends State<Joystick> {
               width: 75,
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/images/joystick_knob.png'),
+                  image: AssetImage('assets/images/icons/joystick_knob.png'),
                   fit: BoxFit.cover,
                   opacity: 0.5,
                 ),

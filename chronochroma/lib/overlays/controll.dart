@@ -27,7 +27,7 @@ class _ControllState extends State<Controll> {
         right: 10,
         child: Row(children: [
           IconButton(
-              icon: Image.asset('assets/images/icon/swordIcon.png'),
+              icon: Image.asset('assets/images/icons/swordIcon.png'),
               iconSize: 80,
               onPressed: () => {
                     if (widget.gameRef.player.canAttack)
@@ -39,7 +39,7 @@ class _ControllState extends State<Controll> {
                       {print('attaque impossible')}
                   }),
           IconButton(
-              icon: Image.asset('assets/images/icon/jumpIcon.png'),
+              icon: Image.asset('assets/images/icons/jumpIcon.png'),
               iconSize: 80,
               onPressed: () => {
                     if (widget.gameRef.player.canJump)
