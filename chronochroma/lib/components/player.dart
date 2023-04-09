@@ -131,11 +131,11 @@ class Player extends SpriteAnimationComponent
     );
 
     // Définition des couleurs de debug
-    topHitBox.debugMode = true;
+    topHitBox.debugMode = false;
     topHitBox.debugColor = Colors.red;
-    bottomHitBox.debugMode = true;
+    bottomHitBox.debugMode = false;
     bottomHitBox.debugColor = Colors.red;
-    frontHitBox.debugMode = true;
+    frontHitBox.debugMode = false;
     frontHitBox.debugColor = Colors.orange;
 
     // Ajout des hitboxes au joueur

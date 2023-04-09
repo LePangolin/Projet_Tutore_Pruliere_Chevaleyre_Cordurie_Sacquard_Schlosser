@@ -35,7 +35,7 @@ class FireTrap extends SpriteAnimationComponent
         anchor: Anchor.topLeft,
         position: Vector2(16, 64),
         isSolid: true);
-    hitbox.debugMode = true;
+    hitbox.debugMode = false;
     hitbox.isSolid = true;
     anchor = Anchor.bottomCenter;
   }

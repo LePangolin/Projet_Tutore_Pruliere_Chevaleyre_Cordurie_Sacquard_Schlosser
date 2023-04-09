@@ -25,7 +25,7 @@ abstract class ReturnSpawnObjects extends SpriteAnimationComponent
         size: Vector2(returnSpawnObjects.width, returnSpawnObjects.height),
         anchor: Anchor.topLeft,
         position: Vector2(returnSpawnObjects.x, returnSpawnObjects.y));
-    hitbox.debugMode = true;
+    hitbox.debugMode = false;
     hitbox.isSolid = true;
     add(hitbox);
     anchor = Anchor.topLeft;

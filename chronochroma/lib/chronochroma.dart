@@ -117,11 +117,11 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
         overlayComponent = SpriteComponent(
             sprite: await loadSprite('fadeBackground.jpg'),
             paint: Paint()..color = const Color.fromARGB(0, 0, 0, 0),
-            priority: 1000);
+            priority: 10);
         add(overlayComponent!);
 
         // On replace le joueur au dessus de la map et en dessous de la transition
-        player.priority = 1;
+        player.priority = 5;
         // attackHitbox.priority = 1;
 
         if (currentLevelIter == 1) {

@@ -27,7 +27,7 @@ class Coin extends SpriteAnimationComponent
         size: Vector2.all(32),
         anchor: Anchor.topLeft,
         position: Vector2(-4, -4));
-    hitbox.debugMode = true;
+    hitbox.debugMode = false;
     add(hitbox);
     anchor = Anchor.center;
   }

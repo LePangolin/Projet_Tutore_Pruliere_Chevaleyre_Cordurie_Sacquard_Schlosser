@@ -68,9 +68,9 @@
   <object id="340" name="Wall" x="2016" y="0" width="32" height="736"/>
  </objectgroup>
  <objectgroup id="21" name="upwardTeleport">
-  <object id="281" x="384" y="512" width="32" height="64">
+  <object id="281" x="400" y="544" width="16" height="64">
    <properties>
-    <property name="upLevel" type="float" value="10"/>
+    <property name="upLevel" type="float" value="12"/>
    </properties>
   </object>
  </objectgroup>

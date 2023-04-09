@@ -21,7 +21,7 @@ class UnstableFloor extends SpriteComponent
     RectangleHitbox hitbox = RectangleHitbox(
       size: Vector2(unstableFloor.width, unstableFloor.height),
     );
-    hitbox.debugMode = true;
+    hitbox.debugMode = false;
     add(hitbox);
     anchor = Anchor.topLeft;
   }

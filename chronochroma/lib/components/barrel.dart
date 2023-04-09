@@ -20,7 +20,7 @@ class Barrel extends SpriteComponent
     size = Vector2.all(32);
     position = Vector2(barrel.x, barrel.y);
     RectangleHitbox hitbox = RectangleHitbox(size: Vector2.all(32));
-    hitbox.debugMode = true;
+    hitbox.debugMode = false;
     hitbox.isSolid = true;
     add(hitbox);
     anchor = Anchor.center;

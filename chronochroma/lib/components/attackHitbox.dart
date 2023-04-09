@@ -8,14 +8,14 @@ import 'skeleton.dart';
 
 class AttackHitbox extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
-  
   final RectangleHitbox hitbox;
-  AttackHitbox(size, position) : hitbox = RectangleHitbox(size : size, position : position);
+  AttackHitbox(size, position)
+      : hitbox = RectangleHitbox(size: size, position: position);
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    hitbox.debugMode = true;
+    hitbox.debugMode = false;
     hitbox.debugColor = Colors.green;
     hitbox.isSolid = true;
     anchor = Anchor.center;
@@ -26,11 +26,10 @@ class AttackHitbox extends SpriteAnimationComponent
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
     if (other is Skeleton || other is Monster) {
-      // if has parent 
-      if (parent != null){
-      removeFromParent();
+      // if has parent
+      if (parent != null) {
+        removeFromParent();
       }
     }
   }
 }
-

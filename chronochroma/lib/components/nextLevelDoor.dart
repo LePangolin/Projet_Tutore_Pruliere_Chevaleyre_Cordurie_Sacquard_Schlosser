@@ -28,7 +28,7 @@ class NextLevelDoor extends SpriteAnimationComponent
         size: Vector2(nextLevelDoor.width, nextLevelDoor.height),
         anchor: Anchor.topLeft,
         position: Vector2(64, 40));
-    hitbox.debugMode = true;
+    hitbox.debugMode = false;
     add(hitbox);
     anchor = Anchor.centerRight;
   }
@@ -92,6 +92,7 @@ class NextLevelDoor extends SpriteAnimationComponent
           Future.delayed(const Duration(seconds: 1), () {
             // Charge le niveau suivant
             gameRef.loadLevel();
+            gameRef.player.priority = 20;
           });
         });
       }

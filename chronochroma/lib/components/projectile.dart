@@ -36,7 +36,7 @@ class Projectile extends SpriteComponent
     anchor = Anchor.center;
     RectangleHitbox hitbox = RectangleHitbox(size: Vector2(50, 24));
 
-    hitbox.debugMode = true;
+    hitbox.debugMode = false;
     add(hitbox);
   }
 

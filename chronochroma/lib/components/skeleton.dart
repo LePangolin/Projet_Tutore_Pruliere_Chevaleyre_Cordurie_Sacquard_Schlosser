@@ -44,7 +44,7 @@ class Skeleton extends SpriteAnimationComponent
     await _loadAnimations().then((_) => {animation = _idleAnimation});
     position = Vector2(skeleton.x, skeleton.y + 90);
     anchor = Anchor.bottomCenter;
-    debugMode = true;
+    debugMode = false;
     debugColor = Colors.green;
 
     skeletonHitbox = RectangleHitbox(
@@ -54,7 +54,7 @@ class Skeleton extends SpriteAnimationComponent
 
     print(skeletonHitbox.position);
     priority = 1;
-    skeletonHitbox.debugMode = true;
+    skeletonHitbox.debugMode = false;
     add(skeletonHitbox);
   }
 

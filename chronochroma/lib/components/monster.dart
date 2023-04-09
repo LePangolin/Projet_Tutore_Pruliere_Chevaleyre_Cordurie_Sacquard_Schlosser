@@ -46,7 +46,7 @@ class Monster extends SpriteAnimationComponent
     anchor = Anchor.center;
     RectangleHitbox hitbox = RectangleHitbox(size: Vector2(32, 32));
 
-    hitbox.debugMode = true;
+    hitbox.debugMode = false;
     add(hitbox);
   }
 
