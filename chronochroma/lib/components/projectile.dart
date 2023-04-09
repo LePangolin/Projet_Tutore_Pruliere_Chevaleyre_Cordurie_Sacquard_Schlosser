@@ -28,7 +28,7 @@ class Projectile extends SpriteComponent
     degat = 50 + gameRef.currentLevelIter * 20;
     speed = speedLevels[gameRef.compte?.persoVueMax ?? 0];
 
-    sprite = await gameRef.loadSprite('arrow.png');
+    sprite = await gameRef.loadSprite('monsters/bat/arrow.png');
     if (!isLeft) {
       flipHorizontallyAroundCenter();
     }

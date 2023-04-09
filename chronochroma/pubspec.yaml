@@ -31,17 +31,28 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
-    - assets/images/joystick_background.png
-    - assets/images/joystick_knob.png
-    - assets/images/grass/
     - assets/images/character/
-    - assets/images/icon/
-    - assets/audio/
-    - assets/tiles/
+    - assets/images/dynamic_elements/FireTrap.png
+    - assets/images/dynamic_elements/barrel.png
+    - assets/images/dynamic_elements/redPortal.png
+    - assets/images/dynamic_elements/spinningCoin.png
+    - assets/images/dynamic_elements/upPortal.png
+    - assets/images/dynamic_elements/placeholder.png
+    - assets/images/icons/joystick_background.png
+    - assets/images/icons/joystick_knob.png
+    - assets/images/icons/swordIcon.png
+    - assets/images/icons/jumpIcon.png
+    - assets/images/levels/bg/
+    - assets/images/levels/visualAssets/
+    - assets/images/monsters/bat/32x32-bat-sprite.png
+    - assets/images/monsters/bat/arrow.png
+    - assets/images/monsters/skeleton/
     - assets/images/upgrades/
-    - assets/images/idle.gif
-    - assets/images/character/32x32-bat-sprite.png
-    - assets/images/arrow.png
+    - assets/images/upgrades/atk.png
+    - assets/images/upgrades/health.png
+    - assets/images/upgrades/speed.png
+    - assets/images/upgrades/vision.png
+    - assets/images/upgrades/background.png
     - assets/images/gameOver.png
     - assets/images/logoMEILLEUREVER.png
     - assets/images/button_quitter.png
@@ -50,12 +61,6 @@ flutter:
     - assets/images/button_ameliorations.png
     - assets/images/button_scores.png
     - assets/images/button_commencer.png
-    - assets/images/skeleton/
     - assets/images/avatar.png
-    - assets/images/upgrades/atk.png
-    - assets/images/upgrades/health.png
-    - assets/images/upgrades/speed.png
-    - assets/images/upgrades/vision.png
-    - assets/images/upgrades/background.png
-    - assets/images/FireTrap.png
-
+    - assets/audio/
+    - assets/tiles/

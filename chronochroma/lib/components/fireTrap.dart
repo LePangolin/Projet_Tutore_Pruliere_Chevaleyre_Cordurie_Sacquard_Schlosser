@@ -42,7 +42,7 @@ class FireTrap extends SpriteAnimationComponent
 
   Future<void> _loadAnimations() async {
     final spriteSheet = SpriteSheet.fromColumnsAndRows(
-      image: await gameRef.images.load('FireTrap.png'),
+      image: await gameRef.images.load('dynamic_elements/FireTrap.png'),
       columns: 9,
       rows: 1,
     );

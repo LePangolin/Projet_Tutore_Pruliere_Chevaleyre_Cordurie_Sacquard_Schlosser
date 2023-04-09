@@ -22,7 +22,6 @@ class Player extends SpriteAnimationComponent
   late final int maxHealth;
   final List<int> healthLevels = [1700, 2500, 3500, 4500, 5600];
 
-
   // Attributs de direction et d'effets
   final double gravity = 1.03;
   Vector2 velocity = Vector2(0, 0);
@@ -525,7 +524,6 @@ class Player extends SpriteAnimationComponent
             canAttack = false;
           }
           _attackAnimation.onComplete = () {
-
             print("attack done");
             gameRef.attackHitbox!.removeFromParent();
             print("hitbox removed");
@@ -585,6 +583,10 @@ class Player extends SpriteAnimationComponent
   // Téléporte le personnage à la position donnée
   void teleport(Vector2 position) {
     this.position = position;
+  }
+
+  void teleportRelative(Vector2 position) {
+    this.position += position;
   }
 
   Future<void> subirDegat(int degat) async {

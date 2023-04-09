@@ -52,7 +52,7 @@ class Monster extends SpriteAnimationComponent
 
   Future<void> _loadAnimations() async {
     final spriteSheet = await SpriteSheet.fromColumnsAndRows(
-      image: await gameRef.images.load('character/32x32-bat-sprite.png'),
+      image: await gameRef.images.load('monsters/bat/32x32-bat-sprite.png'),
       columns: 4,
       rows: 4,
     );
@@ -91,7 +91,7 @@ class Monster extends SpriteAnimationComponent
     super.onCollision(intersectionPoints, other);
 
     if (other is Player) {
-      gameRef.player.subirDegat(degat);
+      gameRef.player.subirDegat(1);
     } else if (other is AttackHitbox) {
       health -= 25;
       if (health <= 0) {

@@ -14,7 +14,7 @@ class UnstableFloor extends SpriteComponent
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    sprite = await gameRef.loadSprite('grass/dirt.png')
+    sprite = await gameRef.loadSprite('dynamic_elements/placeholder.png')
       ..srcSize = Vector2.all(32);
     size = Vector2(unstableFloor.width, unstableFloor.height);
     position = Vector2(unstableFloor.x, unstableFloor.y);

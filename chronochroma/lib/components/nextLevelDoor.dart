@@ -35,7 +35,7 @@ class NextLevelDoor extends SpriteAnimationComponent
 
   Future<void> _loadAnimations() async {
     final spriteSheet = SpriteSheet.fromColumnsAndRows(
-      image: await gameRef.images.load('redPortal.png'),
+      image: await gameRef.images.load('dynamic_elements/redPortal.png'),
       columns: 8,
       rows: 3,
     );

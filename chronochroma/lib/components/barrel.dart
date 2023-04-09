@@ -15,7 +15,7 @@ class Barrel extends SpriteComponent
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    sprite = await gameRef.loadSprite('barrel.png')
+    sprite = await gameRef.loadSprite('dynamic_elements/barrel.png')
       ..srcSize = Vector2.all(32);
     size = Vector2.all(32);
     position = Vector2(barrel.x, barrel.y);
