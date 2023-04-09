@@ -1,4 +1,4 @@
-import 'package:chronochroma/screens/chronochroma.dart';
+import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/components/entities/attack_hitbox.dart';
 import 'package:chronochroma/components/map/coin.dart';
 import 'package:chronochroma/helpers/directions.dart';
@@ -271,7 +271,6 @@ class Player extends SpriteAnimationComponent
     if (needFrameDisplay) {
       needFrameDisplay = false;
       await Future.delayed(const Duration(milliseconds: 1000)).then((_) async {
-        // print(frame);
         frame = 0;
         needFrameDisplay = true;
       });

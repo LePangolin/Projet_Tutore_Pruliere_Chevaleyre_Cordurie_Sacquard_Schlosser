@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import './../helpers/controller.dart';
-import '../screens/chronochroma.dart';
+import '../chronochroma.dart';
 
 class Controll extends StatefulWidget {
   final Chronochroma gameRef;

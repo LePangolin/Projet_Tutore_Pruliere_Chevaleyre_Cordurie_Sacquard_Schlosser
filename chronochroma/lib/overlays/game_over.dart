@@ -1,7 +1,4 @@
-import 'package:chronochroma/screens/chronochroma.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import '../screens/chronochroma.dart';
+import 'package:chronochroma/chronochroma.dart';
 import 'package:flutter/material.dart';
 
 class GameOver extends StatefulWidget {

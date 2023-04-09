@@ -8,10 +8,10 @@ import 'package:flame/flame.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import '../components/compte.dart';
-import '../components/entities/player.dart';
-import '../overlays/controll.dart';
-import '../overlays/game_over.dart';
+import 'components/compte.dart';
+import 'components/entities/player.dart';
+import 'overlays/controll.dart';
+import 'overlays/game_over.dart';
 
 class Chronochroma extends FlameGame with HasCollisionDetection {
   final Player player = Player();
@@ -30,7 +30,6 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
   bool send = false;
 
-  // random betweeen 100000 and 999999
   int seed;
   late final PseudoRandomNG pseudoRandomNG;
   late List<String> _effectiveLevelList;
@@ -41,7 +40,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
   SpriteComponent? overlayComponent;
 
-  // constructor
+  // Constructeur
   Chronochroma({this.seed = 0}) {
     if (seed != 0) {
       setSeed = true;
@@ -119,7 +118,6 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
         // On replace le joueur au dessus de la map et en dessous de la transition
         player.priority = 5;
-        // attackHitbox.priority = 1;
 
         if (currentLevelIter == 1) {
           _stopwatch.start();

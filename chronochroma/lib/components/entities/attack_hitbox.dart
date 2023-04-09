@@ -1,4 +1,4 @@
-import 'package:chronochroma/screens/chronochroma.dart';
+import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/components/entities/bat.dart';
 import 'package:chronochroma/components/entities/skeleton.dart';
 import 'package:flame/collisions.dart';

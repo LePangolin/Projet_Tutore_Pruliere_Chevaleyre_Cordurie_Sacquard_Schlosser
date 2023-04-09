@@ -1,4 +1,4 @@
-import 'package:chronochroma/screens/chronochroma.dart';
+import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/components/map/barrel.dart';
 import 'package:chronochroma/components/map/coin.dart';
 import 'package:chronochroma/components/map/fire_trap.dart';
@@ -20,7 +20,6 @@ class Level extends Component with HasGameRef<Chronochroma> {
 
   Level(this.name) : super();
 
-  @override
   Future<void> load() async {
     level = await TiledComponent.load(name, Vector2.all(32));
     add(level);

@@ -1,4 +1,4 @@
-import 'package:chronochroma/screens/chronochroma.dart';
+import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/components/entities/attack_hitbox.dart';
 import 'package:chronochroma/components/entities/skeleton_attack_hitbox.dart';
 import 'package:flame/collisions.dart';
@@ -47,32 +47,31 @@ class Skeleton extends SpriteAnimationComponent
         position: Vector2(115, 80),
         anchor: Anchor.topLeft);
 
-    print(skeletonHitbox.position);
     priority = 1;
     skeletonHitbox.debugMode = false;
     add(skeletonHitbox);
   }
 
   Future<void> _loadAnimations() async {
-    final idleSpriteSheet = await SpriteSheet.fromColumnsAndRows(
+    final idleSpriteSheet = SpriteSheet.fromColumnsAndRows(
       image: await gameRef.images.load('monsters/skeleton/Idle.png'),
       columns: 4,
       rows: 1,
     );
 
-    final attackSpriteSheet = await SpriteSheet.fromColumnsAndRows(
+    final attackSpriteSheet = SpriteSheet.fromColumnsAndRows(
       image: await gameRef.images.load('monsters/skeleton/Attack.png'),
       columns: 8,
       rows: 1,
     );
 
-    final deathSpriteSheet = await SpriteSheet.fromColumnsAndRows(
+    final deathSpriteSheet = SpriteSheet.fromColumnsAndRows(
       image: await gameRef.images.load('monsters/skeleton/Death.png'),
       columns: 4,
       rows: 1,
     );
 
-    final hurtSpriteSheet = await SpriteSheet.fromColumnsAndRows(
+    final hurtSpriteSheet = SpriteSheet.fromColumnsAndRows(
       image: await gameRef.images.load('monsters/skeleton/Hurt.png'),
       columns: 4,
       rows: 1,
@@ -123,7 +122,6 @@ class Skeleton extends SpriteAnimationComponent
 
     // le squelette attaque toute les 2 secondes
     if (needUpdate && !isHurt) {
-      print("needUpdate");
       needUpdate = false;
       SkeletonAttackHitbox attackHitbox;
       if (!facingRight) {
@@ -140,13 +138,11 @@ class Skeleton extends SpriteAnimationComponent
         }
       };
       _attackAnimation.onComplete = () {
-        print("attack complete");
         _attackAnimation.reset();
         attackHitbox.removeFromParent();
         animation = _idleAnimation;
-        Future.delayed(Duration(seconds: 5)).then((_) => {
+        Future.delayed(const Duration(seconds: 5)).then((_) => {
               needUpdate = true,
-              print("salam"),
             });
       };
     }

@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:chronochroma/screens/chronochroma.dart';
+import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/components/entities/player.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
@@ -14,7 +14,7 @@ class NextLevelDoor extends SpriteAnimationComponent
   bool _isPresent = true;
   late final SpriteAnimation _baseAnimation;
   late final SpriteAnimation _fadeAnimation;
-  late SpriteAnimation _animation = _baseAnimation;
+  late final SpriteAnimation _animation = _baseAnimation;
 
   NextLevelDoor(this.nextLevelDoor);
 
@@ -43,7 +43,6 @@ class NextLevelDoor extends SpriteAnimationComponent
     _baseAnimation =
         spriteSheet.createAnimation(row: 0, stepTime: 0.1, from: 0, to: 7);
 
-    // fade animation that don't loop
     _fadeAnimation = spriteSheet.createAnimation(
         row: 2, stepTime: 0.2, from: 0, to: 7, loop: false);
   }

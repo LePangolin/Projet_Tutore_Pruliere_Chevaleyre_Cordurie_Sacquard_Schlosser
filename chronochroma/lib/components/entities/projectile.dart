@@ -1,4 +1,4 @@
-import 'package:chronochroma/screens/chronochroma.dart';
+import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/components/map/unstable_floor.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
@@ -7,7 +7,9 @@ import 'package:chronochroma/components/entities/player.dart';
 
 class Projectile extends SpriteComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
+  @override
   double x;
+  @override
   double y;
   Vector2 velocity = Vector2(2, 0);
   bool isLeft;

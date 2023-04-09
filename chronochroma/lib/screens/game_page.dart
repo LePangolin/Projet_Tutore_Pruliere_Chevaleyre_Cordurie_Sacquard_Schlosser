@@ -5,7 +5,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:themed/themed.dart';
 
-import 'chronochroma.dart';
+import '../chronochroma.dart';
 import '../overlays/game_over.dart';
 
 class GamePage extends StatefulWidget {

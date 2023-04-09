@@ -1,13 +1,8 @@
-import 'dart:ui';
-
-import 'package:chronochroma/screens/chronochroma.dart';
+import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/components/entities/player.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/effects.dart';
-import 'package:flame/sprite.dart';
 import 'package:flame_tiled/flame_tiled.dart';
-import 'package:flutter/material.dart';
 
 abstract class ReturnSpawnObjects extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
