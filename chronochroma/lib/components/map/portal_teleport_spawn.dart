@@ -1,9 +1,6 @@
 import 'dart:ui';
 
-import 'package:chronochroma/chronochroma.dart';
-import 'package:chronochroma/components/player.dart';
-import 'package:chronochroma/components/returnSpawnObjects.dart';
-import 'package:flame/collisions.dart';
+import 'package:chronochroma/components/map/return_spawn_objects.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/sprite.dart';

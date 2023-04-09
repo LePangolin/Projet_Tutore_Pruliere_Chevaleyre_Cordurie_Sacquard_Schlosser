@@ -3,7 +3,7 @@ import 'package:chronochroma/components/signIn.dart';
 import 'package:chronochroma/components/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'components/compte.dart';
+import '../components/compte.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});

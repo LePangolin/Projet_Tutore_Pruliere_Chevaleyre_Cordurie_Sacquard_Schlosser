@@ -1,7 +1,7 @@
-import 'package:chronochroma/chronochroma.dart';
+import 'package:chronochroma/screens/chronochroma.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import '../chronochroma.dart';
+import '../screens/chronochroma.dart';
 import 'package:flutter/material.dart';
 
 class GameOver extends StatefulWidget {
@@ -42,7 +42,7 @@ class _GameOverState extends State<GameOver> {
                   margin: const EdgeInsets.only(top: 20),
                   child: Text(
                     'Score: ${widget.gameRef.endGameReward()}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
                     ),
@@ -52,7 +52,7 @@ class _GameOverState extends State<GameOver> {
                   margin: const EdgeInsets.only(top: 20, left: 20),
                   child: Text(
                     'Temps: ${widget.gameRef.chronometerMinutesSecondes()}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
                     ),
@@ -77,9 +77,10 @@ class _GameOverState extends State<GameOver> {
                       icon: Image.asset('assets/images/button_rejouer.png'),
                       iconSize: MediaQuery.of(context).size.width * 0.17,
                       onPressed: () {
-                        if(widget.gameRef.setSeed){
-                          Navigator.popAndPushNamed(context, '/game', arguments: widget.gameRef.seed);
-                        }else{
+                        if (widget.gameRef.setSeed) {
+                          Navigator.popAndPushNamed(context, '/game',
+                              arguments: widget.gameRef.seed);
+                        } else {
                           Navigator.popAndPushNamed(context, '/game');
                         }
                       },

@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:chronochroma/chronochroma.dart';
-import 'package:chronochroma/components/player.dart';
+import 'package:chronochroma/screens/chronochroma.dart';
+import 'package:chronochroma/components/entities/player.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
@@ -81,8 +81,8 @@ class NextLevelDoor extends SpriteAnimationComponent
           gameRef.overlayComponent?.add(
             ColorEffect(
               const Color.fromARGB(255, 0, 0, 0),
-              const Offset(0.0, 1),
-              EffectController(duration: 0.5),
+              const Offset(0.0, 0.8),
+              EffectController(duration: 1),
             ),
           );
           gameRef.overlayComponent

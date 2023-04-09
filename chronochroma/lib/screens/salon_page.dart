@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:chronochroma/components/compte.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'components/signIn.dart';
-import 'components/signup.dart';
+import '../components/signIn.dart';
+import '../components/signup.dart';
 
 class SalonPage extends StatefulWidget {
   const SalonPage({super.key, required this.title});
@@ -34,11 +33,9 @@ class _SalonPageState extends State<SalonPage> {
 
   late bool isImage;
 
-
   bool insciptionTab = false;
 
   String? seed;
-
 
   bool _ableToReachInternet = false;
 
@@ -87,7 +84,7 @@ class _SalonPageState extends State<SalonPage> {
 
   Future<void> _checkInternetConnectivity() async {
     _ableToReachInternet = await Compte.checkConnexion();
-    if (_ableToReachInternet!) {
+    if (_ableToReachInternet) {
       if (snackshow) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         snackshow = false;
@@ -308,12 +305,13 @@ class _SalonPageState extends State<SalonPage> {
                                               Navigator.pushNamed(
                                                   context, '/game');
                                             } else {
-                                              RegExp regExp = RegExp(r'^\d{6}$');
-                                              if(!regExp.hasMatch(seed!)) {
+                                              RegExp regExp =
+                                                  RegExp(r'^\d{6}$');
+                                              if (!regExp.hasMatch(seed!)) {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(const SnackBar(
-                                                    content: Text(
-                                                        'La seed doit être un nombre à 6 chiffres')));
+                                                        content: Text(
+                                                            'La seed doit être un nombre à 6 chiffres')));
                                                 return;
                                               }
                                               Navigator.pop(context);

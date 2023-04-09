@@ -1,18 +1,13 @@
-import 'dart:developer';
-
-import 'package:chronochroma/chronochroma.dart';
-import 'package:chronochroma/components/attackHitbox.dart';
-import 'package:chronochroma/helpers/directions.dart';
+import 'package:chronochroma/screens/chronochroma.dart';
+import 'package:chronochroma/components/entities/attack_hitbox.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_tiled/flame_tiled.dart';
-import 'package:flutter/material.dart';
-import 'worldCollides.dart';
-import 'package:chronochroma/components/projectile.dart';
-import 'package:chronochroma/components/player.dart';
+import 'package:chronochroma/components/entities/projectile.dart';
+import 'package:chronochroma/components/entities/player.dart';
 
-class Monster extends SpriteAnimationComponent
+class Bat extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
   int health = 25;
   bool needUpdate = true;
@@ -24,7 +19,7 @@ class Monster extends SpriteAnimationComponent
   late int atkDelay;
   final List<int> atkDelayLevels = [3000, 3500, 4000, 5000, 6000];
 
-  Monster(this.monster) : super(size: Vector2(32, 32));
+  Bat(this.monster) : super(size: Vector2(32, 32));
 
   @override
   Future<void> onLoad() async {
@@ -51,7 +46,7 @@ class Monster extends SpriteAnimationComponent
   }
 
   Future<void> _loadAnimations() async {
-    final spriteSheet = await SpriteSheet.fromColumnsAndRows(
+    final spriteSheet = SpriteSheet.fromColumnsAndRows(
       image: await gameRef.images.load('monsters/bat/32x32-bat-sprite.png'),
       columns: 4,
       rows: 4,

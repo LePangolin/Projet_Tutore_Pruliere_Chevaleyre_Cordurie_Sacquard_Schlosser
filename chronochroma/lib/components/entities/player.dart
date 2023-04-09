@@ -1,18 +1,12 @@
-import 'dart:developer';
-
-import 'package:chronochroma/chronochroma.dart';
-import 'package:chronochroma/components/attackHitbox.dart';
-import 'package:chronochroma/components/coin.dart';
+import 'package:chronochroma/screens/chronochroma.dart';
+import 'package:chronochroma/components/entities/attack_hitbox.dart';
+import 'package:chronochroma/components/map/coin.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
-import '../overlays/controll.dart';
-import 'worldCollides.dart';
-import '../overlays/gameOver.dart';
-import 'attackHitbox.dart';
 
 class Player extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
@@ -276,7 +270,7 @@ class Player extends SpriteAnimationComponent
 
     if (needFrameDisplay) {
       needFrameDisplay = false;
-      await Future.delayed(Duration(milliseconds: 1000)).then((_) async {
+      await Future.delayed(const Duration(milliseconds: 1000)).then((_) async {
         // print(frame);
         frame = 0;
         needFrameDisplay = true;
@@ -405,7 +399,6 @@ class Player extends SpriteAnimationComponent
     super.onCollision(intersectionPoints, other);
     if (other is! Coin) {
       if (topHitBox.isColliding) {
-        print("topHitBox.isColliding");
         if (isJumping) {
           isJumping = false;
         }
@@ -413,7 +406,8 @@ class Player extends SpriteAnimationComponent
       if (bottomHitBox.isColliding) {
         if (canJump == false && jumpCooldown == false) {
           jumpCooldown = true;
-          await Future.delayed(Duration(milliseconds: 100)).then((_) async {
+          await Future.delayed(const Duration(milliseconds: 100))
+              .then((_) async {
             canJump = true;
             jumpCooldown = false;
           });
@@ -524,9 +518,7 @@ class Player extends SpriteAnimationComponent
             canAttack = false;
           }
           _attackAnimation.onComplete = () {
-            print("attack done");
-            gameRef.attackHitbox!.removeFromParent();
-            print("hitbox removed");
+            gameRef.attackHitbox.removeFromParent();
 
             isAttacking = false;
             canAttack = true;
@@ -597,7 +589,7 @@ class Player extends SpriteAnimationComponent
     } else {
       gameRef.camera.shake(intensity: 1, duration: 0.4);
       ColorEffect effect = ColorEffect(
-          Color.fromARGB(255, 212, 8, 8),
+          const Color.fromARGB(255, 212, 8, 8),
           const Offset(0.0, 0.5),
           EffectController(
             duration: 0.4,
@@ -606,10 +598,11 @@ class Player extends SpriteAnimationComponent
       add(effect);
       health -= degat;
       isInvincible = true;
-      await Future.delayed(Duration(milliseconds: 1000))
+      await Future.delayed(const Duration(milliseconds: 1000))
           .then((_) => isInvincible = false);
     }
   }
 
+  @override
   double get x => position.x;
 }

@@ -1,13 +1,9 @@
-import 'package:chronochroma/chronochroma.dart';
-import 'package:chronochroma/components/unstableFloor.dart';
-import 'package:chronochroma/helpers/directions.dart';
+import 'package:chronochroma/screens/chronochroma.dart';
+import 'package:chronochroma/components/map/unstable_floor.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/sprite.dart';
-import 'package:flame_tiled/flame_tiled.dart';
-import 'package:flutter/material.dart';
-import 'worldCollides.dart';
-import 'package:chronochroma/components/player.dart';
+import '../map/world_collides.dart';
+import 'package:chronochroma/components/entities/player.dart';
 
 class Projectile extends SpriteComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
@@ -15,7 +11,6 @@ class Projectile extends SpriteComponent
   double y;
   Vector2 velocity = Vector2(2, 0);
   bool isLeft;
-  late final SpriteAnimation _animation;
   late int degat;
   late int speed;
   final List speedLevels = [3, 3, 2, 2, 1];

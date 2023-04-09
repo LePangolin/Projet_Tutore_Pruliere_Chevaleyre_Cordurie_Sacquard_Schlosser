@@ -1,9 +1,8 @@
-import 'package:chronochroma/chronochroma.dart';
-import 'package:chronochroma/components/attackHitbox.dart';
+import 'package:chronochroma/screens/chronochroma.dart';
+import 'package:chronochroma/components/entities/attack_hitbox.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
-import 'player.dart';
 
 class Barrel extends SpriteComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {

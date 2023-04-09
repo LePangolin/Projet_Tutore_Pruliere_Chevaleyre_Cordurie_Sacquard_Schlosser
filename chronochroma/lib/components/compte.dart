@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:chronochroma/components/characterUpgrades.dart';
+import 'package:chronochroma/helpers/character_upgrades.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -199,13 +199,20 @@ class Compte {
     }
   }
 
-  static Future<bool> sendPartie(String score,  int seed, bool custom) async {
+  static Future<bool> sendPartie(String score, int seed, bool custom) async {
     if (!await checkConnexion()) {
       return false;
     }
     print(custom.toString());
     print(seed.toString());
-    var response = await http.post(Uri.parse("http://serverchronochroma.alwaysdata.net/user/party"), body: {"token": _instance!._token, "score": score, "seed": seed.toString(), "custom": custom.toString()});
+    var response = await http.post(
+        Uri.parse("http://serverchronochroma.alwaysdata.net/user/party"),
+        body: {
+          "token": _instance!._token,
+          "score": score,
+          "seed": seed.toString(),
+          "custom": custom.toString()
+        });
     inspect(response);
     if (response.statusCode < 200 || response.statusCode > 299) {
       return false;
@@ -213,7 +220,7 @@ class Compte {
       return true;
     }
   }
-  
+
   String toJsonString() {
     return '{"data":{"pseudo":"$_pseudo","avatar_url":"$_avatarUrl","score":$_score,"token":"$_token","personnage":{"santeMax":$_persoVieMax,"vitesseMax":$_persoVitesseMax,"forceMax":$_persoForceMax,"vueMax":$_persoVueMax}}}';
   }

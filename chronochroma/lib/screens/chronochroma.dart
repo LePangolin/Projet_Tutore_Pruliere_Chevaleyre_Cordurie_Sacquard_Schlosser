@@ -1,20 +1,17 @@
 import 'dart:math';
 
-import 'package:chronochroma/components/level.dart';
-import 'package:chronochroma/pseudoRandomNG.dart';
-import 'package:chronochroma/components/attackHitbox.dart';
-import 'package:chronochroma/components/level.dart';
-import 'package:flame/collisions.dart';
+import 'package:chronochroma/components/map/level.dart';
+import 'package:chronochroma/helpers/pseudo_random_ng.dart';
+import 'package:chronochroma/components/entities/attack_hitbox.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:chronochroma/helpers/directions.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'components/compte.dart';
-import 'components/player.dart';
-import 'overlays/controll.dart';
-import './overlays/gameOver.dart';
-import 'package:chronochroma/components/compte.dart';
+import '../components/compte.dart';
+import '../components/entities/player.dart';
+import '../overlays/controll.dart';
+import '../overlays/game_over.dart';
 
 class Chronochroma extends FlameGame with HasCollisionDetection {
   final Player player = Player();
@@ -45,7 +42,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   SpriteComponent? overlayComponent;
 
   // constructor
-  Chronochroma({this.seed: 0}) {
+  Chronochroma({this.seed = 0}) {
     if (seed != 0) {
       setSeed = true;
     } else {
@@ -154,7 +151,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
 
       super.update(dt);
 
-      await Future.delayed(Duration(milliseconds: 16)).then((_) async {
+      await Future.delayed(const Duration(milliseconds: 16)).then((_) async {
         updateGame(0.016);
       });
     }

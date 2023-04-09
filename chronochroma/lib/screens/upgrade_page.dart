@@ -1,4 +1,4 @@
-import 'package:chronochroma/components/characterUpgrades.dart';
+import 'package:chronochroma/helpers/character_upgrades.dart';
 import 'package:chronochroma/components/compte.dart';
 import 'package:flutter/material.dart';
 
@@ -139,14 +139,14 @@ class _UpgradePageState extends State<UpgradePage> {
                           Icons.arrow_back,
                           size: 25,
                         ),
-                        label: Text("Retour")),
+                        label: const Text("Retour")),
                     Row(
                       children: [
                         Image.asset("assets/images/coin.png", height: 15),
                         const SizedBox(width: 1),
                         Text(
                           "$coins",
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Color.fromARGB(255, 255, 196, 0),
                             fontFamily: 'Calibri',
                             letterSpacing: 0.5,
@@ -154,7 +154,7 @@ class _UpgradePageState extends State<UpgradePage> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(width: 30)
+                        const SizedBox(width: 30)
                       ],
                     ),
                   ],
@@ -196,7 +196,7 @@ class _UpgradePageState extends State<UpgradePage> {
                             children: [
                               Text(
                                 "Santé : $sante",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Color.fromARGB(255, 32, 140, 15),
                                   fontFamily: 'Calibri',
                                   letterSpacing: 0.5,
@@ -204,10 +204,10 @@ class _UpgradePageState extends State<UpgradePage> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 5),
+                              const SizedBox(height: 5),
                               Text(
                                 "Force : $force",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Color.fromARGB(255, 177, 14, 14),
                                   fontFamily: 'Calibri',
                                   letterSpacing: 0.5,
@@ -218,7 +218,7 @@ class _UpgradePageState extends State<UpgradePage> {
                               const SizedBox(height: 5),
                               Text(
                                 "Vision : $vision",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Color.fromARGB(253, 129, 3, 255),
                                   fontFamily: 'Calibri',
                                   letterSpacing: 0.5,
@@ -226,10 +226,10 @@ class _UpgradePageState extends State<UpgradePage> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 5),
+                              const SizedBox(height: 5),
                               Text(
                                 "Vitesse : $vitesse",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Color.fromARGB(255, 56, 102, 175),
                                   fontFamily: 'Calibri',
                                   letterSpacing: 0.5,
@@ -259,11 +259,13 @@ class _UpgradePageState extends State<UpgradePage> {
                               Row(
                                 children: [
                                   Text(
-                                    "${santeMaxCost[sante - 1]}",
+                                    santeMaxCost[sante - 1],
                                     style: TextStyle(
                                       color: (sante < santeMaxCost.length)
-                                          ? Color.fromARGB(255, 255, 196, 0)
-                                          : Color.fromARGB(255, 255, 136, 0),
+                                          ? const Color.fromARGB(
+                                              255, 255, 196, 0)
+                                          : const Color.fromARGB(
+                                              255, 255, 136, 0),
                                       fontFamily: 'Calibri',
                                       letterSpacing: 0.5,
                                       fontSize: 15,
@@ -277,7 +279,7 @@ class _UpgradePageState extends State<UpgradePage> {
                               )
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                           Column(
@@ -293,11 +295,13 @@ class _UpgradePageState extends State<UpgradePage> {
                               Row(
                                 children: [
                                   Text(
-                                    "${forceMaxCost[force - 1]}",
+                                    forceMaxCost[force - 1],
                                     style: TextStyle(
                                       color: (force < forceMaxCost.length)
-                                          ? Color.fromARGB(255, 255, 196, 0)
-                                          : Color.fromARGB(255, 255, 136, 0),
+                                          ? const Color.fromARGB(
+                                              255, 255, 196, 0)
+                                          : const Color.fromARGB(
+                                              255, 255, 136, 0),
                                       fontFamily: 'Calibri',
                                       letterSpacing: 0.5,
                                       fontSize: 15,
@@ -311,7 +315,7 @@ class _UpgradePageState extends State<UpgradePage> {
                               )
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                           Column(
@@ -327,11 +331,13 @@ class _UpgradePageState extends State<UpgradePage> {
                               Row(
                                 children: [
                                   Text(
-                                    "${visionMaxCost[vision - 1]}",
+                                    visionMaxCost[vision - 1],
                                     style: TextStyle(
                                       color: (vision < visionMaxCost.length)
-                                          ? Color.fromARGB(255, 255, 196, 0)
-                                          : Color.fromARGB(255, 255, 136, 0),
+                                          ? const Color.fromARGB(
+                                              255, 255, 196, 0)
+                                          : const Color.fromARGB(
+                                              255, 255, 136, 0),
                                       fontFamily: 'Calibri',
                                       letterSpacing: 0.5,
                                       fontSize: 15,
@@ -345,7 +351,7 @@ class _UpgradePageState extends State<UpgradePage> {
                               )
                             ],
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 10,
                           ),
                           Column(
@@ -363,11 +369,13 @@ class _UpgradePageState extends State<UpgradePage> {
                               Row(
                                 children: [
                                   Text(
-                                    "${vitesseMaxCost[vitesse - 1]}",
+                                    vitesseMaxCost[vitesse - 1],
                                     style: TextStyle(
                                       color: (vitesse < vitesseMaxCost.length)
-                                          ? Color.fromARGB(255, 255, 196, 0)
-                                          : Color.fromARGB(255, 255, 136, 0),
+                                          ? const Color.fromARGB(
+                                              255, 255, 196, 0)
+                                          : const Color.fromARGB(
+                                              255, 255, 136, 0),
                                       fontFamily: 'Calibri',
                                       letterSpacing: 0.5,
                                       fontSize: 15,

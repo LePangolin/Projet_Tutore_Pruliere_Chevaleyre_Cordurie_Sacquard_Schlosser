@@ -7,10 +7,10 @@ class signup extends StatefulWidget {
   const signup({required this.update});
 
   @override
-  State<signup> createState() => _signupState();
+  State<signup> createState() => _SignupState();
 }
 
-class _signupState extends State<signup> {
+class _SignupState extends State<signup> {
   late String pass;
   late String pseudo;
   late String avatar =
@@ -49,7 +49,8 @@ class _signupState extends State<signup> {
                 result = await Compte.inscription(pseudo, pass, avatar: avatar);
                 widget.update(result);
                 if (result) {
-                  SystemChrome.setEnabledSystemUIOverlays([]);
+                  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+                      overlays: []);
                   Navigator.pop(context);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

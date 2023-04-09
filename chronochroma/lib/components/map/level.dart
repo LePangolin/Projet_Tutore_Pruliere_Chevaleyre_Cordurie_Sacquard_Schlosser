@@ -1,18 +1,15 @@
-import 'dart:math';
-
-import 'package:chronochroma/chronochroma.dart';
-import 'package:chronochroma/components/barrel.dart';
-import 'package:chronochroma/components/coin.dart';
-import 'package:chronochroma/components/fireTrap.dart';
-import 'package:chronochroma/components/monster.dart';
-import 'package:chronochroma/components/skeleton.dart';
-import 'package:chronochroma/components/nextLevelDoor.dart';
-import 'package:chronochroma/components/portalTeleportSpawn.dart';
-import 'package:chronochroma/components/returnSpawnObjects.dart';
-import 'package:chronochroma/components/unstableFloor.dart';
-import 'package:chronochroma/components/upwardTeleport.dart';
-import 'package:chronochroma/components/voidTeleportSpawn.dart';
-import 'package:chronochroma/components/worldCollides.dart';
+import 'package:chronochroma/screens/chronochroma.dart';
+import 'package:chronochroma/components/map/barrel.dart';
+import 'package:chronochroma/components/map/coin.dart';
+import 'package:chronochroma/components/map/fire_trap.dart';
+import 'package:chronochroma/components/entities/bat.dart';
+import 'package:chronochroma/components/entities/skeleton.dart';
+import 'package:chronochroma/components/map/next_level_door.dart';
+import 'package:chronochroma/components/map/portal_teleport_spawn.dart';
+import 'package:chronochroma/components/map/unstable_floor.dart';
+import 'package:chronochroma/components/map/upward_teleport.dart';
+import 'package:chronochroma/components/map/void_teleport_spawn.dart';
+import 'package:chronochroma/components/map/world_collides.dart';
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 
@@ -91,7 +88,7 @@ class Level extends Component with HasGameRef<Chronochroma> {
     final bat = level.tileMap.getLayer<ObjectGroup>('bat');
     if (bat != null) {
       for (final object in bat.objects) {
-        add(Monster(object));
+        add(Bat(object));
       }
     }
 

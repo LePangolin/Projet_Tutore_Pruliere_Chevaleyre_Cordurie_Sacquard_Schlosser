@@ -1,4 +1,4 @@
-import 'package:chronochroma/components/returnSpawnObjects.dart';
+import 'package:chronochroma/components/map/return_spawn_objects.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 
 class VoidTeleportSpawn extends ReturnSpawnObjects {

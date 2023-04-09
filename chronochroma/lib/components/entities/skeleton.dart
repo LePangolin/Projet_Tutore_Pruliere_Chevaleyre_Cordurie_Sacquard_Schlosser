@@ -1,17 +1,12 @@
-import 'dart:developer';
-
-import 'package:chronochroma/chronochroma.dart';
-import 'package:chronochroma/components/attackHitbox.dart';
-import 'package:chronochroma/components/skeletonAttackHitbox.dart';
-import 'package:chronochroma/helpers/directions.dart';
+import 'package:chronochroma/screens/chronochroma.dart';
+import 'package:chronochroma/components/entities/attack_hitbox.dart';
+import 'package:chronochroma/components/entities/skeleton_attack_hitbox.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/material.dart';
-import 'worldCollides.dart';
-import 'package:chronochroma/components/projectile.dart';
-import 'package:chronochroma/components/player.dart';
+import 'package:chronochroma/components/entities/player.dart';
 
 class Skeleton extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {

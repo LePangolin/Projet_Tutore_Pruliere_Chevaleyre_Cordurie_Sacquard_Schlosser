@@ -1,16 +1,14 @@
-import 'package:chronochroma/chronochroma.dart';
-import 'package:chronochroma/components/unstableFloor.dart';
-import 'package:chronochroma/components/worldCollides.dart';
+import 'package:chronochroma/screens/chronochroma.dart';
+import 'package:chronochroma/components/entities/bat.dart';
+import 'package:chronochroma/components/entities/skeleton.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
-import 'package:chronochroma/components/player.dart';
 
-class SkeletonAttackHitbox extends SpriteAnimationComponent
+class AttackHitbox extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
   final RectangleHitbox hitbox;
-
-  SkeletonAttackHitbox(size, position)
+  AttackHitbox(size, position)
       : hitbox = RectangleHitbox(size: size, position: position);
 
   @override
@@ -26,9 +24,10 @@ class SkeletonAttackHitbox extends SpriteAnimationComponent
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
-    if (other is Player) {
-      gameRef.player.subirDegat(1);
-      removeFromParent();
+    if (other is Skeleton || other is Bat) {
+      if (parent != null) {
+        removeFromParent();
+      }
     }
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import './../helpers/controller.dart';
-import './../chronochroma.dart';
+import '../screens/chronochroma.dart';
 
 class Controll extends StatefulWidget {
   final Chronochroma gameRef;
@@ -33,10 +33,7 @@ class _ControllState extends State<Controll> {
                     if (widget.gameRef.player.canAttack)
                       {
                         widget.gameRef.player.isAttacking = true,
-                        print('attaque')
                       }
-                    else
-                      {print('attaque impossible')}
                   }),
           IconButton(
               icon: Image.asset('assets/images/icons/jumpIcon.png'),
