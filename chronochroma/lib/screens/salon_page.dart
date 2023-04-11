@@ -8,6 +8,8 @@ import '../components/signIn.dart';
 import '../components/signup.dart';
 import 'package:audioplayers/audioplayers.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
 class SalonPage extends StatefulWidget {
   const SalonPage({super.key, required this.title});
 
@@ -251,7 +253,8 @@ class _SalonPageState extends State<SalonPage> {
                       fontSize: 20,
                     )),
                 onPressed: () async {
-                  player.play(AssetSource('../../assets/audio/interface_click.wav'));
+                  player.play(
+                      AssetSource('../../assets/audio/interface_click.wav'));
                   modalConnexion();
                 },
               ),
@@ -264,10 +267,20 @@ class _SalonPageState extends State<SalonPage> {
                 height: 150,
                 child: IconButton(
                     icon: Image.asset('assets/images/button_scores.png'),
-                    onPressed: () => {
-                          player.play(AssetSource(
-                              '../../assets/audio/interface_click.wav')),
-                        }),
+                    onPressed: () async {
+                      player.play(AssetSource(
+                          '../../assets/audio/interface_click.wav'));
+                      final url = Uri.parse(
+                          'http://serverchronochroma.alwaysdata.net/');
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Problème lors de la redirection')),
+                        );
+                      }
+                    }),
               )),
           Positioned(
             bottom: -20,
@@ -392,11 +405,4 @@ class _SalonPageState extends State<SalonPage> {
                   )));
         });
   }
-
-  // Future<void> _launchURL() async {
-  //   Uri url = Uri.parse("https://chronochroma.alwaysdata.net/wordpress/");
-  //   if (!await launchUrl(url)) {
-  //     throw 'Could not launch $url';
-  //   }
-  // }
 }
