@@ -58,7 +58,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     _effectiveLevelList = List<String>.from(_allLevelsList)
       ..shuffle(Random(seed))
       ..insert(0, 'nexus.tmx');
-    _effectiveLevelList = _effectiveLevelList.take(3).toList();
+    _effectiveLevelList = _effectiveLevelList.take(1).toList();
 
     pseudoRandomNG = PseudoRandomNG(seed);
     print(seed);
@@ -181,12 +181,6 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
         int secondes = _stopwatch.elapsed.inSeconds - minutes * 60;
         bool res = await Compte.sendPartie(
             "${minutes}min ${secondes}sec", seed, setSeed);
-        if (res) {
-          print("Partie envoyée");
-          send = true;
-        } else {
-          print("Partie non envoyée");
-        }
       }
     }
   }

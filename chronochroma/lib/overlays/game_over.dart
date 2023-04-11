@@ -1,5 +1,6 @@
 import 'package:chronochroma/chronochroma.dart';
 import 'package:flutter/material.dart';
+import '../components/compte.dart';
 
 class GameOver extends StatefulWidget {
   static const String ID = "gameOver";
@@ -11,6 +12,22 @@ class GameOver extends StatefulWidget {
 }
 
 class _GameOverState extends State<GameOver> {
+  bool isConnected = false;
+  @override
+  void initState() {
+    super.initState();
+    connected();
+    print('isConnected: $isConnected');
+  }
+
+  void connected() async {
+    if (await Compte.getInstance() != null) {
+      setState(() {
+        isConnected = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,7 +39,7 @@ class _GameOverState extends State<GameOver> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              margin: const EdgeInsets.only(top: 20),
+              margin: EdgeInsets.only(top: isConnected ? 20 : 0),
               child: Image(
                 image: widget.gameRef.win
                     ? const AssetImage('assets/images/logoMEILLEUREVER.png')
@@ -57,6 +74,14 @@ class _GameOverState extends State<GameOver> {
                 ),
               ],
             )),
+            if (!isConnected)
+              const Text(
+                'Créez vous un compte pour sauvegarder vos prochaines parties.',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                ),
+              ),
             Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
