@@ -22,7 +22,7 @@ class _GameOverState extends State<GameOver> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              margin: const EdgeInsets.only(top: 40),
+              margin: const EdgeInsets.only(top: 20),
               child: Image(
                 image: widget.gameRef.win
                     ? const AssetImage('assets/images/logoMEILLEUREVER.png')
@@ -61,12 +61,14 @@ class _GameOverState extends State<GameOver> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(
-                    icon: Image.asset('assets/images/button_quitter.png'),
-                    iconSize: MediaQuery.of(context).size.width * 0.17,
-                    onPressed: () {
-                      Navigator.popAndPushNamed(context, '/salon');
-                    },
+                  Container(
+                    child: IconButton(
+                      icon: Image.asset('assets/images/button_quitter.png'),
+                      iconSize: MediaQuery.of(context).size.width * 0.17,
+                      onPressed: () {
+                        Navigator.popAndPushNamed(context, '/salon');
+                      },
+                    ),
                   ),
                   Container(
                     margin: const EdgeInsets.only(left: 20),
