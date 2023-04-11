@@ -12,6 +12,7 @@ import 'components/compte.dart';
 import 'components/entities/player.dart';
 import 'overlays/controll.dart';
 import 'overlays/game_over.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class Chronochroma extends FlameGame with HasCollisionDetection {
   final Player player = Player();
@@ -38,6 +39,8 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   late final Stopwatch _stopwatch = Stopwatch();
   bool win = false;
 
+  final audioplayer = AudioPlayer();
+
   SpriteComponent? overlayComponent;
 
   // Constructeur
@@ -52,13 +55,13 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-
+    audioplayer.play(AssetSource('audio/gamebattlemusic.mp3'), volume: 0.25);
     compte = await Compte.getInstance();
 
     _effectiveLevelList = List<String>.from(_allLevelsList)
       ..shuffle(Random(seed))
       ..insert(0, 'nexus.tmx');
-    _effectiveLevelList = _effectiveLevelList.take(3).toList();
+    _effectiveLevelList = _effectiveLevelList.take(2).toList();
 
     pseudoRandomNG = PseudoRandomNG(seed);
     print(seed);
@@ -170,23 +173,33 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   }
 
   void gameOver() async {
+    audioplayer.stop();
     _stopwatch.stop();
     pauseEngine();
     overlays.add(GameOver.ID);
     overlays.remove(Controll.ID);
     player.saturation = 0;
-    if (win && !send) {
-      int minutes = _stopwatch.elapsed.inMinutes;
-      int secondes = _stopwatch.elapsed.inSeconds - minutes * 60;
-      bool res = await Compte.sendPartie(
-          "${minutes}min ${secondes}sec", seed, setSeed);
-      if (res) {
-        print("Partie envoyée");
-        send = true;
-      } else {
-        print("Partie non envoyée");
+    bool updateScore = await Compte.updateScore(coins);
+    if (updateScore) {
+      print("Score mis à jour");
+    } else {
+      print("Score pas mis à jour");
+    }
+    if (await Compte.getInstance() != null) {
+      if (win && !send) {
+        int minutes = _stopwatch.elapsed.inMinutes;
+        int secondes = _stopwatch.elapsed.inSeconds - minutes * 60;
+        bool res = await Compte.sendPartie(
+            "${minutes}min ${secondes}sec", seed, setSeed);
+        if (res) {
+          print("Partie envoyée");
+          send = true;
+        } else {
+          print("Partie non envoyée");
+        }
       }
     }
+    
   }
 
   int endGameReward() {
@@ -201,6 +214,6 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   String chronometerMinutesSecondes() {
     int minutes = _stopwatch.elapsed.inMinutes;
     int secondes = _stopwatch.elapsed.inSeconds - minutes * 60;
-    return "$minutes minutes et $secondes secondes";
+    return "${minutes}m ${secondes}s";
   }
 }

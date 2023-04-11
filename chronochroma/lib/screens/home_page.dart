@@ -4,6 +4,7 @@ import 'package:chronochroma/components/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../components/compte.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -78,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final player = AudioPlayer();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
@@ -113,6 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         icon: Image.asset('assets/images/button_commencer.png'),
                         iconSize: MediaQuery.of(context).size.width * 0.2,
                         onPressed: () {
+                          player.play(AssetSource('audio/interface_click.wav'));
                           Navigator.popAndPushNamed(context, '/salon');
                         },
                       ),

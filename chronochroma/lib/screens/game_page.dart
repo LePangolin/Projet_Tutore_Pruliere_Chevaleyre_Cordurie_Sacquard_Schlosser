@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:chronochroma/overlays/controll.dart';
+import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:themed/themed.dart';
 
 import '../chronochroma.dart';
 import '../overlays/game_over.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class GamePage extends StatefulWidget {
   @override
@@ -28,6 +30,7 @@ class _GamePageState extends State<GamePage> {
         });
       } catch (e) {}
     });
+
   }
 
   @override
@@ -47,7 +50,6 @@ class _GamePageState extends State<GamePage> {
     // récuperer les arguments de la route
 
     // si on a une seed custom
-
     return Scaffold(
       body: Stack(
         children: [

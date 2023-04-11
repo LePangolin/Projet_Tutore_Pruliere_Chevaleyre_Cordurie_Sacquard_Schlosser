@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="25" height="15" tilewidth="32" tileheight="32" infinite="0" nextlayerid="15" nextobjectid="47">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="25" height="15" tilewidth="32" tileheight="32" infinite="0" nextlayerid="16" nextobjectid="47">
  <tileset firstgid="1" name="nexus" tilewidth="32" tileheight="32" tilecount="448" columns="32">
   <image source="../images/levels/bg/nexus.png" width="1024" height="448"/>
  </tileset>
@@ -55,6 +55,7 @@
    <point/>
   </object>
  </objectgroup>
+ <objectgroup id="15" name="void"/>
  <objectgroup id="12" name="upwardTeleport">
   <object id="27" x="32" y="352" width="16" height="64">
    <properties>

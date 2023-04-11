@@ -1,6 +1,7 @@
 import 'package:chronochroma/helpers/character_upgrades.dart';
 import 'package:chronochroma/components/compte.dart';
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class UpgradePage extends StatefulWidget {
   const UpgradePage({super.key, required this.title});
@@ -12,8 +13,8 @@ class UpgradePage extends StatefulWidget {
 }
 
 class _UpgradePageState extends State<UpgradePage> {
-  int coins = 2000;
   late Compte? compte;
+  int score = 0;
   int sante = 1;
   int vitesse = 1;
   int force = 1;
@@ -38,6 +39,7 @@ class _UpgradePageState extends State<UpgradePage> {
         vitesse = 1;
         force = 1;
         vision = 1;
+        score = 0;
       });
     } else {
       setState(() {
@@ -45,6 +47,7 @@ class _UpgradePageState extends State<UpgradePage> {
         vitesse = compte?.persoVitesseMax ?? 1;
         force = compte?.persoForceMax ?? 1;
         vision = compte?.persoVueMax ?? 1;
+        score = compte?.score ?? 0;
       });
     }
   }
@@ -54,30 +57,37 @@ class _UpgradePageState extends State<UpgradePage> {
     // S'il n'y a pas de requête en cours ET que le niveau de la statistique est inférieur au nombre de niveaux possibles ET que le joueur a assez de pièces
     if (!pendingRequest &&
         statLevel < statCostArray.length &&
-        coins >= int.parse(statCostArray[statLevel - 1])) {
+        score >= int.parse(statCostArray[statLevel - 1])) {
       // Alors une requête est lancée
       pendingRequest = true;
-      Compte.upgradeCharacter(skillToUpgrade).then((applied) {
+      Compte.upgradeCharacter(skillToUpgrade).then((applied) async {
         // Si la requête a abouti
         if (applied) {
           // Alors on met à jour les données du joueur
+          bool updated = await Compte.updateScore(-(int.parse(statCostArray[statLevel - 1])));
           setState(() {
-            coins -= int.parse(statCostArray[statLevel - 1]);
-            switch (skillToUpgrade) {
-              case CharacterUpgrades.vie:
-                sante++;
-                break;
-              case CharacterUpgrades.vitesse:
-                vitesse++;
-                break;
-              case CharacterUpgrades.force:
-                force++;
-                break;
-              case CharacterUpgrades.vue:
-                vision++;
-                break;
+            if (updated) {
+              switch (skillToUpgrade) {
+                case CharacterUpgrades.vie:
+                  sante++;
+                  break;
+                case CharacterUpgrades.vitesse:
+                  vitesse++;
+                  break;
+                case CharacterUpgrades.force:
+                  force++;
+                  break;
+                case CharacterUpgrades.vue:
+                  vision++;
+                  break;
+              }
+              score = compte?.score ?? 0;
             }
           });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Amélioration effectuée'),
+            )
+          );
         } else {
           // Sinon on affiche un message d'erreur
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -99,7 +109,7 @@ class _UpgradePageState extends State<UpgradePage> {
           content:
               Text('Vous avez atteint le niveau maximum dans cette compétence'),
         ));
-      } else if (coins < int.parse(statCostArray[statLevel - 1])) {
+      } else if (score < int.parse(statCostArray[statLevel - 1])) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Vous n\'avez pas assez de pièces'),
         ));
@@ -109,6 +119,7 @@ class _UpgradePageState extends State<UpgradePage> {
 
   @override
   Widget build(BuildContext context) {
+    final player = AudioPlayer();
     return Scaffold(
       body: Container(
           decoration: const BoxDecoration(
@@ -129,6 +140,8 @@ class _UpgradePageState extends State<UpgradePage> {
                   children: [
                     ElevatedButton.icon(
                         onPressed: () {
+                          player.play(AssetSource(
+                              '../../assets/audio/interface_click.wav'));
                           Navigator.popAndPushNamed(context, '/salon');
                         },
                         style: ElevatedButton.styleFrom(
@@ -145,7 +158,7 @@ class _UpgradePageState extends State<UpgradePage> {
                         Image.asset("assets/images/coin.png", height: 15),
                         const SizedBox(width: 1),
                         Text(
-                          "$coins",
+                          "$score",
                           style: const TextStyle(
                             color: Color.fromARGB(255, 255, 196, 0),
                             fontFamily: 'Calibri',
@@ -253,7 +266,8 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/health.png'),
                                   iconSize: 50,
                                   onPressed: () => {
-                                        _upgrade(sante, CharacterUpgrades.vie,
+                                      player.play(AssetSource('../../assets/audio/upgrade.wav')),
+                                      _upgrade(sante, CharacterUpgrades.vie,
                                             santeMaxCost)
                                       }),
                               Row(
@@ -289,6 +303,7 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/atk.png'),
                                   iconSize: 50,
                                   onPressed: () => {
+                                    player.play(AssetSource('../../assets/audio/upgrade.wav')),
                                         _upgrade(force, CharacterUpgrades.force,
                                             forceMaxCost)
                                       }),
@@ -325,6 +340,7 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/vision.png'),
                                   iconSize: 50,
                                   onPressed: () => {
+                                    player.play(AssetSource('../../assets/audio/upgrade.wav')),
                                         _upgrade(vision, CharacterUpgrades.vue,
                                             visionMaxCost)
                                       }),
@@ -361,6 +377,7 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/speed.png'),
                                   iconSize: 50,
                                   onPressed: () => {
+                                    player.play(AssetSource('../../assets/audio/upgrade.wav')),
                                         _upgrade(
                                             vitesse,
                                             CharacterUpgrades.vitesse,
