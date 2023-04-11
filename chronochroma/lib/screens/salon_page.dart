@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import '../components/signIn.dart';
 import '../components/signup.dart';
 import 'package:audioplayers/audioplayers.dart';
-
 import 'package:url_launcher/url_launcher.dart';
 
 class SalonPage extends StatefulWidget {

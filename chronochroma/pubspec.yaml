@@ -65,4 +65,5 @@ flutter:
     - assets/images/avatar.png
     - assets/audio/
     - assets/audio/interface_click.wav
+    - assets/audio/upgrade.wav
     - assets/tiles/
