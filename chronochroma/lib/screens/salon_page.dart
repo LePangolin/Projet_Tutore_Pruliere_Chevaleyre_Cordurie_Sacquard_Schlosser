@@ -175,7 +175,7 @@ class _SalonPageState extends State<SalonPage> {
                                                 primary: Colors.green),
                                             onPressed: () async {
                                               player.play(AssetSource(
-                                                  'interface_click.wav'));
+                                                  'audio/interface_click.wav'));
                                               isImage = false;
 
                                               imageFormat.forEach((element) {
@@ -257,7 +257,7 @@ class _SalonPageState extends State<SalonPage> {
                     )),
                 onPressed: () async {
                   player.play(
-                      AssetSource('assets/audio/interface_click.wav'));
+                      AssetSource('audio/interface_click.wav'));
                   modalConnexion();
                 },
               ),
