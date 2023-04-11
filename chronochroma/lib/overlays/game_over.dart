@@ -1,6 +1,7 @@
 import 'package:chronochroma/chronochroma.dart';
 import 'package:flutter/material.dart';
 import '../components/compte.dart';
+import 'package:flutter/services.dart';
 
 class GameOver extends StatefulWidget {
   static const String ID = "gameOver";
@@ -64,7 +65,7 @@ class _GameOverState extends State<GameOver> {
                 Container(
                   margin: const EdgeInsets.only(top: 20, left: 20),
                   child: Text(
-                    'Temps: ${widget.gameRef.chronometerMinutesSecondes()}',
+                    'Temps ${widget.gameRef.chronometerMinutesSecondes()}',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -73,12 +74,38 @@ class _GameOverState extends State<GameOver> {
                 ),
               ],
             )),
+            Container(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Graine de génération de cette map: ${widget.gameRef.seed}',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.copy, color: Colors.white),
+                  onPressed: () async {
+                    await Clipboard.setData(
+                        ClipboardData(text: "${widget.gameRef.seed}"));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                            'Graine de génération copiée dans le presse-papier (${widget.gameRef.seed})'),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            )),
             if (!isConnected)
               const Text(
                 'Créez vous un compte pour sauvegarder vos prochaines parties.',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: 15,
                 ),
               ),
             Container(
