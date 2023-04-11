@@ -12,7 +12,7 @@ import 'components/compte.dart';
 import 'components/entities/player.dart';
 import 'overlays/controll.dart';
 import 'overlays/game_over.dart';
-import 'package:flame_audio/flame_audio.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class Chronochroma extends FlameGame with HasCollisionDetection {
   final Player player = Player();
@@ -39,6 +39,8 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   late final Stopwatch _stopwatch = Stopwatch();
   bool win = false;
 
+  final audioplayer = AudioPlayer();
+
   SpriteComponent? overlayComponent;
 
   // Constructeur
@@ -53,7 +55,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-
+    audioplayer.play(AssetSource('audio/gamebattlemusic.mp3'), volume: 0.25);
     compte = await Compte.getInstance();
 
     _effectiveLevelList = List<String>.from(_allLevelsList)
@@ -171,7 +173,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
   }
 
   void gameOver() async {
-    FlameAudio.bgm.stop();
+    audioplayer.stop();
     _stopwatch.stop();
     pauseEngine();
     overlays.add(GameOver.ID);
@@ -185,6 +187,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
             "${minutes}min ${secondes}sec", seed, setSeed);
       }
     }
+    
   }
 
   int endGameReward() {

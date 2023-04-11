@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../components/compte.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flame_audio/flame_audio.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});

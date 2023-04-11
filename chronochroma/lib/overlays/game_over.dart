@@ -1,7 +1,6 @@
 import 'package:chronochroma/chronochroma.dart';
 import 'package:flutter/material.dart';
 import '../components/compte.dart';
-import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/services.dart';
 
 class GameOver extends StatefulWidget {
