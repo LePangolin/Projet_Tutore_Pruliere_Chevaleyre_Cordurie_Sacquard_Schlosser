@@ -1,13 +1,15 @@
 import 'dart:async';
 
 import 'package:chronochroma/components/compte.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../components/signIn.dart';
 import '../components/signup.dart';
-
+import 'package:audioplayers/audioplayers.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class SalonPage extends StatefulWidget {
   const SalonPage({super.key, required this.title});
@@ -101,6 +103,9 @@ class _SalonPageState extends State<SalonPage> {
 
   @override
   Widget build(BuildContext context) {
+    FlameAudio.bgm.initialize();
+    FlameAudio.bgm.play('audio/boa_duvet.wav', volume: 0.5);
+    final player = AudioPlayer();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
@@ -169,6 +174,8 @@ class _SalonPageState extends State<SalonPage> {
                                             style: ElevatedButton.styleFrom(
                                                 primary: Colors.green),
                                             onPressed: () async {
+                                              player.play(AssetSource(
+                                                  'audio/interface_click.wav'));
                                               isImage = false;
 
                                               imageFormat.forEach((element) {
@@ -249,6 +256,8 @@ class _SalonPageState extends State<SalonPage> {
                       fontSize: 20,
                     )),
                 onPressed: () async {
+                  player.play(
+                      AssetSource('audio/interface_click.wav'));
                   modalConnexion();
                 },
               ),
@@ -262,6 +271,8 @@ class _SalonPageState extends State<SalonPage> {
                 child: IconButton(
                     icon: Image.asset('assets/images/button_scores.png'),
                     onPressed: () async {
+                      player.play(AssetSource(
+                          'audio/interface_click.wav'));
                       final url = Uri.parse(
                           'http://serverchronochroma.alwaysdata.net/');
                       if (await canLaunchUrl(url)) {
@@ -283,8 +294,11 @@ class _SalonPageState extends State<SalonPage> {
                 height: 150,
                 child: IconButton(
                     icon: Image.asset('assets/images/button_ameliorations.png'),
-                    onPressed: () =>
-                        {Navigator.popAndPushNamed(context, '/upgrade')}),
+                    onPressed: () => {
+                          player.play(AssetSource(
+                              'audio/interface_click.wav')),
+                          Navigator.popAndPushNamed(context, '/upgrade')
+                        }),
               ),
               SizedBox(
                   width: MediaQuery.of(context).size.width * 0.18,
@@ -292,6 +306,8 @@ class _SalonPageState extends State<SalonPage> {
                   child: IconButton(
                       icon: Image.asset('assets/images/button_jouer.png'),
                       onPressed: () async {
+                        player.play(AssetSource('audio/interface_click.wav'));
+                        FlameAudio.bgm.stop();
                         await showDialog(
                             context: context,
                             builder: (BuildContext context) {

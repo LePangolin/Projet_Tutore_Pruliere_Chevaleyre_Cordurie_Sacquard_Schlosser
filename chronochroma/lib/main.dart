@@ -4,6 +4,7 @@ import 'screens/game_page.dart';
 import 'screens/home_page.dart';
 import 'screens/upgrade_page.dart';
 import 'screens/salon_page.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 void main() {
   // On s'assure que le binding est initialisé
@@ -18,7 +19,8 @@ void main() {
               overlays: []))
       .then((_) =>
           // On lance le jeu
-          runApp(MaterialApp(
+          runApp(
+            MaterialApp(
               debugShowCheckedModeBanner: false,
               title: "Start screen",
               initialRoute: '/',

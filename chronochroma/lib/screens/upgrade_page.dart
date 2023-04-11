@@ -1,6 +1,7 @@
 import 'package:chronochroma/helpers/character_upgrades.dart';
 import 'package:chronochroma/components/compte.dart';
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class UpgradePage extends StatefulWidget {
   const UpgradePage({super.key, required this.title});
@@ -118,6 +119,7 @@ class _UpgradePageState extends State<UpgradePage> {
 
   @override
   Widget build(BuildContext context) {
+    final player = AudioPlayer();
     return Scaffold(
       body: Container(
           decoration: const BoxDecoration(
@@ -138,6 +140,8 @@ class _UpgradePageState extends State<UpgradePage> {
                   children: [
                     ElevatedButton.icon(
                         onPressed: () {
+                          player.play(AssetSource(
+                              '../../assets/audio/interface_click.wav'));
                           Navigator.popAndPushNamed(context, '/salon');
                         },
                         style: ElevatedButton.styleFrom(
@@ -262,7 +266,8 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/health.png'),
                                   iconSize: 50,
                                   onPressed: () => {
-                                        _upgrade(sante, CharacterUpgrades.vie,
+                                      player.play(AssetSource('../../assets/audio/upgrade.wav')),
+                                      _upgrade(sante, CharacterUpgrades.vie,
                                             santeMaxCost)
                                       }),
                               Row(
@@ -298,6 +303,7 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/atk.png'),
                                   iconSize: 50,
                                   onPressed: () => {
+                                    player.play(AssetSource('../../assets/audio/upgrade.wav')),
                                         _upgrade(force, CharacterUpgrades.force,
                                             forceMaxCost)
                                       }),
@@ -334,6 +340,7 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/vision.png'),
                                   iconSize: 50,
                                   onPressed: () => {
+                                    player.play(AssetSource('../../assets/audio/upgrade.wav')),
                                         _upgrade(vision, CharacterUpgrades.vue,
                                             visionMaxCost)
                                       }),
@@ -370,6 +377,7 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/speed.png'),
                                   iconSize: 50,
                                   onPressed: () => {
+                                    player.play(AssetSource('../../assets/audio/upgrade.wav')),
                                         _upgrade(
                                             vitesse,
                                             CharacterUpgrades.vitesse,
