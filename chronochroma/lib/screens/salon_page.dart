@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import '../components/signIn.dart';
 import '../components/signup.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class SalonPage extends StatefulWidget {
   const SalonPage({super.key, required this.title});
@@ -99,6 +100,7 @@ class _SalonPageState extends State<SalonPage> {
 
   @override
   Widget build(BuildContext context) {
+    final player = AudioPlayer();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
@@ -167,6 +169,8 @@ class _SalonPageState extends State<SalonPage> {
                                             style: ElevatedButton.styleFrom(
                                                 primary: Colors.green),
                                             onPressed: () async {
+                                              player.play(AssetSource(
+                                                  'interface_click.wav'));
                                               isImage = false;
 
                                               imageFormat.forEach((element) {
@@ -247,6 +251,7 @@ class _SalonPageState extends State<SalonPage> {
                       fontSize: 20,
                     )),
                 onPressed: () async {
+                  player.play(AssetSource('../../assets/audio/interface_click.wav'));
                   modalConnexion();
                 },
               ),
@@ -259,7 +264,10 @@ class _SalonPageState extends State<SalonPage> {
                 height: 150,
                 child: IconButton(
                     icon: Image.asset('assets/images/button_scores.png'),
-                    onPressed: () => {}),
+                    onPressed: () => {
+                          player.play(AssetSource(
+                              '../../assets/audio/interface_click.wav')),
+                        }),
               )),
           Positioned(
             bottom: -20,
@@ -270,8 +278,11 @@ class _SalonPageState extends State<SalonPage> {
                 height: 150,
                 child: IconButton(
                     icon: Image.asset('assets/images/button_ameliorations.png'),
-                    onPressed: () =>
-                        {Navigator.popAndPushNamed(context, '/upgrade')}),
+                    onPressed: () => {
+                          player.play(AssetSource(
+                              '../../assets/audio/interface_click.wav')),
+                          Navigator.popAndPushNamed(context, '/upgrade')
+                        }),
               ),
               SizedBox(
                   width: MediaQuery.of(context).size.width * 0.18,

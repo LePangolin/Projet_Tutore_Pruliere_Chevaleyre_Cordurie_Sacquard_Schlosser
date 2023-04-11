@@ -21,6 +21,7 @@ dependencies:
   shared_preferences: ^2.0.17
   http: ^0.13.5
   connectivity_plus: ^3.0.3
+  audioplayers: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -63,4 +64,5 @@ flutter:
     - assets/images/button_commencer.png
     - assets/images/avatar.png
     - assets/audio/
+    - assets/audio/interface_click.wav
     - assets/tiles/
