@@ -63,6 +63,8 @@ flutter:
     - assets/images/button_scores.png
     - assets/images/button_commencer.png
     - assets/images/avatar.png
+    - assets/images/bg_1.png
+    - assets/images/upgradebg.png
     - assets/audio/
     - assets/audio/interface_click.wav
     - assets/audio/upgrade.wav

@@ -64,7 +64,8 @@ class _UpgradePageState extends State<UpgradePage> {
         // Si la requête a abouti
         if (applied) {
           // Alors on met à jour les données du joueur
-          bool updated = await Compte.updateScore(-(int.parse(statCostArray[statLevel - 1])));
+          bool updated = await Compte.updateScore(
+              -(int.parse(statCostArray[statLevel - 1])));
           setState(() {
             if (updated) {
               switch (skillToUpgrade) {
@@ -86,8 +87,7 @@ class _UpgradePageState extends State<UpgradePage> {
           });
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Amélioration effectuée'),
-            )
-          );
+          ));
         } else {
           // Sinon on affiche un message d'erreur
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -124,7 +124,7 @@ class _UpgradePageState extends State<UpgradePage> {
       body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('assets/images/bg_1.png'),
+              image: AssetImage('assets/images/upgradebg.png'),
               fit: BoxFit.cover,
               scale: 2.0,
             ),
@@ -182,13 +182,11 @@ class _UpgradePageState extends State<UpgradePage> {
                         Column(
                           children: [
                             Container(
-                              height: 155,
-                              width: 100,
-                              decoration: const BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/gifU.gif'),
-                                  fit: BoxFit.cover,
-                                ),
+                              alignment: Alignment.bottomCenter,
+                              child: Image(
+                                image: AssetImage('assets/images/gifU.gif'),
+                                fit: BoxFit.fill,
+                                height: 100,
                               ),
                             ),
                           ],
@@ -266,8 +264,9 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/health.png'),
                                   iconSize: 50,
                                   onPressed: () => {
-                                      player.play(AssetSource('../../assets/audio/upgrade.wav')),
-                                      _upgrade(sante, CharacterUpgrades.vie,
+                                        player.play(AssetSource(
+                                            '../../assets/audio/upgrade.wav')),
+                                        _upgrade(sante, CharacterUpgrades.vie,
                                             santeMaxCost)
                                       }),
                               Row(
@@ -303,7 +302,8 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/atk.png'),
                                   iconSize: 50,
                                   onPressed: () => {
-                                    player.play(AssetSource('../../assets/audio/upgrade.wav')),
+                                        player.play(AssetSource(
+                                            '../../assets/audio/upgrade.wav')),
                                         _upgrade(force, CharacterUpgrades.force,
                                             forceMaxCost)
                                       }),
@@ -340,7 +340,8 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/vision.png'),
                                   iconSize: 50,
                                   onPressed: () => {
-                                    player.play(AssetSource('../../assets/audio/upgrade.wav')),
+                                        player.play(AssetSource(
+                                            '../../assets/audio/upgrade.wav')),
                                         _upgrade(vision, CharacterUpgrades.vue,
                                             visionMaxCost)
                                       }),
@@ -377,7 +378,8 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/speed.png'),
                                   iconSize: 50,
                                   onPressed: () => {
-                                    player.play(AssetSource('../../assets/audio/upgrade.wav')),
+                                        player.play(AssetSource(
+                                            '../../assets/audio/upgrade.wav')),
                                         _upgrade(
                                             vitesse,
                                             CharacterUpgrades.vitesse,

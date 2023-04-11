@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Widget Modale affichant la liste des participants à un événement
 class SalonModal extends StatefulWidget {
   SalonModal({Key? key}) : super(key: key);
 
