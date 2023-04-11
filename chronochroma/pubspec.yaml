@@ -66,4 +66,5 @@ flutter:
     - assets/audio/
     - assets/audio/interface_click.wav
     - assets/audio/upgrade.wav
+    - assets/audio/boa_duvet.wav
     - assets/tiles/

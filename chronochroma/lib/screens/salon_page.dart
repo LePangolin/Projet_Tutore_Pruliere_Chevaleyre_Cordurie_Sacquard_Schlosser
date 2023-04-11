@@ -302,6 +302,7 @@ class _SalonPageState extends State<SalonPage> {
                   child: IconButton(
                       icon: Image.asset('assets/images/button_jouer.png'),
                       onPressed: () async {
+                        player.play(AssetSource('audio/interface_click.wav'));
                         await showDialog(
                             context: context,
                             builder: (BuildContext context) {
