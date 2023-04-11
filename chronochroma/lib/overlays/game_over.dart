@@ -17,7 +17,6 @@ class _GameOverState extends State<GameOver> {
   void initState() {
     super.initState();
     connected();
-    print('isConnected: $isConnected');
   }
 
   void connected() async {
