@@ -116,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         iconSize: MediaQuery.of(context).size.width * 0.2,
                         onPressed: () {
                           player.play(AssetSource(
-                              '../../assets/audio/interface_click.wav'));
+                              'audio/interface_click.wav'));
                           Navigator.popAndPushNamed(context, '/salon');
                         },
                       ),

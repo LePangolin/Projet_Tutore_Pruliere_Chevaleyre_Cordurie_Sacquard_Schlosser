@@ -253,7 +253,7 @@ class _SalonPageState extends State<SalonPage> {
                     )),
                 onPressed: () async {
                   player.play(
-                      AssetSource('../../assets/audio/interface_click.wav'));
+                      AssetSource('assets/audio/interface_click.wav'));
                   modalConnexion();
                 },
               ),
@@ -268,7 +268,7 @@ class _SalonPageState extends State<SalonPage> {
                     icon: Image.asset('assets/images/button_scores.png'),
                     onPressed: () async {
                       player.play(AssetSource(
-                          '../../assets/audio/interface_click.wav'));
+                          'audio/interface_click.wav'));
                       final url = Uri.parse(
                           'http://serverchronochroma.alwaysdata.net/');
                       if (await canLaunchUrl(url)) {
@@ -292,7 +292,7 @@ class _SalonPageState extends State<SalonPage> {
                     icon: Image.asset('assets/images/button_ameliorations.png'),
                     onPressed: () => {
                           player.play(AssetSource(
-                              '../../assets/audio/interface_click.wav')),
+                              'audio/interface_click.wav')),
                           Navigator.popAndPushNamed(context, '/upgrade')
                         }),
               ),
