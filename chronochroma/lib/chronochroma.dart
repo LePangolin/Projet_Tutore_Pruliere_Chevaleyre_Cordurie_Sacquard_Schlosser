@@ -58,7 +58,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     _effectiveLevelList = List<String>.from(_allLevelsList)
       ..shuffle(Random(seed))
       ..insert(0, 'nexus.tmx');
-    _effectiveLevelList = _effectiveLevelList.take(3).toList();
+    _effectiveLevelList = _effectiveLevelList.take(2).toList();
 
     pseudoRandomNG = PseudoRandomNG(seed);
     print(seed);
