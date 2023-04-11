@@ -105,6 +105,33 @@ router.post("/amelioration", async (req, res, next) => {
   }
 });
 
+router.post("/score", async (req, res, next) => {
+  if (!req.body) {
+    next(400);
+  }
+  if (!req.body.token || !req.body.score) {
+    next(400);
+  } else {
+    let result = await User.updateScore(
+      req.body.token,
+      req.body.score
+    );
+    if (result.error) {
+      next(500);
+    } else {
+      res.setHeader("Content-Type", "application/json");
+      res.statusCode = result.status;
+      res.send(
+        JSON.stringify({
+          message: result.statusText,
+          code: result.status,
+        })
+      );
+    }
+  }
+});
+
+
 router.post("/party", async (req, res, next) => {
   if (!req.body) {
     next(400);

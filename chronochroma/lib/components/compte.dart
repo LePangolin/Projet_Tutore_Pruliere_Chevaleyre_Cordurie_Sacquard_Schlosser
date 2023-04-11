@@ -12,7 +12,7 @@ class Compte {
 
   String? _avatarUrl;
 
-  int? _score;
+  int _score = 0;
 
   int? _persoVieMax;
 
@@ -165,6 +165,29 @@ class Compte {
     }
   }
 
+  static Future<bool> updateScore(int incr) async {
+    if (!await checkConnexion()) {
+      return false;
+    }
+    if (_instance == null) {
+      return false;
+    }
+    var response = await http.post(
+        Uri.parse("http://serverchronochroma.alwaysdata.net/user/score"),
+        body: {"token": _instance!._token, "score": (_instance!.score + incr).toString()}
+    );
+    if (response.statusCode < 200 || response.statusCode > 299) {
+      return false;
+    } else {
+      _instance!._score = _instance!._score + incr;
+      Map<String, dynamic> json = jsonDecode(response.body);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('account', _instance!.toJsonString());
+      return true;
+    }
+  }
+
+
   static Future<bool> checkConnexion() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.none) {
@@ -229,7 +252,7 @@ class Compte {
 
   String? get avatarUrl => _avatarUrl;
 
-  int? get score => _score;
+  int get score => _score;
 
   String? get token => _token;
 
