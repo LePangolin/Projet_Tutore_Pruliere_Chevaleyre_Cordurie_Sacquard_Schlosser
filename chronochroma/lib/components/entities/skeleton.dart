@@ -10,7 +10,7 @@ import 'package:chronochroma/components/entities/player.dart';
 
 class Skeleton extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
-  int health = 25;
+  int health = 30;
   bool needUpdate = true;
   final TiledObject skeleton;
   int degat = 3;
@@ -156,9 +156,10 @@ class Skeleton extends SpriteAnimationComponent
       gameRef.player.subirDegat(degat);
     } else if (other is AttackHitbox) {
       // Si le joueur attaque le squelette, le squelette prend des degats
-      health -= 5;
+      health -= gameRef.player.damageDeal;
       isHurt = true;
       if (health <= 0) {
+        gameRef.coins += 3;
         // Si le squelette n'a plus de vie, il meurt
         isDead = true;
       }

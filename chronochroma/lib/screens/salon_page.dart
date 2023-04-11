@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:chronochroma/components/compte.dart';
+import 'package:chronochroma/components/salon_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../components/signIn.dart';
 import '../components/signup.dart';
@@ -43,6 +45,8 @@ class _SalonPageState extends State<SalonPage> {
 
   String lastState = "notConnected";
 
+  SalonModal salonModal = SalonModal();
+
   List<String> imageFormat = [
     ".png",
     ".jpg",
@@ -68,6 +72,18 @@ class _SalonPageState extends State<SalonPage> {
     Timer.periodic(const Duration(seconds: 1), (timer) {
       _checkInternetConnectivity();
     });
+    displaySalonModal();
+  }
+
+  void displaySalonModal() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (!(prefs.getBool('dontShowAgain') ?? false)) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return salonModal;
+          });
+    }
   }
 
   Future<void> _loadCompte() async {
@@ -253,6 +269,22 @@ class _SalonPageState extends State<SalonPage> {
                 },
               ),
             ),
+          // help button that open modal
+          Positioned(
+            top: 20,
+            right: 20,
+            child: IconButton(
+                icon: const Icon(Icons.help_outline_rounded,
+                    color: Colors.white, size: 40),
+                onPressed: () async {
+                  await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return SalonModal();
+                    },
+                  );
+                }),
+          ),
           Positioned(
               bottom: -20,
               left: 10,

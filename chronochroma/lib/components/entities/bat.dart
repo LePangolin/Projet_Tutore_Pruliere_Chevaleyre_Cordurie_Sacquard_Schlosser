@@ -9,7 +9,7 @@ import 'package:chronochroma/components/entities/player.dart';
 
 class Bat extends SpriteAnimationComponent
     with HasGameRef<Chronochroma>, CollisionCallbacks {
-  int health = 25;
+  int health = 20;
   bool needUpdate = true;
   final TiledObject monster;
 
@@ -88,8 +88,9 @@ class Bat extends SpriteAnimationComponent
     if (other is Player) {
       gameRef.player.subirDegat(1);
     } else if (other is AttackHitbox) {
-      health -= 25;
+      health -= gameRef.player.damageDeal;
       if (health <= 0) {
+        gameRef.coins += 1;
         removeFromParent();
       }
     }
