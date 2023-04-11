@@ -2,6 +2,7 @@ const supabase = require("../supabase");
 const { createPersonnage } = require("./Personnage");
 const { createPartie } = require("./Partie");
 const { createLinkPartie, getMeilleurPartie } = require("./User_Partie");
+const { getPerso } = require("./User_Personnage");
 const crypto = require("crypto");
 
 async function createUser(avatar, pseudo, mdp) {
@@ -206,6 +207,26 @@ async function updateAmelioration(token, amelioration) {
   return { status: 200, statusText: "Amélioration mise à jour" };
 }
 
+async function updateScore(token, score) {
+  let user = await supabase.from("utilisateur").select("id").eq("token", token);
+  if (user.error) {
+    return { status: 500, statusText: "Erreur récupération utilisateur" };
+  }
+  let char = await getPerso(user.data[0].id);
+  if (!char.data) {
+    return { status: 500, statusText: "Erreur récupération personnage" };
+  }
+  let update = await supabase
+    .from("utilisateur")
+    .update({
+      monnaie: score,
+    })
+    .eq("id", char.data.data[0].id);
+  if (update.error) {
+    return { status: 500, statusText: "Erreur lors de la mise à jour" };
+  }
+  return { status: 200, statusText: "Score mis à jour" };
+}
 
 async function savePartie(token, score, seed, isCustom){
   let user = await supabase.from("utilisateur").select("id").eq("token", token);
@@ -251,6 +272,7 @@ module.exports = {
   getUser,
   updateAvatar,
   updateAmelioration,
+  updateScore,
   savePartie,
   getBestPartie
 };
