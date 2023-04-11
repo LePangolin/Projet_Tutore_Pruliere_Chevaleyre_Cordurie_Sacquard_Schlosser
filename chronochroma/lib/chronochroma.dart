@@ -181,12 +181,6 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
         int secondes = _stopwatch.elapsed.inSeconds - minutes * 60;
         bool res = await Compte.sendPartie(
             "${minutes}min ${secondes}sec", seed, setSeed);
-        if (res) {
-          print("Partie envoyée");
-          send = true;
-        } else {
-          print("Partie non envoyée");
-        }
       }
     }
   }
