@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chronochroma/components/compte.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -8,6 +9,7 @@ import '../components/signIn.dart';
 import '../components/signup.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class SalonPage extends StatefulWidget {
   const SalonPage({super.key, required this.title});
@@ -101,6 +103,8 @@ class _SalonPageState extends State<SalonPage> {
 
   @override
   Widget build(BuildContext context) {
+    FlameAudio.bgm.initialize();
+    FlameAudio.bgm.play('audio/boa_duvet.wav', volume: 0.5);
     final player = AudioPlayer();
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -303,6 +307,7 @@ class _SalonPageState extends State<SalonPage> {
                       icon: Image.asset('assets/images/button_jouer.png'),
                       onPressed: () async {
                         player.play(AssetSource('audio/interface_click.wav'));
+                        FlameAudio.bgm.stop();
                         await showDialog(
                             context: context,
                             builder: (BuildContext context) {

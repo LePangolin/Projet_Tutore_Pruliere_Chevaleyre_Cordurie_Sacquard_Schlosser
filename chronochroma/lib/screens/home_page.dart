@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../components/compte.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flame_audio/flame_audio.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -115,8 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         icon: Image.asset('assets/images/button_commencer.png'),
                         iconSize: MediaQuery.of(context).size.width * 0.2,
                         onPressed: () {
-                          player.play(AssetSource(
-                              'audio/interface_click.wav'));
+                          player.play(AssetSource('audio/interface_click.wav'));
                           Navigator.popAndPushNamed(context, '/salon');
                         },
                       ),

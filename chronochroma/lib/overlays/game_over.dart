@@ -1,6 +1,7 @@
 import 'package:chronochroma/chronochroma.dart';
 import 'package:flutter/material.dart';
 import '../components/compte.dart';
+import 'package:flame_audio/flame_audio.dart';
 
 class GameOver extends StatefulWidget {
   static const String ID = "gameOver";

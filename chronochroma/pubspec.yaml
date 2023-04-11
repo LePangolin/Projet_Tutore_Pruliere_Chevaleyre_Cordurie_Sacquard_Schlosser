@@ -22,6 +22,7 @@ dependencies:
   http: ^0.13.5
   connectivity_plus: ^3.0.3
   audioplayers: ^3.0.1
+  flame_audio: ^1.4.1
 
 dev_dependencies:
   flutter_test:
@@ -67,4 +68,5 @@ flutter:
     - assets/audio/interface_click.wav
     - assets/audio/upgrade.wav
     - assets/audio/boa_duvet.wav
+    - assets/audio/gamebattlemusic.mp3
     - assets/tiles/
