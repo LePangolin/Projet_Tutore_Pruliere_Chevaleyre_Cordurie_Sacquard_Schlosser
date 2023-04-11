@@ -37,6 +37,7 @@ class _GameOverState extends State<GameOver> {
       maxWidth: double.infinity,
       child: Container(
         width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
           color: Colors.black.withOpacity(0.9),
         ),
@@ -85,7 +86,7 @@ class _GameOverState extends State<GameOver> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Graine de génération de cette map: ${widget.gameRef.seed}',
+                    'Graine de génération de cette carte: ${widget.gameRef.seed}',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 15,
@@ -108,7 +109,7 @@ class _GameOverState extends State<GameOver> {
               )),
               if (!isConnected)
                 const Text(
-                  'Créez vous un compte pour sauvegarder vos prochaines parties.',
+                  'Créez-vous un compte pour sauvegarder vos prochaines parties.',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 15,
@@ -129,7 +130,7 @@ class _GameOverState extends State<GameOver> {
                     ),
                     Container(
                       margin: const EdgeInsets.only(left: 20),
-                      padding:  const EdgeInsets.all(0),
+                      padding: const EdgeInsets.all(0),
                       child: IconButton(
                         padding: const EdgeInsets.all(0),
                         icon: Image.asset('assets/images/button_rejouer.png'),
