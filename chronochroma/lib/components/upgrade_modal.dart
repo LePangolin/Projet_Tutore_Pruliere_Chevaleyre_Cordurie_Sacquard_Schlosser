@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:audioplayers/audioplayers.dart';
 
-/// Widget Modale affichant la liste des participants à un événement
-class SalonModal extends StatefulWidget {
-  SalonModal({Key? key}) : super(key: key);
+class UpgradeModal extends StatefulWidget {
+  UpgradeModal({Key? key}) : super(key: key);
 
   @override
-  _SalonModalState createState() => _SalonModalState();
+  _UpgradeModalState createState() => _UpgradeModalState();
 }
 
 /// Classe d'état du widget Modale
-class _SalonModalState extends State<SalonModal> {
+class _UpgradeModalState extends State<UpgradeModal> {
   bool _modalOpen = true;
   late bool _dontShowAgain = false;
   int index = 1;
@@ -33,6 +33,7 @@ class _SalonModalState extends State<SalonModal> {
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height * 0.8;
     final double screenWidth = MediaQuery.of(context).size.width * 0.8;
+    final player = AudioPlayer();
 
     return Dialog(
       backgroundColor: Colors.white,
@@ -48,7 +49,7 @@ class _SalonModalState extends State<SalonModal> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Text(
-              'Bienvenue sur Chronochroma !',
+              'Montée en puissance',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -79,6 +80,10 @@ class _SalonModalState extends State<SalonModal> {
                         Row(children: [
                           IconButton(
                             onPressed: () {
+                              if (index > 1) {
+                                player.play(
+                                    AssetSource('audio/interface_click.wav'));
+                              }
                               setState(() {
                                 index = index <= 1 ? 1 : index - 1;
                               });
@@ -94,6 +99,10 @@ class _SalonModalState extends State<SalonModal> {
                           ),
                           IconButton(
                             onPressed: () {
+                              if (index < numberOfPages) {
+                                player.play(
+                                    AssetSource('audio/interface_click.wav'));
+                              }
                               setState(() {
                                 index = index >= numberOfPages
                                     ? numberOfPages
@@ -106,26 +115,32 @@ class _SalonModalState extends State<SalonModal> {
                                     : Colors.blue),
                           ),
                         ]),
-                        Column(children: [
-                          Row(
-                            children: [
-                              const Text('Ne plus afficher'),
-                              Checkbox(
-                                key: UniqueKey(),
-                                value: _dontShowAgain,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _dontShowAgain = value!;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                          ElevatedButton(
-                            onPressed: close,
-                            child: const Text('Fermer'),
-                          ),
-                        ]),
+                        index == numberOfPages
+                            ? Column(children: [
+                                Row(
+                                  children: [
+                                    const Text('Ne plus afficher'),
+                                    Checkbox(
+                                      key: UniqueKey(),
+                                      value: _dontShowAgain,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _dontShowAgain = value!;
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    player.play(AssetSource(
+                                        'audio/interface_click.wav'));
+                                    close();
+                                  },
+                                  child: const Text('Fermer'),
+                                ),
+                              ])
+                            : Container(),
                       ]),
                 ),
               ],
@@ -139,58 +154,88 @@ class _SalonModalState extends State<SalonModal> {
   Widget getContent(int index) {
     switch (index) {
       case 1:
-        return const Text(
-          'Chrono Chroma est un jeu de plateforme dans lequel vous devez traverser des niveaux le plus rapidement possible.\n\nLes environnements s\'enchainent aléatoirement, sachez vous adapter.\n\nVous pouvez choisir une graine de génération (seed) au lancement pour bloquer cet aléatoire.',
-          style: TextStyle(
-            fontSize: 16,
-          ),
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            const Flexible(
+              child: SizedBox(
+                width: 280,
+                child: Text(
+                  'Dans Chrono Chroma, votre personnage est trop faible au départ pour espérer atteindre la victoire. Pour y remédier, il faut gagner en puissance via les améliorations disponibles.\n\nLa monnaie de jeu que vous récupérez en tuant des ennemis ou en avançant dans les niveaux est dépensable ici même.',
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+            Column(
+              children: const [
+                Image(
+                    image: AssetImage('assets/images/coinGif.gif'),
+                    fit: BoxFit.fill,
+                    height: 50),
+              ],
+            )
+          ],
         );
       case 2:
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Container(
-              width: 280,
-              child: const Text(
-                'La vie de votre personnage diminue si vous êtes blessé, mais aussi à mesure que le temps s\'écoule. Faites vite.\n\nLa santé de votre personnage a également un étroit lien avec la couleur affichée à l\'écran. Plus vous vous rapprocherez des portes de la mort, moins celle-ci sera présente.',
-                style: TextStyle(
-                  fontSize: 16,
+            const Flexible(
+              child: SizedBox(
+                width: 280,
+                child: Text(
+                  'L\'augmentation de votre santé maximale allongera votre survie et vous permettra d\'atteindre des niveaux plus éloignés.\n\nLes ennemis sont sources de ralentissement, de dégâts, mais aussi de monnaie. Détruisez les plus rapidement de quelques coups de lame en rendant votre arme plus mortelle.',
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ),
-            const Image(
-                image: AssetImage('assets/images/gifU.gif'),
-                fit: BoxFit.fill,
-                height: 80),
+            Column(
+              children: const [
+                Image(
+                    image: AssetImage('assets/images/upgrades/health.png'),
+                    fit: BoxFit.fill,
+                    height: 50),
+                SizedBox(height: 40),
+                Image(
+                    image: AssetImage('assets/images/upgrades/atk.png'),
+                    fit: BoxFit.fill,
+                    height: 50),
+              ],
+            )
           ],
         );
       case 3:
-        return Column(
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            const Text(
-              'Pour espérer atteindre la fin, récupérez des pièces, tuer des ennemis, terminez des niveaux et utilisez votre butin pour acheter des améliorations.',
-              style: TextStyle(
-                fontSize: 16,
+            const Flexible(
+              child: SizedBox(
+                width: 280,
+                child: Text(
+                  'Une meilleure acuité visuelle boostera les réflexes de votre personnage, les projectiles et pièges seront plus faciles à éviter.\n\nDans une course contre la montre, courir plus vite n\'est pas du luxe. Augmentez votre vitesse de déplacement ainsi que votre vitesse d\'attaque.',
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Column(
               children: const [
                 Image(
-                    image: AssetImage('assets/images/coinTuto.png'),
+                    image: AssetImage('assets/images/upgrades/vision.png'),
                     fit: BoxFit.fill,
-                    height: 40),
-                Image(
-                    image: AssetImage('assets/images/monsterTuto.png'),
-                    fit: BoxFit.fill,
-                    height: 75),
+                    height: 50),
+                SizedBox(height: 40),
                 Image(
                     image: AssetImage('assets/images/upgrades/speed.png'),
                     fit: BoxFit.fill,
                     height: 50),
               ],
-            ),
+            )
           ],
         );
       default:

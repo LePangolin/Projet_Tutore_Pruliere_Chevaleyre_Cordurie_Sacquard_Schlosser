@@ -46,12 +46,12 @@ class _GameOverState extends State<GameOver> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                margin: EdgeInsets.only(top: isConnected ? 20 : 40),
+                margin: const EdgeInsets.only(top: 10),
                 child: Image(
                   image: widget.gameRef.win
                       ? const AssetImage('assets/images/logoMEILLEUREVER.png')
                       : const AssetImage('assets/images/gameOver.png'),
-                  width: MediaQuery.of(context).size.width * 0.35,
+                  width: MediaQuery.of(context).size.width * 0.25,
                 ),
               ),
               Container(
