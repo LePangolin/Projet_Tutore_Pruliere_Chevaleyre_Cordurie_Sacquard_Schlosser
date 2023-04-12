@@ -148,9 +148,11 @@ class Compte {
             "Content-Type": "application/json"
           },
           body: jsonEncode({"amelioration": upgrade.name}));
+          print(response.statusCode);
       if (response.statusCode < 200 || response.statusCode > 299) {
         return false;
       } else {
+        print("upgrade");
         switch (upgrade) {
           case CharacterUpgrades.vie:
             _instance!._persoVieMax = _instance!._persoVieMax! + 1;

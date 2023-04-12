@@ -298,7 +298,14 @@ class _UpgradePageState extends State<UpgradePage> {
                                         player.play(
                                             AssetSource('audio/upgrade.wav')),
                                         _upgrade(sante, CharacterUpgrades.vie,
-                                            santeMaxCost)
+                                            santeMaxCost),
+                                        setState(() {
+                                          if (sante < 5) {
+                                            score -= int.parse(
+                                                santeMaxCost[sante - 1]);
+                                            sante++;
+                                          } 
+                                        })
                                       }),
                               Row(
                                 children: [
@@ -336,7 +343,14 @@ class _UpgradePageState extends State<UpgradePage> {
                                         player.play(
                                             AssetSource('audio/upgrade.wav')),
                                         _upgrade(force, CharacterUpgrades.force,
-                                            forceMaxCost)
+                                            forceMaxCost),
+                                        setState(() {
+                                          if (force < 5) {
+                                            score -= int.parse(
+                                                forceMaxCost[force - 1]);
+                                            force++;
+                                          }
+                                        })
                                       }),
                               Row(
                                 children: [
@@ -374,7 +388,21 @@ class _UpgradePageState extends State<UpgradePage> {
                                         player.play(
                                             AssetSource('audio/upgrade.wav')),
                                         _upgrade(vision, CharacterUpgrades.vue,
-                                            visionMaxCost)
+                                            visionMaxCost),
+                                        setState(() {
+                                          if (vision < 5) {
+                                            score -= int.parse(
+                                                visionMaxCost[vision - 1]);
+                                            vision++;
+                                          } else {
+                                            SnackBar snackBar = const SnackBar(
+                                              content: Text(
+                                                  'Vous avez atteint le niveau maximum de vision'),
+                                            );
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(snackBar);
+                                          }
+                                        }),
                                       }),
                               Row(
                                 children: [
@@ -414,7 +442,14 @@ class _UpgradePageState extends State<UpgradePage> {
                                         _upgrade(
                                             vitesse,
                                             CharacterUpgrades.vitesse,
-                                            vitesseMaxCost)
+                                            vitesseMaxCost),
+                                        setState(() {
+                                          if (vitesse < 5) {
+                                            score -= int.parse(
+                                                vitesseMaxCost[vitesse - 1]);
+                                            vitesse++;
+                                          }
+                                        }),
                                       }),
                               Row(
                                 children: [
