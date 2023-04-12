@@ -30,7 +30,6 @@ class _GamePageState extends State<GamePage> {
         });
       } catch (e) {}
     });
-
   }
 
   @override
@@ -38,8 +37,7 @@ class _GamePageState extends State<GamePage> {
     super.didChangeDependencies();
     final args = ModalRoute.of(context)!.settings.arguments;
     if (args != null) {
-      args as int;
-      game = Chronochroma(seed: args);
+      game = Chronochroma(seed: int.parse(args.toString()));
     } else {
       game = Chronochroma();
     }
