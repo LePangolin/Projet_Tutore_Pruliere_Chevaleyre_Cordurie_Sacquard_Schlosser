@@ -75,6 +75,12 @@
       sortScores() {
         try {
           return this.scores.sort(function (a, b) {
+            if(a.score.split(" ")[1].length == 4){
+              a.score = a.score.split(" ")[0] + " 0" + a.score.split(" ")[1];
+            }
+            if(b.score.split(" ")[1].length == 4){
+              b.score = b.score.split(" ")[0] + " 0" + b.score.split(" ")[1];
+            }
             return a.score.localeCompare(b.score);
           });
         } catch (e) {}
