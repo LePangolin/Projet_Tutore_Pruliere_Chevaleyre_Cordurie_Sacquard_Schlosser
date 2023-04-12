@@ -214,10 +214,10 @@ class _UpgradePageState extends State<UpgradePage> {
                           children: [
                             Container(
                               alignment: Alignment.bottomCenter,
-                              child: Image(
+                              child: const Image(
                                 image: AssetImage('assets/images/gifU.gif'),
                                 fit: BoxFit.fill,
-                                height: 100,
+                                height: 140,
                               ),
                             ),
                           ],
