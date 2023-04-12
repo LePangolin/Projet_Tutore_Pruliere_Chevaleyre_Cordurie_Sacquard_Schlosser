@@ -180,6 +180,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     player.saturation = 0;
     bool updateScore = await Compte.updateScore(endGameReward() * 25);
     if (await Compte.getInstance() != null) {
+      
       if (win && !send) {
         int minutes = _stopwatch.elapsed.inMinutes;
         int secondes = _stopwatch.elapsed.inSeconds - minutes * 60;

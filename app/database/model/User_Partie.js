@@ -69,6 +69,7 @@ async function getMeilleurPartieAll(){
     let data = [];
     for(let i = 0; i < idUsers.data.length; i++){
         let partie = await getMeilleurPartie(idUsers.data[i]);
+        print(partie.data.data[0])
         if(partie.data.data.length > 0){
             data.push(partie.data.data[0]);
         }

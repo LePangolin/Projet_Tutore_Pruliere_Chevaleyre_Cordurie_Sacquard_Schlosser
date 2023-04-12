@@ -53,7 +53,8 @@ router.post("/register", async (req, res, next) => {
     if (result.error) {
       next(500);
     } else {
-      let token = jwt.sign({ id: result.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      console.log(result);
+      let token = jwt.sign({ id: result.data.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
       res.setHeader("Content-Type", "application/json");
       res.statusCode = result.status;
       res.send(

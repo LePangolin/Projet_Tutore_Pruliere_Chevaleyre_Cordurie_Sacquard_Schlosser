@@ -71,10 +71,10 @@ class Compte {
         Uri.parse("${dotenv.get("BASE_URL")}/user/login"),
         body: {"pseudo": pseudo, "mdp": pass});
 
-    Map<String, dynamic> json = jsonDecode(response.body);
     if (response.statusCode > 299 || response.statusCode < 200) {
       return false;
     } else {
+      Map<String, dynamic> json = jsonDecode(response.body);
       _instance = Compte._(
           json['data']['pseudo'],
           json['data']['avatar_url'],
