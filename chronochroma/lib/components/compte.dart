@@ -4,6 +4,7 @@ import 'package:chronochroma/helpers/character_upgrades.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Compte {
   static Compte? _instance;
@@ -22,12 +23,15 @@ class Compte {
 
   int? _persoVueMax;
 
+  String? _refreshtoken;
+
   String? _token;
 
   Compte._(
       this._pseudo,
       this._avatarUrl,
       this._score,
+      this._refreshtoken,
       this._token,
       this._persoVieMax,
       this._persoVitesseMax,
@@ -45,6 +49,7 @@ class Compte {
             json['data']['pseudo'],
             json['data']['avatar_url'],
             json['data']['score'],
+            json['data']["refresh_token"],
             json['data']["token"],
             json['data']["personnage"]["santeMax"],
             json['data']["personnage"]["vitesseMax"],
@@ -61,17 +66,20 @@ class Compte {
     if (!await checkConnexion()) {
       return false;
     }
+    await dotenv.load(fileName: "assets/.env");
     var response = await http.post(
-        Uri.parse("http://serverchronochroma.alwaysdata.net/user/login"),
+        Uri.parse("${dotenv.get("BASE_URL")}/user/login"),
         body: {"pseudo": pseudo, "mdp": pass});
+
     Map<String, dynamic> json = jsonDecode(response.body);
-    if (json['data']['status'] < 200 || json['data']['status'] > 299) {
+    if (response.statusCode > 299 || response.statusCode < 200) {
       return false;
     } else {
       _instance = Compte._(
           json['data']['pseudo'],
           json['data']['avatar_url'],
           json['data']['score'],
+          json['data']["refresh_token"],
           json['data']["token"],
           json['data']["personnage"]["santeMax"],
           json['data']["personnage"]["vitesseMax"],
@@ -101,10 +109,15 @@ class Compte {
     if (!await checkConnexion()) {
       return false;
     }
+    await dotenv.load(fileName: "assets/.env");
     if (avatar != null) {
-      var response = await http.post(
-          Uri.parse("http://serverchronochroma.alwaysdata.net/user/avatar"),
-          body: {"token": _instance!._token, "avatar": avatar});
+      var response =
+          await http.put(Uri.parse("${dotenv.get("BASE_URL")}/user/avatar"),
+              headers: {
+                "Authorization": "Bearer ${_instance!._token!}",
+                "Content-Type": "application/json"
+              },
+              body: jsonEncode({"avatar": avatar}));
       if (response.statusCode < 200 || response.statusCode > 299) {
         return false;
       } else {
@@ -121,23 +134,21 @@ class Compte {
 
   static Future<bool> upgradeCharacter(CharacterUpgrades? upgrade) async {
     if (!await checkConnexion()) {
-      // print("1 pas de connexion");
       return false;
     }
     if (_instance == null) {
-      // print("2 pas de compte");
       return false;
     }
     if (upgrade != null) {
-      var response = await http.post(
-          Uri.parse(
-              "http://serverchronochroma.alwaysdata.net/user/amelioration"),
-          body: {"token": _instance!._token, "amelioration": upgrade.name});
+      await dotenv.load(fileName: "assets/.env");
+      var response = await http.put(
+          Uri.parse("${dotenv.get("BASE_URL")}/user/amelioration"),
+          headers: {
+            "Authorization": "Bearer ${_instance!._token!}",
+            "Content-Type": "application/json"
+          },
+          body: jsonEncode({"amelioration": upgrade.name}));
       if (response.statusCode < 200 || response.statusCode > 299) {
-        // print("amelioration : ${upgrade.name}");
-        // print("erreur ${response.statusCode}");
-        // print(
-        //     "return false dans le if (response.statusCode < 200 || response.statusCode > 299)");
         return false;
       } else {
         switch (upgrade) {
@@ -160,7 +171,6 @@ class Compte {
         return true;
       }
     } else {
-      // print("3 pas d'upgrade");
       return false;
     }
   }
@@ -172,10 +182,14 @@ class Compte {
     if (_instance == null) {
       return false;
     }
-    var response = await http.post(
-        Uri.parse("http://serverchronochroma.alwaysdata.net/user/score"),
-        body: {"token": _instance!._token, "score": (_instance!.score + incr).toString()}
-    );
+    await dotenv.load(fileName: "assets/.env");
+    var response =
+        await http.put(Uri.parse("${dotenv.get("BASE_URL")}/user/score"),
+            headers: {
+              "Authorization": "Bearer ${_instance!._token!}",
+              "Content-Type": "application/json"
+            },
+            body: jsonEncode({"score": (_instance!.score + incr).toString()}));
     if (response.statusCode < 200 || response.statusCode > 299) {
       return false;
     } else {
@@ -186,7 +200,6 @@ class Compte {
       return true;
     }
   }
-
 
   static Future<bool> checkConnexion() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -200,8 +213,9 @@ class Compte {
   static Future<bool> inscription(pseudo, pass,
       {avatar =
           "http://serverchronochroma.alwaysdata.net/img/avatar.png"}) async {
+    await dotenv.load(fileName: "assets/.env");
     var response = await http.post(
-        Uri.parse("http://serverchronochroma.alwaysdata.net/user/register"),
+        Uri.parse("${dotenv.get("BASE_URL")}/user/register"),
         body: {"pseudo": pseudo, "mdp": pass, "avatar": avatar});
     Map<String, dynamic> json = jsonDecode(response.body);
     if (json['code'] < 200 || json['code'] > 299) {
@@ -211,6 +225,7 @@ class Compte {
           json['data']['pseudo'],
           json['data']['avatar_url'],
           json['data']['score'],
+          json['data']["refresh_token"],
           json['data']["token"],
           json['data']["personnage"]["santeMax"],
           json['data']["personnage"]["vitesseMax"],
@@ -226,16 +241,18 @@ class Compte {
     if (!await checkConnexion()) {
       return false;
     }
-    print(custom.toString());
-    print(seed.toString());
+    await dotenv.load(fileName: "assets/.env");
     var response = await http.post(
-        Uri.parse("http://serverchronochroma.alwaysdata.net/user/party"),
-        body: {
-          "token": _instance!._token,
+        Uri.parse("${dotenv.get("BASE_URL")}/user/party"),
+        headers: {
+          "Authorization": "Bearer ${_instance!._token!}",
+          "Content-Type": "application/json"
+        },
+        body: jsonEncode({
           "score": score,
           "seed": seed.toString(),
           "custom": custom.toString()
-        });
+        }));
     inspect(response);
     if (response.statusCode < 200 || response.statusCode > 299) {
       return false;
@@ -245,7 +262,7 @@ class Compte {
   }
 
   String toJsonString() {
-    return '{"data":{"pseudo":"$_pseudo","avatar_url":"$_avatarUrl","score":$_score,"token":"$_token","personnage":{"santeMax":$_persoVieMax,"vitesseMax":$_persoVitesseMax,"forceMax":$_persoForceMax,"vueMax":$_persoVueMax}}}';
+    return '{"data":{"pseudo":"$_pseudo","avatar_url":"$_avatarUrl","score":$_score,"refresh_token":"$_refreshtoken", "token":"$_token","personnage":{"santeMax":$_persoVieMax,"vitesseMax":$_persoVitesseMax,"forceMax":$_persoForceMax,"vueMax":$_persoVueMax}}}';
   }
 
   String? get pseudo => _pseudo;

@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../database/model/User");
+const jwt = require("jsonwebtoken");
+const {validateMiddleware} = require("../middleware/validateMiddleware");
 
 router.post("/login", async (req, res, next) => {
   if (!req.body.pseudo || !req.body.mdp) {
@@ -11,14 +13,22 @@ router.post("/login", async (req, res, next) => {
       next(500);
     } else {
       if (result) {
-        req.session.user = result;
+        const token = jwt.sign({ id: result.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.setHeader("Content-Type", "application/json");
         res.statusCode = 200;
         res.send(
           JSON.stringify({
             message: "Utilisateur connecté",
             code: 200,
-            data: result,
+            data: {
+              token: token,
+              refresh_token: result.token,
+              pseudo: result.pseudo,
+              avatar_url: result.avatar_url,
+              amelioration: result.amelioration,
+              score: result.monnaie,
+              personnage: result.personnage,
+            },
           })
         );
       } else {
@@ -43,27 +53,38 @@ router.post("/register", async (req, res, next) => {
     if (result.error) {
       next(500);
     } else {
+      let token = jwt.sign({ id: result.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
       res.setHeader("Content-Type", "application/json");
       res.statusCode = result.status;
       res.send(
         JSON.stringify({
           message: result.statusText,
           code: result.status,
-          data: result.data,
+          data: {
+            token: token,
+            refresh_token: result.data.token,
+            pseudo: result.data.pseudo,
+            avatar_url: result.data.avatar_url,
+            amelioration: result.data.amelioration,
+            score: result.data.monnaie,
+            personnage: result.data.personnage,
+          },
         })
       );
     }
   }
 });
 
-router.post("/avatar", async (req, res, next) => {
+router.put("/avatar", validateMiddleware, async (req, res, next) => {
   if (!req.body) {
     next(400);
   }
-  if (!req.body.token || !req.body.avatar) {
+  if (!req.body.avatar) {
     next(400);
   } else {
-    let result = await User.updateAvatar(req.body.token, req.body.avatar);
+    let result = await User.updateAvatar(
+       req.user ? req.user.id : null,
+       req.body.avatar);
     if (result.error) {
       next(500);
     } else {
@@ -79,7 +100,7 @@ router.post("/avatar", async (req, res, next) => {
   }
 });
 
-router.post("/amelioration", async (req, res, next) => {
+router.put("/amelioration", validateMiddleware, async (req, res, next) => {
   if (!req.body) {
     next(400);
   }
@@ -87,7 +108,7 @@ router.post("/amelioration", async (req, res, next) => {
     next(400);
   } else {
     let result = await User.updateAmelioration(
-      req.body.token,
+      req.user ? req.user.id : null,
       req.body.amelioration
     );
     if (result.error) {
@@ -105,7 +126,7 @@ router.post("/amelioration", async (req, res, next) => {
   }
 });
 
-router.post("/score", async (req, res, next) => {
+router.put("/score", validateMiddleware, async (req, res, next) => {
   if (!req.body) {
     next(400);
   }
@@ -113,7 +134,7 @@ router.post("/score", async (req, res, next) => {
     next(400);
   } else {
     let result = await User.updateScore(
-      req.body.token,
+      req.user ? req.user.id : null,
       req.body.score
     );
     if (result.error) {
@@ -132,15 +153,15 @@ router.post("/score", async (req, res, next) => {
 });
 
 
-router.post("/party", async (req, res, next) => {
+router.post("/party", validateMiddleware, async (req, res, next) => {
   if (!req.body) {
     next(400);
   }
-  if (!req.body.token || !req.body.score || !req.body.seed || !req.body.custom) {
+  if (!req.body.score || !req.body.seed || !req.body.custom) {
     next(400);
   } else {
     let result = await User.savePartie(
-      req.body.token,
+      req.user ? req.user.id : null,
       req.body.score,
       req.body.seed,
       req.body.custom
@@ -180,6 +201,9 @@ router.get("/party/best/:token", async (req, res, next) => {
     }
   }
 });
+
+
+
 
 router.all("*", (req, res, next) => {
   next(404);

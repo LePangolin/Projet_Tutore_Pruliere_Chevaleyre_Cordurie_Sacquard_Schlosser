@@ -61,11 +61,10 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     _effectiveLevelList = List<String>.from(_allLevelsList)
       ..shuffle(Random(seed))
       ..insert(0, 'nexus.tmx');
-    _effectiveLevelList = _effectiveLevelList.take(2).toList();
+    _effectiveLevelList = _effectiveLevelList.take(1).toList();
 
     pseudoRandomNG = PseudoRandomNG(seed);
-    print(seed);
-    print(_effectiveLevelList);
+
 
     // Par précaution, on met le jeu en plein écran et en paysage
     await Flame.device.fullScreen();
@@ -180,23 +179,12 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     overlays.remove(Controll.ID);
     player.saturation = 0;
     bool updateScore = await Compte.updateScore(coins);
-    if (updateScore) {
-      print("Score mis à jour");
-    } else {
-      print("Score pas mis à jour");
-    }
     if (await Compte.getInstance() != null) {
       if (win && !send) {
         int minutes = _stopwatch.elapsed.inMinutes;
         int secondes = _stopwatch.elapsed.inSeconds - minutes * 60;
         bool res = await Compte.sendPartie(
             "${minutes}min ${secondes}sec", seed, setSeed);
-        if (res) {
-          print("Partie envoyée");
-          send = true;
-        } else {
-          print("Partie non envoyée");
-        }
       }
     }
     

@@ -2,7 +2,7 @@ const supabase = require("../supabase");
 const { createPersonnage } = require("./Personnage");
 const { createPartie } = require("./Partie");
 const { createLinkPartie, getMeilleurPartie } = require("./User_Partie");
-const { getPerso } = require("./User_Personnage");
+const { getPerso, createLink } = require("./User_Personnage");
 const crypto = require("crypto");
 
 async function createUser(avatar, pseudo, mdp) {
@@ -71,8 +71,10 @@ async function createUser(avatar, pseudo, mdp) {
     "9",
   ];
   let user = await getUser(pseudo, mdp);
-  if (user.data.length > 0) {
-    return { status: 409, statusText: "Pseudo déjà utilisé" };
+  if(user.data && user.data.length > 0){
+    if (user.data.length > 0) {
+      return { status: 409, statusText: "Pseudo déjà utilisé" , error: true};
+    }
   } else {
     if (!avatar) {
       avatar = "http://serverchronochroma.alwaysdata.net/img/avatar.png";
@@ -92,11 +94,11 @@ async function createUser(avatar, pseudo, mdp) {
         .digest("hex"),
     });
     if (newuser.error) {
-      return { status: 500, statusText: "Erreur serveur" };
+      return { status: 500, statusText: "Erreur serveur" , error: true};
     } else {
       let newchar = await createPersonnage();
       if (newchar.error) {
-        return { status: 500, statusText: "Erreur serveur" };
+        return { status: 500, statusText: "Erreur serveur" , error: true};
       } else {
         let user = await getUser(pseudo, mdp);
         let char = (
@@ -108,7 +110,7 @@ async function createUser(avatar, pseudo, mdp) {
         ).data[0];
         let link = await createLink(char.id, user.id);
         if (link.error) {
-          return { status: 500, statusText: "Erreur serveur" };
+          return { status: 500, statusText: "Erreur serveur" , error: true};
         } else {
           user.personnage = char;
           return { status: 201, statusText: "Utilisateur créé", data: user };
@@ -121,23 +123,23 @@ async function createUser(avatar, pseudo, mdp) {
 async function getUser(pseudo, mdp, fn) {
   let user = await supabase
     .from("utilisateur")
-    .select("id, avatar_url, pseudo, score, token")
+    .select("id, avatar_url, pseudo, monnaie, token")
     .eq("pseudo", pseudo)
     .eq(
       "motdepasse",
       crypto.createHmac("sha256", "cucurbitacae").update(mdp).digest("hex")
     );
   if (user.error) {
-    return { status: 500, statusText: "Erreur serveur" };
+    return { status: 500, statusText: "Erreur serveur" , error: true};
   } else if (user.data.length == 0) {
-    return { status: 404, statusText: "Utilisateur non trouvé", data: [] };
+    return { status: 404, statusText: "Utilisateur non trouvé", data: [] , error: true};
   } else {
     let char = await supabase
       .from("utilisateur_personnage")
       .select("id_personnage")
       .eq("id_utilisateur", user.data[0].id);
     if (char.error) {
-      return { status: 500, statusText: "Erreur serveur" };
+      return { status: 500, statusText: "Erreur serveur" , error: true};
     } else if (char.data.length == 0) {
       return user.data[0];
     } else {
@@ -146,7 +148,7 @@ async function getUser(pseudo, mdp, fn) {
         .select("*")
         .eq("id", char.data[0].id_personnage);
       if (charData.error) {
-        return { status: 500, statusText: "Erreur serveur" };
+        return { status: 500, statusText: "Erreur serveur" , error: true};
       } else {
         user.data[0].personnage = charData.data[0];
         user.data[0].status = 200;
@@ -168,7 +170,7 @@ async function updateAvatar(token, avatar) {
 }
 
 async function updateAmelioration(token, amelioration) {
-  let user = await supabase.from("utilisateur").select("id").eq("token", token);
+  let user = await supabase.from("utilisateur").select("id").eq("id", token);
   if (user.error) {
     return { status: 500, statusText: "Erreur serveur" };
   }
@@ -229,7 +231,7 @@ async function updateScore(token, score) {
 }
 
 async function savePartie(token, score, seed, isCustom){
-  let user = await supabase.from("utilisateur").select("id").eq("token", token);
+  let user = await supabase.from("utilisateur").select("id").eq("id", token);
   if(user.error){
     console.log("User throw error");
     return {status: 500, statusText: "Erreur serveur"};

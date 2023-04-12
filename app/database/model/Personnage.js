@@ -6,7 +6,6 @@ async function createPersonnage(fn) {
         vitesseMax: 1,
         forceMax: 1,
         vueMax: 1,
-        score: 0,
     });
 }
 
