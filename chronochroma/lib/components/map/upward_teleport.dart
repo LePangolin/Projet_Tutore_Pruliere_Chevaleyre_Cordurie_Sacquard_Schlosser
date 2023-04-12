@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:chronochroma/chronochroma.dart';
 import 'package:chronochroma/components/entities/player.dart';
 import 'package:flame/collisions.dart';
