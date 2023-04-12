@@ -22,12 +22,15 @@ class Compte {
 
   int? _persoVueMax;
 
+  String? _refreshtoken;
+
   String? _token;
 
   Compte._(
       this._pseudo,
       this._avatarUrl,
       this._score,
+      this._refreshtoken,
       this._token,
       this._persoVieMax,
       this._persoVitesseMax,
@@ -45,6 +48,7 @@ class Compte {
             json['data']['pseudo'],
             json['data']['avatar_url'],
             json['data']['score'],
+            json['data']["refresh_token"],
             json['data']["token"],
             json['data']["personnage"]["santeMax"],
             json['data']["personnage"]["vitesseMax"],
@@ -64,14 +68,17 @@ class Compte {
     var response = await http.post(
         Uri.parse("http://serverchronochroma.alwaysdata.net/user/login"),
         body: {"pseudo": pseudo, "mdp": pass});
+
     Map<String, dynamic> json = jsonDecode(response.body);
-    if (json['data']['status'] < 200 || json['data']['status'] > 299) {
+    print(json);
+    if (response.statusCode > 299 || response.statusCode < 200) {
       return false;
     } else {
       _instance = Compte._(
           json['data']['pseudo'],
           json['data']['avatar_url'],
           json['data']['score'],
+          json['data']["refresh_token"],
           json['data']["token"],
           json['data']["personnage"]["santeMax"],
           json['data']["personnage"]["vitesseMax"],
@@ -102,9 +109,11 @@ class Compte {
       return false;
     }
     if (avatar != null) {
-      var response = await http.post(
+      var response = await http.put(
           Uri.parse("http://serverchronochroma.alwaysdata.net/user/avatar"),
-          body: {"token": _instance!._token, "avatar": avatar});
+          headers: {"Authorization": "Bearer ${_instance!._token!}"},
+          body: {"avatar": avatar});
+      print(response.body);
       if (response.statusCode < 200 || response.statusCode > 299) {
         return false;
       } else {
@@ -129,15 +138,12 @@ class Compte {
       return false;
     }
     if (upgrade != null) {
-      var response = await http.post(
+      var response = await http.put(
           Uri.parse(
               "http://serverchronochroma.alwaysdata.net/user/amelioration"),
-          body: {"token": _instance!._token, "amelioration": upgrade.name});
+          headers: {"Authorization":"Bearer ${_instance!._token!}"},
+          body: {"amelioration": upgrade.name});
       if (response.statusCode < 200 || response.statusCode > 299) {
-        // print("amelioration : ${upgrade.name}");
-        // print("erreur ${response.statusCode}");
-        // print(
-        //     "return false dans le if (response.statusCode < 200 || response.statusCode > 299)");
         return false;
       } else {
         switch (upgrade) {
@@ -160,7 +166,6 @@ class Compte {
         return true;
       }
     } else {
-      // print("3 pas d'upgrade");
       return false;
     }
   }
@@ -172,10 +177,12 @@ class Compte {
     if (_instance == null) {
       return false;
     }
-    var response = await http.post(
+    var response = await http.put(
         Uri.parse("http://serverchronochroma.alwaysdata.net/user/score"),
-        body: {"token": _instance!._token, "score": (_instance!.score + incr).toString()}
-    );
+        headers: {"Authorization": "Bearer ${_instance!._token!}"},
+        body: {
+          "score": (_instance!.score + incr).toString()
+        });
     if (response.statusCode < 200 || response.statusCode > 299) {
       return false;
     } else {
@@ -186,7 +193,6 @@ class Compte {
       return true;
     }
   }
-
 
   static Future<bool> checkConnexion() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
@@ -211,6 +217,7 @@ class Compte {
           json['data']['pseudo'],
           json['data']['avatar_url'],
           json['data']['score'],
+          json['data']["refresh_token"],
           json['data']["token"],
           json['data']["personnage"]["santeMax"],
           json['data']["personnage"]["vitesseMax"],
@@ -226,12 +233,9 @@ class Compte {
     if (!await checkConnexion()) {
       return false;
     }
-    print(custom.toString());
-    print(seed.toString());
     var response = await http.post(
         Uri.parse("http://serverchronochroma.alwaysdata.net/user/party"),
         body: {
-          "token": _instance!._token,
           "score": score,
           "seed": seed.toString(),
           "custom": custom.toString()
@@ -245,7 +249,7 @@ class Compte {
   }
 
   String toJsonString() {
-    return '{"data":{"pseudo":"$_pseudo","avatar_url":"$_avatarUrl","score":$_score,"token":"$_token","personnage":{"santeMax":$_persoVieMax,"vitesseMax":$_persoVitesseMax,"forceMax":$_persoForceMax,"vueMax":$_persoVueMax}}}';
+    return '{"data":{"pseudo":"$_pseudo","avatar_url":"$_avatarUrl","score":$_score,"refresh_token":"$_refreshtoken", "token":"$_token","personnage":{"santeMax":$_persoVieMax,"vitesseMax":$_persoVitesseMax,"forceMax":$_persoForceMax,"vueMax":$_persoVueMax}}}';
   }
 
   String? get pseudo => _pseudo;

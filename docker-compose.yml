@@ -4,12 +4,9 @@ services:
     volumes:
       - ./app/:/app/
     ports:
-      - "8100:8100"
-    depends_on:
-      - db
+      - "8010:8010"
     working_dir: /app/
-    command:
-      - bash
-      - -c
-      - "npm install && npm start"
+    command: npm run dev
+    env_file:
+      - ./app/.env
 
