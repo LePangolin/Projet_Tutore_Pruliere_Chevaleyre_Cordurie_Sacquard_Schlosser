@@ -534,7 +534,7 @@ class Player extends SpriteAnimationComponent
             canAttack = false;
           }
           _crouchAttackAnimation.onComplete = () {
-            gameRef.remove(gameRef.attackHitbox);
+            gameRef.attackHitbox.removeFromParent();
             isAttacking = false;
             canAttack = true;
             canSlide = true;

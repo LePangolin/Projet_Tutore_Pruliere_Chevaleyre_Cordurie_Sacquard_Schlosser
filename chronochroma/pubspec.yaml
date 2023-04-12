@@ -34,7 +34,6 @@ dev_dependencies:
 
 flutter_icons:
   android: true
-  ios: true
   web: 
     generate: true
   windows: 
