@@ -179,6 +179,8 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
     overlays.remove(Controll.ID);
     player.saturation = 0;
     bool updateScore = await Compte.updateScore(endGameReward() * 25);
+    if (updateScore) {
+      
     if (await Compte.getInstance() != null) {
       
       if (win && !send) {
@@ -187,6 +189,7 @@ class Chronochroma extends FlameGame with HasCollisionDetection {
         bool res = await Compte.sendPartie(
             "${minutes}min ${secondes}sec", seed, setSeed);
       }
+    }
     }
     
   }
