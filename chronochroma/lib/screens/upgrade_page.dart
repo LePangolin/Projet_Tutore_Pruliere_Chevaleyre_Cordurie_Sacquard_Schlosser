@@ -1,7 +1,9 @@
+import 'package:chronochroma/components/upgrade_modal.dart';
 import 'package:chronochroma/helpers/character_upgrades.dart';
 import 'package:chronochroma/components/compte.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UpgradePage extends StatefulWidget {
   const UpgradePage({super.key, required this.title});
@@ -24,11 +26,24 @@ class _UpgradePageState extends State<UpgradePage> {
   final List<String> forceMaxCost = ["50", "75", "100", "150", "MAX"];
   final List<String> visionMaxCost = ["30", "60", "90", "130", "MAX"];
   bool pendingRequest = false;
+  UpgradeModal upgradeModal = UpgradeModal();
 
   @override
   void initState() {
     super.initState();
     _loadCompte();
+    displayUpgradeModal();
+  }
+
+  void displayUpgradeModal() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (!(prefs.getBool('dontShowAgainUpgrades') ?? false)) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return upgradeModal;
+          });
+    }
   }
 
   Future<void> _loadCompte() async {
@@ -140,8 +155,7 @@ class _UpgradePageState extends State<UpgradePage> {
                   children: [
                     ElevatedButton.icon(
                         onPressed: () {
-                          player.play(AssetSource(
-                              'audio/interface_click.wav'));
+                          player.play(AssetSource('audio/interface_click.wav'));
                           Navigator.popAndPushNamed(context, '/salon');
                         },
                         style: ElevatedButton.styleFrom(
@@ -153,22 +167,39 @@ class _UpgradePageState extends State<UpgradePage> {
                           size: 25,
                         ),
                         label: const Text("Retour")),
-                    Row(
-                      children: [
-                        Image.asset("assets/images/coin.png", height: 15),
-                        const SizedBox(width: 1),
-                        Text(
-                          "$score",
-                          style: const TextStyle(
-                            color: Color.fromARGB(255, 255, 196, 0),
-                            fontFamily: 'Calibri',
-                            letterSpacing: 0.5,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                    Container(
+                      margin: const EdgeInsets.only(top: 10),
+                      child: Row(
+                        children: [
+                          Image.asset("assets/images/coin.png", height: 15),
+                          const SizedBox(width: 1),
+                          Text(
+                            "$score",
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 255, 196, 0),
+                              fontFamily: 'Calibri',
+                              letterSpacing: 0.5,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 30)
-                      ],
+                          const SizedBox(width: 16),
+                          IconButton(
+                              icon: const Icon(Icons.help_outline_rounded,
+                                  color: Colors.white, size: 30),
+                              onPressed: () async {
+                                player.play(
+                                    AssetSource('audio/interface_click.wav'));
+                                await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return UpgradeModal();
+                                  },
+                                );
+                              }),
+                          const SizedBox(width: 30)
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -264,8 +295,8 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/health.png'),
                                   iconSize: 50,
                                   onPressed: () => {
-                                        player.play(AssetSource(
-                                            'audio/upgrade.wav')),
+                                        player.play(
+                                            AssetSource('audio/upgrade.wav')),
                                         _upgrade(sante, CharacterUpgrades.vie,
                                             santeMaxCost)
                                       }),
@@ -302,8 +333,8 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/atk.png'),
                                   iconSize: 50,
                                   onPressed: () => {
-                                        player.play(AssetSource(
-                                            'audio/upgrade.wav')),
+                                        player.play(
+                                            AssetSource('audio/upgrade.wav')),
                                         _upgrade(force, CharacterUpgrades.force,
                                             forceMaxCost)
                                       }),
@@ -340,8 +371,8 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/vision.png'),
                                   iconSize: 50,
                                   onPressed: () => {
-                                        player.play(AssetSource(
-                                            'audio/upgrade.wav')),
+                                        player.play(
+                                            AssetSource('audio/upgrade.wav')),
                                         _upgrade(vision, CharacterUpgrades.vue,
                                             visionMaxCost)
                                       }),
@@ -378,8 +409,8 @@ class _UpgradePageState extends State<UpgradePage> {
                                       'assets/images/upgrades/speed.png'),
                                   iconSize: 50,
                                   onPressed: () => {
-                                        player.play(AssetSource(
-                                            'audio/upgrade.wav')),
+                                        player.play(
+                                            AssetSource('audio/upgrade.wav')),
                                         _upgrade(
                                             vitesse,
                                             CharacterUpgrades.vitesse,

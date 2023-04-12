@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class SalonModal extends StatefulWidget {
   SalonModal({Key? key}) : super(key: key);
@@ -13,7 +14,7 @@ class _SalonModalState extends State<SalonModal> {
   bool _modalOpen = true;
   late bool _dontShowAgain = false;
   int index = 1;
-  int numberOfPages = 3;
+  int numberOfPages = 5;
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class _SalonModalState extends State<SalonModal> {
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height * 0.8;
     final double screenWidth = MediaQuery.of(context).size.width * 0.8;
+    final player = AudioPlayer();
 
     return Dialog(
       backgroundColor: Colors.white,
@@ -78,6 +80,10 @@ class _SalonModalState extends State<SalonModal> {
                         Row(children: [
                           IconButton(
                             onPressed: () {
+                              if (index > 1) {
+                                player.play(
+                                    AssetSource('audio/interface_click.wav'));
+                              }
                               setState(() {
                                 index = index <= 1 ? 1 : index - 1;
                               });
@@ -93,6 +99,10 @@ class _SalonModalState extends State<SalonModal> {
                           ),
                           IconButton(
                             onPressed: () {
+                              if (index < numberOfPages) {
+                                player.play(
+                                    AssetSource('audio/interface_click.wav'));
+                              }
                               setState(() {
                                 index = index >= numberOfPages
                                     ? numberOfPages
@@ -105,26 +115,32 @@ class _SalonModalState extends State<SalonModal> {
                                     : Colors.blue),
                           ),
                         ]),
-                        Column(children: [
-                          Row(
-                            children: [
-                              const Text('Ne plus afficher'),
-                              Checkbox(
-                                key: UniqueKey(),
-                                value: _dontShowAgain,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _dontShowAgain = value!;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                          ElevatedButton(
-                            onPressed: close,
-                            child: const Text('Fermer'),
-                          ),
-                        ]),
+                        index == numberOfPages
+                            ? Column(children: [
+                                Row(
+                                  children: [
+                                    const Text('Ne plus afficher'),
+                                    Checkbox(
+                                      key: UniqueKey(),
+                                      value: _dontShowAgain,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _dontShowAgain = value!;
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    player.play(AssetSource(
+                                        'audio/interface_click.wav'));
+                                    close();
+                                  },
+                                  child: const Text('Fermer'),
+                                ),
+                              ])
+                            : Container(),
                       ]),
                 ),
               ],
@@ -148,19 +164,22 @@ class _SalonModalState extends State<SalonModal> {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Container(
-              width: 280,
-              child: const Text(
-                'La vie de votre personnage diminue si vous êtes blessé, mais aussi à mesure que le temps s\'écoule. Faites vite.\n\nLa santé de votre personnage a également un étroit lien avec la couleur affichée à l\'écran. Plus vous vous rapprocherez des portes de la mort, moins celle-ci sera présente.',
-                style: TextStyle(
-                  fontSize: 16,
+            Flexible(
+              child: Container(
+                width: 280,
+                child: const Text(
+                  'La vie de votre personnage diminue si vous êtes blessé, mais aussi à mesure que le temps s\'écoule. Faites vite.\n\nLa santé de votre personnage a également un étroit lien avec la couleur affichée à l\'écran. Plus vous vous rapprocherez des portes de la mort, moins celle-ci sera présente.',
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ),
             const Image(
-                image: AssetImage('assets/images/gifU.gif'),
-                fit: BoxFit.fill,
-                height: 80),
+              image: AssetImage('assets/images/waitGif.gif'),
+              fit: BoxFit.fill,
+              height: 120,
+            ),
           ],
         );
       case 3:
@@ -190,6 +209,48 @@ class _SalonModalState extends State<SalonModal> {
                     height: 50),
               ],
             ),
+          ],
+        );
+      case 4:
+        return const Text(
+          'Si vous êtes connecté, votre meilleur score sera sauvegarder dans le leaderboard accessible à l\'aide du bouton "SCORES".\n\nSi vous n\'avez pas de compte, pensez-y, votre progression sera alors sauvegardée.',
+          style: TextStyle(
+            fontSize: 16,
+          ),
+        );
+      case 5:
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            const Flexible(
+              child: SizedBox(
+                width: 280,
+                child: Text(
+                  'Vous pouvez vous mouvoir avec le joystick, courir, vous accroupir et glissez sur le sol.\n\n Le saut se situe sur son propre bouton.\n\nEnfin, l\'attaque a aussi un bouton dédié. Vous pouvez attaquer debout ou accroupi, mais pas durant une chute.',
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+            Column(
+              children: const [
+                Image(
+                    image: AssetImage('assets/images/joystick_example.png'),
+                    fit: BoxFit.fill,
+                    height: 50),
+                SizedBox(height: 16),
+                Image(
+                    image: AssetImage('assets/images/icons/jumpIcon.png'),
+                    fit: BoxFit.fill,
+                    height: 50),
+                SizedBox(height: 16),
+                Image(
+                    image: AssetImage('assets/images/icons/swordIcon.png'),
+                    fit: BoxFit.fill,
+                    height: 50),
+              ],
+            )
           ],
         );
       default:

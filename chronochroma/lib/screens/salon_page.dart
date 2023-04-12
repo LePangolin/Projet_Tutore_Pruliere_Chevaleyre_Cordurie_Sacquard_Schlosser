@@ -78,7 +78,7 @@ class _SalonPageState extends State<SalonPage> {
 
   void displaySalonModal() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (!(prefs.getBool('dontShowAgain') ?? false)) {
+    if (!(prefs.getBool('dontShowAgainSalon') ?? false)) {
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -269,20 +269,19 @@ class _SalonPageState extends State<SalonPage> {
                       fontSize: 20,
                     )),
                 onPressed: () async {
-                  player.play(
-                      AssetSource('audio/interface_click.wav'));
+                  player.play(AssetSource('audio/interface_click.wav'));
                   modalConnexion();
                 },
               ),
             ),
-          // help button that open modal
           Positioned(
-            top: 20,
+            top: 12,
             right: 20,
             child: IconButton(
                 icon: const Icon(Icons.help_outline_rounded,
-                    color: Colors.white, size: 40),
+                    color: Colors.white, size: 30),
                 onPressed: () async {
+                  player.play(AssetSource('audio/interface_click.wav'));
                   await showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -300,8 +299,7 @@ class _SalonPageState extends State<SalonPage> {
                 child: IconButton(
                     icon: Image.asset('assets/images/button_scores.png'),
                     onPressed: () async {
-                      player.play(AssetSource(
-                          'audio/interface_click.wav'));
+                      player.play(AssetSource('audio/interface_click.wav'));
                       final url = Uri.parse(
                           'http://serverchronochroma.alwaysdata.net/');
                       if (await canLaunchUrl(url)) {
@@ -324,8 +322,7 @@ class _SalonPageState extends State<SalonPage> {
                 child: IconButton(
                     icon: Image.asset('assets/images/button_ameliorations.png'),
                     onPressed: () => {
-                          player.play(AssetSource(
-                              'audio/interface_click.wav')),
+                          player.play(AssetSource('audio/interface_click.wav')),
                           Navigator.popAndPushNamed(context, '/upgrade')
                         }),
               ),
