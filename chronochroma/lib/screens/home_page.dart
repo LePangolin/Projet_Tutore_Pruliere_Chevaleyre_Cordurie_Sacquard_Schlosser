@@ -215,7 +215,6 @@ class _MyHomePageState extends State<MyHomePage> {
                             child: Text(inkwellText),
                             onTap: () async {
                               setState(() {
-                                print(insciptionTab);
                                 insciptionTab = !insciptionTab;
                               });
                               Navigator.pop(context);

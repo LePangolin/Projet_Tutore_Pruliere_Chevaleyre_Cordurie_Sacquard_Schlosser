@@ -241,12 +241,6 @@ class Player extends SpriteAnimationComponent
   void update(double dt) async {
     super.update(dt);
     frame++;
-    // print("health $health");
-    // print("_attackAnimationSpeed $_attackAnimationSpeed");
-    // print("_crouchAttackAnimationSpeed $_crouchAttackAnimationSpeed");
-    // print("xMultiplier $xMultiplier");
-    // print("damageDeal $damageDeal");
-
     if (canJump && (velocity.y + fallingVelocity) > 0) {
       canJump = false;
       isJumping = false;

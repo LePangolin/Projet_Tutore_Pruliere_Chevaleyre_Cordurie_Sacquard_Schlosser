@@ -233,25 +233,18 @@ async function updateScore(token, score) {
 async function savePartie(token, score, seed, isCustom){
   let user = await supabase.from("utilisateur").select("id").eq("id", token);
   if(user.error){
-    console.log("User throw error");
     return {status: 500, statusText: "Erreur serveur"};
   }
   let newPartie = await createPartie(score, seed, isCustom);
-  console.log(newPartie);
   if(newPartie.error){
-    console.log("Partie1 throw error");
     return {status: 500, statusText: "Erreur serveur"};
   }
   let partie = await supabase.from("partie").select("*").order("id", {ascending: false}).limit(1);
-  console.log(partie);
   if(partie.error){
-    console.log("Partie2 throw error");
     return {status: 500, statusText: "Erreur serveur"};
   }
   let link = await createLinkPartie(partie.data[0].id, user.data[0].id);
-  console.log(link);
   if(link.error){
-    console.log("Link throw error");
     return {status: 500, statusText: "Erreur serveur"};
   }
   return {status: 200, statusText: "Partie sauvegardée"};
