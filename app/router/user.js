@@ -13,7 +13,6 @@ router.post("/login", async (req, res, next) => {
       next(500);
     } else {
       if (result) {
-        console.log(result);
         const token = jwt.sign({ id: result.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.setHeader("Content-Type", "application/json");
         res.statusCode = 200;
@@ -51,7 +50,6 @@ router.post("/register", async (req, res, next) => {
       req.body.pseudo,
       req.body.mdp
     );
-    console.log(result);
     if (result.error) {
       next(500);
     } else {

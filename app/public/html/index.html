@@ -1,17 +1,111 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Chronochroma</title>
-        <meta charset="utf-8">
-        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    </head>
-    <body>
-        <h1>App is running</h1>
-        <p>App is running</p>
-    </body>
-    <script>
-        fetch('/partie/best')
-            .then(response => response.json())
-            .then(data => console.log(data));
-    </script>
+  <head>
+    <title>Chronochroma</title>
+    <meta charset="utf-8" />
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div id="container">
+      <center>
+        <table
+          background="/img/bg.png"
+          bordercolor="#ff0000"
+          border="0"
+          cellspacing="0"
+          cellpadding="1"
+        >
+          <tbody>
+            <tr></tr>
+            <tr>
+              <td>
+                <h1>TABLEAU DES SCORES</h1>
+                <div class="loading" v-if="loading">
+                  <div class="spinner">
+                    <div class="double-bounce1"></div>
+                    <div class="double-bounce2"></div>
+                  </div>
+                </div>
+                <div class="text" v-else>
+                  <table
+                  cellspacing="30"
+                  >
+                    <tr>
+                      <th></th>
+                      <th>Pseudo</th>
+                      <th>Score</th>
+                      <th>Seed</th>
+                      <th>Set seed</th>
+                    </tr>
+                    <tr v-for="sc in sortedScores">
+                      <td><div v-if="(typeof sc.place) == 'number'">
+                        {{ sc.place }}.
+                      </div>
+                      <img class="place" v-else :src="sc.place"></td>
+                      <td>{{ sc.pseudo }}</td>
+                      <td>{{ sc.score }}</td>
+                      <td>{{ sc.seed }}</td>
+                      <td>
+                        <input type="checkbox" disabled :checked="sc.custom" />
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </center>
+    </div>
+  </body>
 </html>
+
+<script>
+  var myVueApp = {
+    data() {
+      return {
+        scores: null,
+        loading: true,
+        errored: false,
+        sortedScores: null,
+      };
+    },
+    methods: {
+      sortScores() {
+        try {
+          return this.scores.sort(function (a, b) {
+            return a.score.localeCompare(b.score);
+          });
+        } catch (e) {}
+      },
+      addPlace(){
+        let i = 3;
+        this.sortedScores[0].place = "/img/first.png";
+        this.sortedScores[1].place = "/img/second.png";
+        this.sortedScores[2].place = "/img/third.png";
+        for(i; i<=this.sortedScores.length; i++){
+          this.sortedScores[i].place = i+1;
+        }
+        return this.sortedScores;
+      }
+    },
+    mounted() {
+      this.scores = null;
+      fetch("/partie/best")
+        .then((response) => {
+          response.json().then((data) => {
+            this.scores = data.data;
+            this.sortedScores = this.sortScores();
+            this.sortedScores = this.addPlace();
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          this.errored = true;
+        })
+        .finally(() => (this.loading = false));
+    },
+  };
+  Vue.createApp(myVueApp).mount("#container");
+</script>

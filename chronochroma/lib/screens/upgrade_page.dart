@@ -141,7 +141,7 @@ class _UpgradePageState extends State<UpgradePage> {
                     ElevatedButton.icon(
                         onPressed: () {
                           player.play(AssetSource(
-                              '../../assets/audio/interface_click.wav'));
+                              'audio/interface_click.wav'));
                           Navigator.popAndPushNamed(context, '/salon');
                         },
                         style: ElevatedButton.styleFrom(
@@ -265,7 +265,7 @@ class _UpgradePageState extends State<UpgradePage> {
                                   iconSize: 50,
                                   onPressed: () => {
                                         player.play(AssetSource(
-                                            '../../assets/audio/upgrade.wav')),
+                                            'audio/upgrade.wav')),
                                         _upgrade(sante, CharacterUpgrades.vie,
                                             santeMaxCost)
                                       }),
@@ -303,7 +303,7 @@ class _UpgradePageState extends State<UpgradePage> {
                                   iconSize: 50,
                                   onPressed: () => {
                                         player.play(AssetSource(
-                                            '../../assets/audio/upgrade.wav')),
+                                            'audio/upgrade.wav')),
                                         _upgrade(force, CharacterUpgrades.force,
                                             forceMaxCost)
                                       }),
@@ -341,7 +341,7 @@ class _UpgradePageState extends State<UpgradePage> {
                                   iconSize: 50,
                                   onPressed: () => {
                                         player.play(AssetSource(
-                                            '../../assets/audio/upgrade.wav')),
+                                            'audio/upgrade.wav')),
                                         _upgrade(vision, CharacterUpgrades.vue,
                                             visionMaxCost)
                                       }),
@@ -379,7 +379,7 @@ class _UpgradePageState extends State<UpgradePage> {
                                   iconSize: 50,
                                   onPressed: () => {
                                         player.play(AssetSource(
-                                            '../../assets/audio/upgrade.wav')),
+                                            'audio/upgrade.wav')),
                                         _upgrade(
                                             vitesse,
                                             CharacterUpgrades.vitesse,

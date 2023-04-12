@@ -4,6 +4,7 @@ import 'package:chronochroma/helpers/character_upgrades.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Compte {
   static Compte? _instance;
@@ -65,12 +66,12 @@ class Compte {
     if (!await checkConnexion()) {
       return false;
     }
+    await dotenv.load(fileName: "assets/.env");
     var response = await http.post(
-        Uri.parse("http://serverchronochroma.alwaysdata.net/user/login"),
+        Uri.parse("${dotenv.get("BASE_URL")}/user/login"),
         body: {"pseudo": pseudo, "mdp": pass});
 
     Map<String, dynamic> json = jsonDecode(response.body);
-    print(json);
     if (response.statusCode > 299 || response.statusCode < 200) {
       return false;
     } else {
@@ -108,12 +109,15 @@ class Compte {
     if (!await checkConnexion()) {
       return false;
     }
+    await dotenv.load(fileName: "assets/.env");
     if (avatar != null) {
-      var response = await http.put(
-          Uri.parse("http://serverchronochroma.alwaysdata.net/user/avatar"),
-          headers: {"Authorization": "Bearer ${_instance!._token!}"},
-          body: {"avatar": avatar});
-      print(response.body);
+      var response =
+          await http.put(Uri.parse("${dotenv.get("BASE_URL")}/user/avatar"),
+              headers: {
+                "Authorization": "Bearer ${_instance!._token!}",
+                "Content-Type": "application/json"
+              },
+              body: jsonEncode({"avatar": avatar}));
       if (response.statusCode < 200 || response.statusCode > 299) {
         return false;
       } else {
@@ -130,19 +134,20 @@ class Compte {
 
   static Future<bool> upgradeCharacter(CharacterUpgrades? upgrade) async {
     if (!await checkConnexion()) {
-      // print("1 pas de connexion");
       return false;
     }
     if (_instance == null) {
-      // print("2 pas de compte");
       return false;
     }
     if (upgrade != null) {
+      await dotenv.load(fileName: "assets/.env");
       var response = await http.put(
-          Uri.parse(
-              "http://serverchronochroma.alwaysdata.net/user/amelioration"),
-          headers: {"Authorization":"Bearer ${_instance!._token!}"},
-          body: {"amelioration": upgrade.name});
+          Uri.parse("${dotenv.get("BASE_URL")}/user/amelioration"),
+          headers: {
+            "Authorization": "Bearer ${_instance!._token!}",
+            "Content-Type": "application/json"
+          },
+          body: jsonEncode({"amelioration": upgrade.name}));
       if (response.statusCode < 200 || response.statusCode > 299) {
         return false;
       } else {
@@ -177,12 +182,14 @@ class Compte {
     if (_instance == null) {
       return false;
     }
-    var response = await http.put(
-        Uri.parse("http://serverchronochroma.alwaysdata.net/user/score"),
-        headers: {"Authorization": "Bearer ${_instance!._token!}"},
-        body: {
-          "score": (_instance!.score + incr).toString()
-        });
+    await dotenv.load(fileName: "assets/.env");
+    var response =
+        await http.put(Uri.parse("${dotenv.get("BASE_URL")}/user/score"),
+            headers: {
+              "Authorization": "Bearer ${_instance!._token!}",
+              "Content-Type": "application/json"
+            },
+            body: jsonEncode({"score": (_instance!.score + incr).toString()}));
     if (response.statusCode < 200 || response.statusCode > 299) {
       return false;
     } else {
@@ -206,8 +213,9 @@ class Compte {
   static Future<bool> inscription(pseudo, pass,
       {avatar =
           "http://serverchronochroma.alwaysdata.net/img/avatar.png"}) async {
+    await dotenv.load(fileName: "assets/.env");
     var response = await http.post(
-        Uri.parse("http://serverchronochroma.alwaysdata.net/user/register"),
+        Uri.parse("${dotenv.get("BASE_URL")}/user/register"),
         body: {"pseudo": pseudo, "mdp": pass, "avatar": avatar});
     Map<String, dynamic> json = jsonDecode(response.body);
     if (json['code'] < 200 || json['code'] > 299) {
@@ -233,13 +241,18 @@ class Compte {
     if (!await checkConnexion()) {
       return false;
     }
+    await dotenv.load(fileName: "assets/.env");
     var response = await http.post(
-        Uri.parse("http://serverchronochroma.alwaysdata.net/user/party"),
-        body: {
+        Uri.parse("${dotenv.get("BASE_URL")}/user/party"),
+        headers: {
+          "Authorization": "Bearer ${_instance!._token!}",
+          "Content-Type": "application/json"
+        },
+        body: jsonEncode({
           "score": score,
           "seed": seed.toString(),
           "custom": custom.toString()
-        });
+        }));
     inspect(response);
     if (response.statusCode < 200 || response.statusCode > 299) {
       return false;

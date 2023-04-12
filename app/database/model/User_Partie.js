@@ -10,7 +10,6 @@ async function createLinkPartie(idPartie, idUser, fn){
 async function getPartie(idUser){
     let link = await supabase.from('utilisateur_partie').select('id_partie').eq('id_utilisateur', idUser)
     if(link.error){
-        console.log(link.error)
         return {status: 500, statusText: 'Erreur serveur'}
     } else if(link.data.length == 0){
         return {status: 404, statusText: 'Partie non trouvée', data: []}
@@ -32,11 +31,14 @@ async function getMeilleurPartie(idUser){
             partie.push(await supabase.from('partie').select('*').eq('id', idParties.data[i].id_partie))
         }
         let bestPartie = partie[0].data[0];
-        partie.forEach((partie) => {
-            if(partie.data[0].score < bestPartie.score){
-                bestPartie = partie.data[0];
+        for(let i = 1; i < partie.length; i++){
+            if(!partie[i].data[0]){
+                continue;
             }
-        })
+            if(partie[i].data[0].score > bestPartie.score){
+                bestPartie = partie[i].data[0];
+            }
+        }
         let user = await supabase.from('utilisateur').select('pseudo').eq('id', idUser)
         if(user.error){
             return {status: 500, statusText: 'Erreur serveur'}
@@ -67,7 +69,6 @@ async function getMeilleurPartieAll(){
     let data = [];
     for(let i = 0; i < idUsers.data.length; i++){
         let partie = await getMeilleurPartie(idUsers.data[i]);
-        console.log(partie.data.data)
         if(partie.data.data.length > 0){
             data.push(partie.data.data[0]);
         }

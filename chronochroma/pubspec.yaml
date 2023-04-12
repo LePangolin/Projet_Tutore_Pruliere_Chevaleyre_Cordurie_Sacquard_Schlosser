@@ -22,12 +22,15 @@ dependencies:
   http: ^0.13.5
   connectivity_plus: ^3.0.3
   audioplayers: ^3.0.1
+  flutter_dotenv: ^5.0.2
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: "^0.12.0"
   flutter_lints: ^2.0.1
+  
 
 flutter_icons:
   android: true
@@ -84,3 +87,4 @@ flutter:
     - assets/audio/boa_duvet.wav
     - assets/audio/gamebattlemusic.mp3
     - assets/tiles/
+    - assets/.env

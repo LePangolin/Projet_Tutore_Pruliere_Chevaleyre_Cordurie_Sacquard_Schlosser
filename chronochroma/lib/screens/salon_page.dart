@@ -424,7 +424,6 @@ class _SalonPageState extends State<SalonPage> {
                             child: Text(inkwellText),
                             onTap: () async {
                               setState(() {
-                                print(insciptionTab);
                                 insciptionTab = !insciptionTab;
                               });
                               Navigator.pop(context);
