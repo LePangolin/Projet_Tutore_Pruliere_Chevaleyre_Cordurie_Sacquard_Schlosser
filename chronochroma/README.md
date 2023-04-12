@@ -1,16 +1,16 @@
-# chronochroma
+## Chronochroma
 
-A new Flutter project.
+# Guide de démarrage 
 
-## Getting Started
+- Créer et remplir un .env dans le dossier assets
 
-This project is a starting point for a Flutter application.
+JWT_SECRET=hjzdghjsghjvcxvcjhgdguzgyufuifguifiugdiugaugudsjhjkdshjhjfggfuegihozihdihdsgguysgudgygfugfuihfhcoichicohivhoivhovhvhvheuigzgsuiqgsshfgufhiozoihdihcihciuhiodbcguisdgfifbgfuifisbjhdkjshdhidzhidzuigdgzuidgqguidglpdjzhdzhdizhidhiondkqjkbjdqbjvhvdvzdvzuddzbjdbjkzbdzbdjkzbzdjkkdbkjzdbjdbzknqljqppoodeuideifuegyffdyuffdtyfdzfqhvdvdkwbwjvdvdhgdzbjdzsvdzcdhzvdhzvqjdvhqzvdjqvdhvqhjxvxxbxbdzbdjhzdbzjhvdhzvdhzddbdjhdbhdvhdvdhvdjhdvhdvdhvzdbcacgacackfhivlnvkvhvvjkbvhvhcacabbnorfijhrighiuhgiuegugfugfyfzyzfyzfydbzjbdjqjknqdknjkzbjdhjzsgzdudzhoidhuiguqqjdbhjzgdvhrvrhvzrvrnvrnrvnzrvzhjgrzhjrgzjhrvzhjvrzvrzhvrnzvrhz
+SUPABASE_URL=https://vxotsourytdmefkaqtzt.supabase.co
+ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4b3Rzb3VyeXRkbWVma2FxdHp0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTY3NTM0NjU1OSwiZXhwIjoxOTkwOTIyNTU5fQ.H6Og0l_SRKSbmgn35VYLuM2RZWwt9mNRmUzeC6M-BLs
+PORT=8010
 
-A few resources to get you started if this is your first Flutter project:
+- Récupérer les dépendances : `flutter pub get`
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Ajouter l'icone de l'application : `flutter pub run flutter_launcher_icons`
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Lancer l'application : `flutter run`
